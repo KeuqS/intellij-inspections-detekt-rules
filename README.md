@@ -40,15 +40,30 @@ sets, download only `intellij-inspections-kotlin-all-<version>.jar`. To get all 
 download only `intellij-inspections-jvm-all-<version>.jar`. Do not add a bundle jar and
 the rule set jars that it contains together, because detekt then loads the same rule sets twice.
 
+Each rule set jar contains a default config (`config/config.yml`). The rules that are marked
+"Inactive by default" below are inactive in it. All other rules are active. To use this default
+config, set `buildUponDefaultConfig = true`.
+
 ```kotlin
 dependencies {
     detektPlugins(fileTree(rootProject.layout.projectDirectory.dir("config/detekt/plugins")) { include("*.jar") })
 }
+
+detekt {
+    buildUponDefaultConfig = true
+}
 ```
 
-The Kotlin rule set jars contain a default config (`config/config.yml`). It activates every rule
-except the ones whose IntelliJ inspection is disabled by default; those are marked "Inactive by
-default" below. detekt uses this default config with `buildUponDefaultConfig = true`.
+Then put in the project detekt config only the changes to the default config, e.g. to activate an
+inactive rule:
+
+```yaml
+intellij-kotlin-numeric-issues:
+  KotlinBigDecimalEquals:
+    active: true
+```
+
+Without `buildUponDefaultConfig = true`, detekt ignores the default config of the jars.
 
 ## Rules
 
