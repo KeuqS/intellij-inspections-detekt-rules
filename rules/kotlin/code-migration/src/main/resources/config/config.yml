@@ -1,0 +1,10 @@
+intellij-kotlin-code-migration:
+  active: true
+  CanConvertToMultiDollarString:
+    active: true
+  ConvertFromMultiDollarToRegularString:
+    active: true
+  ConvertLongToDuration:
+    active: true
+  InfixCallToOrdinary:
+    active: true

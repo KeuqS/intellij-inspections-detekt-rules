@@ -1,0 +1,18 @@
+intellij-kotlin-other-problems:
+  active: true
+  ConvertArgumentToSet:
+    active: true
+  DeprecatedCallableAddReplaceWith:
+    active: true
+  EnumValuesSoftDeprecate:
+    active: true
+  EnumValuesTopLevelFunctionSoftDeprecate:
+    active: true
+  FloatingPointLiteralPrecision:
+    active: true
+  MigrateDiagnosticSuppression:
+    active: true
+  ReplaceWithEnumMap:
+    active: true
+  ReplaceWithStringBuilderAppendRange:
+    active: true

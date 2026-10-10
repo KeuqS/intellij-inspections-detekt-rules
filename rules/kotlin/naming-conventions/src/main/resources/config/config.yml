@@ -1,0 +1,6 @@
+intellij-kotlin-naming-conventions:
+  active: true
+  InconsistentCommentForJavaParameter:
+    active: true
+  LocalVariableName:
+    active: true

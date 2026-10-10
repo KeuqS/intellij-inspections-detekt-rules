@@ -1,0 +1,82 @@
+intellij-kotlin-redundant-constructs:
+  active: true
+  CanBeParameter:
+    active: true
+  CanBePrimaryConstructorProperty:
+    active: true
+  CanUnescapeDollarLiteral:
+    active: true
+  ConstantConditionIf:
+    active: true
+  ExplicitThis:
+    active: true
+  IfExpressionWithIdenticalBranches:
+    active: true
+  KotlinRedundantOverride:
+    active: true
+  NullChecksToSafeCall:
+    active: true
+  RedundantCompanionReference:
+    active: true
+  RedundantElvisReturnNull:
+    active: true
+  RedundantEnumConstructorInvocation:
+    active: true
+  RedundantGetter:
+    active: true
+  RedundantIf:
+    active: true
+  RedundantInterpolationPrefix:
+    active: true
+  RedundantLabeledReturnOnLastExpressionInLambda:
+    active: true
+  RedundantLambdaArrow:
+    active: true
+  RedundantLambdaOrAnonymousFunction:
+    active: true
+  RedundantModalityModifier:
+    active: true
+  RedundantNullableReturnType:
+    active: true
+  RedundantReturnKeyword:
+    active: true
+  RedundantReturnLabel:
+    active: true
+  RedundantSamConstructor:
+    active: true
+  RedundantSetter:
+    active: true
+  RedundantUpperBound:
+    active: true
+  RedundantValueArgument:
+    active: false
+  RedundantWith:
+    active: true
+  RemoveExplicitSuperQualifier:
+    active: true
+  RemoveExplicitTypeArguments:
+    active: true
+  RemoveRedundantQualifierName:
+    active: true
+  RemoveRedundantSpreadOperator:
+    active: true
+  RemoveSetterParameterType:
+    active: true
+  RemoveSingleExpressionStringTemplate:
+    active: true
+  SimplifyWhenWithBooleanConstantCondition:
+    active: true
+  SuspiciousCallableReferenceInLambda:
+    active: true
+  UnnecessaryOptInAnnotation:
+    active: true
+  UnnecessaryVariable:
+    active: true
+  UnusedContextParameterCall:
+    active: true
+  UnusedReceiverParameter:
+    active: true
+  VariableInitializerIsRedundant:
+    active: true
+  WhenWithOnlyElse:
+    active: false
