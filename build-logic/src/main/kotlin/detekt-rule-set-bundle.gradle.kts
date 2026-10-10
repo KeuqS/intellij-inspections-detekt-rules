@@ -19,10 +19,11 @@ tasks.shadowJar {
     archiveVersion = project.version.toString()
     isPreserveFileTimestamps = false
     isReproducibleFileOrder = true
-    filesMatching("META-INF/services/**") {
+    filesMatching(listOf("META-INF/services/**", "config/config.yml")) {
         duplicatesStrategy = DuplicatesStrategy.INCLUDE
     }
     mergeServiceFiles()
+    append("config/config.yml")
     manifest {
         attributes(
             "Implementation-Title" to archiveBaseName.get(),

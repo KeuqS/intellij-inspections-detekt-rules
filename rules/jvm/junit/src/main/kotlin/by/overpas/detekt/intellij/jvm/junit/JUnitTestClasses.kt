@@ -8,9 +8,5 @@ context(session: KaSession)
 internal fun KtClassOrObject.isJUnit5TestClass(): Boolean =
     functions().any { it.isJUnit5TestMethod() }
 
-context(session: KaSession)
-internal fun KtClassOrObject.isJUnit4TestClass(): Boolean =
-    functions().any { it.isJUnit4TestMethod() }
-
 internal fun KtClassOrObject.functions(): List<KtNamedFunction> =
     declarations.filterIsInstance<KtNamedFunction>()

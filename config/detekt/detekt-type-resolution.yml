@@ -72,13 +72,9 @@ intellij-jvm-junit:
     active: true
   JUnit5AssertionsConverter:
     active: true
-  JUnit5Converter:
-    active: true
   JUnitMalformedDeclaration:
     active: true
   JUnitMixedFramework:
-    active: true
-  Junit4Converter:
     active: true
   Junit4RunWithInspection:
     active: true
