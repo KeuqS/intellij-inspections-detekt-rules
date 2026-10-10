@@ -5,6 +5,8 @@ plugins {
 }
 
 val ruleSets = listOf(
+    "jvm:junit",
+    "jvm:test-frameworks",
     "kotlin:code-migration",
     "kotlin:coroutines",
     "kotlin:java-interop",
@@ -19,6 +21,7 @@ val ruleSets = listOf(
 )
 
 val bundles = listOf(
+    "jvm",
     "kotlin",
 )
 

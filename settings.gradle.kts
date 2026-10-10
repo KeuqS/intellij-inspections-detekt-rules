@@ -19,7 +19,10 @@ plugins {
 }
 
 include(":annotations")
+include(":bundles:jvm")
 include(":bundles:kotlin")
+include(":rules:jvm:junit")
+include(":rules:jvm:test-frameworks")
 include(":rules:kotlin:code-migration")
 include(":rules:kotlin:coroutines")
 include(":rules:kotlin:java-interop")
