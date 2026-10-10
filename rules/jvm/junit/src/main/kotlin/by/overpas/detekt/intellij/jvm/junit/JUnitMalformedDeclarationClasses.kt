@@ -9,7 +9,7 @@ private const val NESTED_MESSAGE = "Tests in nested class will not be executed"
 
 context(session: KaSession)
 internal fun KtClass.classMalformations(): List<Malformation> =
-    if (isInterface() || isEnum() || isAnnotation() || isLocal || hasModifier(KtTokens.ABSTRACT_KEYWORD)) {
+    if (isSkippedClass()) {
         emptyList()
     } else {
         (constructionMessages() + listOfNotNull(NESTED_MESSAGE.takeIf { isMalformedNested() })).map { malformation(it) }
@@ -23,3 +23,8 @@ internal fun KtObjectDeclaration.objectMalformation(): Malformation? =
         val message = unconstructableMessage(name ?: "Companion", JUNIT4_CONSTRUCTOR_REASON)
         Malformation(anchor, message).takeIf { isMalformed }
     }
+
+private fun KtClass.isSkippedClass(): Boolean {
+    val isSpecialKind = isInterface() || isEnum() || isAnnotation()
+    return isSpecialKind || isLocal || hasModifier(KtTokens.ABSTRACT_KEYWORD)
+}

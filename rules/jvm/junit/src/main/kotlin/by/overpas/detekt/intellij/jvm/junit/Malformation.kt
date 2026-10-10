@@ -8,10 +8,5 @@ internal data class Malformation(
     val message: String,
 )
 
-internal data class MalformedSettings(
-    val ignorableAnnotations: Set<String>,
-    val areSuspendFunctionsAllowed: Boolean,
-)
-
 internal fun KtNamedDeclaration.malformation(message: String): Malformation =
     Malformation(nameIdentifier ?: this, message)

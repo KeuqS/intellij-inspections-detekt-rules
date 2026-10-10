@@ -5,25 +5,24 @@ import org.jetbrains.kotlin.name.ClassId
 import org.jetbrains.kotlin.psi.KtNamedFunction
 import org.jetbrains.kotlin.psi.psiUtil.containingClassOrObject
 
-context(session: KaSession)
-internal fun KtNamedFunction.signatureMalformations(settings: MalformedSettings): List<Malformation> =
+context(session: KaSession, settings: MalformedSettings)
+internal fun KtNamedFunction.signatureMalformations(): List<Malformation> =
     with(session) {
         val ids = symbol.annotations.mapNotNull { it.classId }
         METHOD_REQUIREMENTS.mapNotNull { requirement ->
-            requirement.annotations.firstOrNull { it in ids }?.let { methodMessage(requirement, it, settings) }
+            requirement.annotations.firstOrNull { it in ids }?.let { methodMessage(requirement, it) }
         }.map { malformation(it) }
     }
 
-context(session: KaSession)
+context(session: KaSession, settings: MalformedSettings)
 private fun KtNamedFunction.methodMessage(
     requirement: SignatureRequirement,
     annotation: ClassId,
-    settings: MalformedSettings,
 ): String? =
     with(session) {
         val subject = "Method '${name.orEmpty()}'"
         if (isSuspend() && !settings.areSuspendFunctionsAllowed) {
-            suspendMessage(subject, annotation)
+            annotation.suspendMessage(subject)
         } else {
             val isPerClass = containingClassOrObject?.isPerClass() == true
             val problems = SignatureProblems(
@@ -32,8 +31,8 @@ private fun KtNamedFunction.methodMessage(
                     requirement.visibilityProblem(isPublicMember(), isPrivateMember()),
                 ),
                 type = requirement.typeProblem(symbol.returnType),
-                parameters = invalidParameters(requirement.parameters, settings),
+                parameters = invalidParameters(requirement.parameters),
             )
-            problems.takeUnless { it.isEmpty() }?.message(subject, annotation)
+            annotation.signatureMessageOrNull(subject, problems)
         }
     }

@@ -10,7 +10,7 @@ import org.jetbrains.kotlin.analysis.api.types.KaType
 import org.jetbrains.kotlin.name.Name
 import org.jetbrains.kotlin.name.StandardClassIds
 
-private val SOURCE_CONTAINERS = listOf(StandardClassIds.Iterable, StandardClassIds.Iterator, BASE_STREAM, SEQUENCE)
+private val SOURCE_CONTAINERS = setOf(StandardClassIds.Iterable, StandardClassIds.Iterator, BASE_STREAM, SEQUENCE)
 
 private val ITERATOR_NAME = Name.identifier("iterator")
 
@@ -44,5 +44,5 @@ internal fun KaType.isArgumentsLike(): Boolean =
     with(session) {
         val type = lowerBound()
         val element = type.arrayElementType
-        type.isSubtypeOf(ARGUMENTS) || type.isAnyType || element != null && element.lowerBound().isAnyType
+        type.isSubtypeOf(ARGUMENTS) || type.isAnyType || (element != null && element.lowerBound().isAnyType)
     }

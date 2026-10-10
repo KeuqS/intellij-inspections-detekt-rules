@@ -44,8 +44,8 @@ private fun KaType.isConstructibleCollection(): Boolean =
             (isSubtypeOf(StandardClassIds.Collection) || isSubtypeOf(StandardClassIds.Map)) &&
             symbol.classKind == KaClassKind.CLASS &&
             symbol.modality != KaSymbolModality.ABSTRACT &&
-            symbol.declaredMemberScope.constructors.any {
-                it.visibility == KaSymbolVisibility.PUBLIC &&
-                it.valueParameters.isEmpty()
+            symbol.declaredMemberScope.constructors.any { constructor ->
+                constructor.visibility == KaSymbolVisibility.PUBLIC &&
+                    constructor.valueParameters.isEmpty()
             }
     }

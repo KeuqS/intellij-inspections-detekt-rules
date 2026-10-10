@@ -19,7 +19,7 @@ import org.jetbrains.kotlin.analysis.api.annotations.KaAnnotation
 import org.jetbrains.kotlin.psi.KtNamedFunction
 import org.jetbrains.kotlin.psi.KtParameter
 
-private val SINGLE_PARAMETER_SOURCES = listOf(
+private val SINGLE_PARAMETER_SOURCES = setOf(
     ENUM_SOURCE,
     VALUE_SOURCE,
     NULL_SOURCE,
@@ -27,7 +27,7 @@ private val SINGLE_PARAMETER_SOURCES = listOf(
     NULL_AND_EMPTY_SOURCE,
 )
 
-private val MULTIPLE_PARAMETER_SOURCES = listOf(METHOD_SOURCE, FIELD_SOURCE, CSV_FILE_SOURCE, CSV_SOURCE)
+private val MULTIPLE_PARAMETER_SOURCES = setOf(METHOD_SOURCE, FIELD_SOURCE, CSV_FILE_SOURCE, CSV_SOURCE)
 
 private val KNOWN_SOURCES = SINGLE_PARAMETER_SOURCES + MULTIPLE_PARAMETER_SOURCES
 
@@ -43,12 +43,12 @@ internal fun KaAnnotated.hasArgumentsSource(): Boolean =
 internal fun KaAnnotated.knownSources(): List<KaAnnotation> =
     annotations.filter { it.classId in KNOWN_SOURCES }
 
-context(session: KaSession)
-internal fun KtNamedFunction.providedParameters(settings: MalformedSettings): ProvidedParameters =
+context(session: KaSession, settings: MalformedSettings)
+internal fun KtNamedFunction.providedParameters(): ProvidedParameters =
     with(session) {
         val parameters = valueParameters.filterNot { parameter ->
             val type = parameter.symbol.returnType
-            parameter.isIgnorable(settings) ||
+            parameter.isIgnorable() ||
                 parameter.symbol.hasParameterResolver() ||
                 type.isSubtypeOf(TEST_INFO) ||
                 type.isSubtypeOf(TEST_REPORTER)

@@ -13,26 +13,25 @@ import org.jetbrains.kotlin.psi.KtAnnotated
 
 context(session: KaSession)
 internal fun KaAnnotated.hasMetaAnnotation(classId: ClassId): Boolean =
-    hasMetaAnnotation(mutableSetOf()) { it.classId == classId }
+    hasMetaAnnotation { it.classId == classId }
 
 context(session: KaSession)
-internal fun KaAnnotated.hasMetaAnnotation(
-    visited: MutableSet<ClassId>,
-    predicate: (KaAnnotation) -> Boolean,
-): Boolean =
-    with(session) {
-        annotations.any { annotation ->
-            val classId = annotation.classId
-            predicate(annotation) ||
-                classId != null &&
-                visited.add(classId) &&
-                findClass(classId)?.hasMetaAnnotation(visited, predicate) == true
-        }
-    }
+internal fun KaAnnotated.hasMetaAnnotation(predicate: (KaAnnotation) -> Boolean): Boolean {
+    val visited = mutableSetOf<ClassId>()
+    return generateSequence(listOf(this)) { level ->
+        with(session) {
+            level.asSequence()
+                .flatMap { annotated -> annotated.annotations.mapNotNull { it.classId } }
+                .filter(visited::add)
+                .mapNotNull { findClass(it) }
+                .toList()
+        }.takeIf { it.isNotEmpty() }
+    }.any { level -> level.any { annotated -> annotated.annotations.any { predicate(it) } } }
+}
 
 context(session: KaSession)
 internal fun KaAnnotated.hasParameterResolver(): Boolean =
-    hasMetaAnnotation(mutableSetOf()) { it.extendsWithParameterResolver() }
+    hasMetaAnnotation { it.extendsWithParameterResolver() }
 
 context(session: KaSession)
 private fun KaAnnotation.extendsWithParameterResolver(): Boolean =

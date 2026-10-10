@@ -9,38 +9,32 @@ import org.jetbrains.kotlin.analysis.api.KaSession
 import org.jetbrains.kotlin.analysis.api.annotations.KaAnnotation
 import org.jetbrains.kotlin.psi.KtNamedFunction
 
-context(session: KaSession)
-internal fun KtNamedFunction.parameterizedMalformations(settings: MalformedSettings): List<Malformation> =
+context(session: KaSession, settings: MalformedSettings)
+internal fun KtNamedFunction.parameterizedMalformations(): List<Malformation> =
     with(session) {
         val functionSymbol = symbol
         if (functionSymbol.hasMetaAnnotation(JUPITER_PARAMETERIZED_TEST)) {
             val sources = functionSymbol.knownSources()
-            val provided = providedParameters(settings)
+            val provided = providedParameters()
             val hasCustomSource = functionSymbol.annotations.any { it.isCustomSource() }
             listOfNotNull(sourceConflictMessage(sources, provided, hasCustomSource)?.let { malformation(it) }) +
-                sources.flatMap { sourceMalformations(it, provided) }
+                context(provided) { sources.flatMap { sourceMalformations(it) } }
         } else {
             emptyList()
         }
     }
 
-context(session: KaSession)
-private fun KtNamedFunction.sourceMalformations(
-    annotation: KaAnnotation,
-    provided: ProvidedParameters,
-): List<Malformation> {
+context(session: KaSession, provided: ProvidedParameters)
+private fun KtNamedFunction.sourceMalformations(annotation: KaAnnotation): List<Malformation> {
     val anchor = annotation.psi ?: this
     val messages = when (annotation.classId) {
         VALUE_SOURCE -> listOfNotNull(annotation.valueSourceMessage())
-        NULL_SOURCE -> nullSourceMessages(provided)
-        EMPTY_SOURCE, NULL_AND_EMPTY_SOURCE -> listOfNotNull(annotation.emptySourceMessage(provided))
+        NULL_SOURCE -> nullSourceMessages()
+        EMPTY_SOURCE, NULL_AND_EMPTY_SOURCE -> listOfNotNull(annotation.emptySourceMessage())
         else -> emptyList()
     }
     val methodSource = if (annotation.classId == METHOD_SOURCE) {
-        methodSourceMalformations(
-            annotation,
-            provided,
-        )
+        annotation.methodSourceMalformations(this)
     } else {
         emptyList()
     }

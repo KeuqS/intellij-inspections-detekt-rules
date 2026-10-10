@@ -7,10 +7,10 @@ import org.jetbrains.kotlin.psi.psiUtil.containingClassOrObject
 context(session: KaSession)
 internal fun KtProperty.propertyMalformations(): List<Malformation> =
     if (containingClassOrObject?.isRunnable() == true) {
-        val fieldIds = fieldAnnotationIds()
+        val fieldIds = fieldAnnotationIds().toSet()
         buildList {
             addAll(fieldMessages(fieldIds))
-            addAll(getterMessages(getterAnnotationIds()))
+            addAll(getterMessages(getterAnnotationIds().toSet()))
             addAll(listOfNotNull(extensionLevelMessage(fieldIds)))
         }.map { malformation(it) }
     } else {

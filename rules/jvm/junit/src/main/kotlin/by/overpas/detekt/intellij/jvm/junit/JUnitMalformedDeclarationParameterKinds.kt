@@ -7,23 +7,25 @@ import org.jetbrains.kotlin.analysis.api.KaSession
 import org.jetbrains.kotlin.analysis.api.types.KaType
 import org.jetbrains.kotlin.psi.KtParameter
 
-context(session: KaSession)
-internal fun KtParameter.isIgnorable(settings: MalformedSettings): Boolean =
+context(session: KaSession, settings: MalformedSettings)
+internal fun KtParameter.isIgnorable(): Boolean =
     with(session) {
-        symbol.hasMetaAnnotation(mutableSetOf()) { it.classId?.asFqNameString() in settings.ignorableAnnotations }
+        symbol.hasMetaAnnotation { it.classId?.asFqNameString() in settings.ignorableAnnotations }
     }
 
 context(session: KaSession)
-internal fun KaType.isInjectable(requirement: ParameterRequirement): Boolean =
-    with(session) {
+internal fun ParameterRequirement.injects(type: KaType): Boolean {
+    val requirement = this
+    return with(session) {
         when (requirement) {
             ParameterRequirement.EACH_CALLBACK ->
-                isClassType(TEST_INFO) || isClassType(REPETITION_INFO) || isClassType(TEST_REPORTER)
+                type.isClassType(TEST_INFO) || type.isClassType(REPETITION_INFO) || type.isClassType(TEST_REPORTER)
 
-            ParameterRequirement.ALL_CALLBACK -> isClassType(TEST_INFO)
+            ParameterRequirement.ALL_CALLBACK -> type.isClassType(TEST_INFO)
 
-            ParameterRequirement.JUPITER_TEST -> isSubtypeOf(TEST_INFO) || isSubtypeOf(TEST_REPORTER)
+            ParameterRequirement.JUPITER_TEST -> type.isSubtypeOf(TEST_INFO) || type.isSubtypeOf(TEST_REPORTER)
 
             ParameterRequirement.NONE -> false
         }
     }
+}

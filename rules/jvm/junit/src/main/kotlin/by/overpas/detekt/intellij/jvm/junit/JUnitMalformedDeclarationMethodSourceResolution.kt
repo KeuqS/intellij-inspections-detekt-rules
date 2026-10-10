@@ -6,11 +6,8 @@ import org.jetbrains.kotlin.lexer.KtTokens
 import org.jetbrains.kotlin.name.Name
 import org.jetbrains.kotlin.psi.KtClass
 
-context(session: KaSession)
-internal fun KtClass.methodSourceMessage(
-    sourceName: String,
-    provided: ProvidedParameters,
-): String? =
+context(session: KaSession, provided: ProvidedParameters)
+internal fun KtClass.methodSourceMessage(sourceName: String): String? =
     with(session) {
         val ownerSymbol = classSymbol as? KaNamedClassSymbol
         val candidates = ownerSymbol?.sourceCandidates(Name.identifier(sourceName)).orEmpty()
@@ -27,6 +24,6 @@ internal fun KtClass.methodSourceMessage(
             candidate.symbol.valueParameters.isNotEmpty() && !hasResolverExtensionField() ->
                 "Method source '$sourceName' should have no parameters"
 
-            else -> candidate.returnTypeMessage(sourceName, provided)
+            else -> candidate.returnTypeMessage(sourceName)
         }
     }

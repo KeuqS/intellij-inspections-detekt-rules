@@ -37,7 +37,7 @@ class JUnitMalformedDeclaration(config: Config) :
         if (function.containingClassOrObject == null) return
         if (function.annotationEntries.isEmpty() && !function.isJUnit3Candidate()) return
         val settings = settings()
-        analyze(function) { function.functionMalformations(settings) }.forEach(::reportMalformation)
+        analyze(function) { context(settings) { function.functionMalformations() } }.forEach(::reportMalformation)
     }
 
     override fun visitClass(klass: KtClass) {

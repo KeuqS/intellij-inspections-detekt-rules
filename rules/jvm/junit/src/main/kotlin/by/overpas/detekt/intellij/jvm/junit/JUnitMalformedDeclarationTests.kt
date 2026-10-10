@@ -36,17 +36,11 @@ internal fun KtNamedFunction.combinationMessage(): String? =
         val functionSymbol = symbol
         val tests = NON_COMBINED_TESTS.filter { functionSymbol.hasMetaAnnotation(it) }
         val test = tests.singleOrNull()?.takeIf { it != JUPITER_PARAMETERIZED_TEST }
-        val sources = if (test ==
-            null
-        ) {
-                emptyList()
-            } else {
-                PARAMETERIZED_SOURCES.filter {
-                functionSymbol.hasMetaAnnotation(
-                it,
-            )
-            }
-            }
+        val sources = if (test == null) {
+            emptyList()
+        } else {
+            PARAMETERIZED_SOURCES.filter { source -> functionSymbol.hasMetaAnnotation(source) }
+        }
         when {
             tests.size > 1 -> combinationMessage(tests.dropLast(1), tests.last())
             test != null && sources.isNotEmpty() -> combinationMessage(sources, test)

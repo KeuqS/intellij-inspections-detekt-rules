@@ -14,24 +14,21 @@ internal data class SourceCandidate(
 context(session: KaSession)
 internal fun KaNamedClassSymbol.sourceCandidates(name: Name): List<SourceCandidate> =
     with(session) {
-        val members = memberScope.callables(name).filterIsInstance<KaNamedFunctionSymbol>()
+        val members = memberScope.callables { it == name }.filterIsInstance<KaNamedFunctionSymbol>()
             .map { SourceCandidate(it, it.isStatic) }
-        val companionMembers = companionObject?.run { memberScope.callables(name) }.orEmpty()
+        val companionMembers = companionObject?.run { memberScope.callables { it == name } }.orEmpty()
             .filterIsInstance<KaNamedFunctionSymbol>()
             .map { function -> SourceCandidate(function, function.annotations.any { it.classId == JVM_STATIC }) }
         (members + companionMembers).toList()
     }
 
-context(session: KaSession)
-internal fun SourceCandidate.returnTypeMessage(
-    sourceName: String,
-    provided: ProvidedParameters,
-): String? {
+context(session: KaSession, provided: ProvidedParameters)
+internal fun SourceCandidate.returnTypeMessage(sourceName: String): String? {
     val component = symbol.returnType.sourceComponentType()
     return when {
         component == null ->
             "Method source '$sourceName' must have one of the following return types: " +
-            "'Stream<*>', 'Iterator<*>', 'Iterable<*>', 'Sequence<*>' or 'Array<*>'"
+                "'Stream<*>', 'Iterator<*>', 'Iterable<*>', 'Sequence<*>' or 'Array<*>'"
 
         provided.isMismatch && !component.isArgumentsLike() -> "Multiple parameters have to be wrapped in 'Arguments'"
 

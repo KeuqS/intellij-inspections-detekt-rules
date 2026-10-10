@@ -6,22 +6,6 @@ import by.overpas.detekt.intellij.jvm.junit.MalformedClassIds.EXTENSION
 import by.overpas.detekt.intellij.jvm.junit.MalformedClassIds.METHOD_RULE
 import by.overpas.detekt.intellij.jvm.junit.MalformedClassIds.REGISTER_EXTENSION
 import by.overpas.detekt.intellij.jvm.junit.MalformedClassIds.TEST_RULE
-import org.jetbrains.kotlin.name.ClassId
-
-internal enum class StaticRequirement { STATIC, NON_STATIC, STATIC_UNLESS_PER_CLASS, ANY }
-
-internal enum class VisibilityRequirement { PUBLIC, NOT_PRIVATE, ANY }
-
-internal enum class ParameterRequirement { NONE, EACH_CALLBACK, ALL_CALLBACK, JUPITER_TEST }
-
-internal data class SignatureRequirement(
-    val annotations: List<ClassId>,
-    val static: StaticRequirement,
-    val visibility: VisibilityRequirement,
-    val isUnitRequired: Boolean = false,
-    val superTypes: List<ClassId> = emptyList(),
-    val parameters: ParameterRequirement? = null,
-)
 
 private val DATA_POINT_REQUIREMENT = SignatureRequirement(
     annotations = listOf(DATA_POINT, DATA_POINTS),

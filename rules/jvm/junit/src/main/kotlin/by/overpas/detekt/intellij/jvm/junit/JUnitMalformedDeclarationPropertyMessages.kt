@@ -11,41 +11,47 @@ import org.jetbrains.kotlin.psi.KtProperty
 import org.jetbrains.kotlin.psi.psiUtil.containingClassOrObject
 
 context(session: KaSession)
-internal fun KtProperty.fieldMessages(ids: List<ClassId>): List<String> =
+internal fun KtProperty.fieldMessages(ids: Set<ClassId>): List<String> =
     with(session) {
         FIELD_REQUIREMENTS.mapNotNull { requirement ->
             requirement.annotations.firstOrNull { it in ids }?.let { annotation ->
-                SignatureProblems(
-                    modifiers = listOfNotNull(
-                        requirement.staticProblem(isFieldStatic(), isPerClass = false),
-                        requirement.visibilityProblem(isFieldPublic(), isPrivateMember()),
+                annotation.signatureMessageOrNull(
+                    "Field '${name.orEmpty()}'",
+                    SignatureProblems(
+                        modifiers = listOfNotNull(
+                            requirement.staticProblem(isFieldStatic(), isPerClass = false),
+                            requirement.visibilityProblem(isFieldPublic(), isPrivateMember()),
+                        ),
+                        type = requirement.typeProblem(symbol.returnType),
+                        parameters = emptyList(),
                     ),
-                    type = requirement.typeProblem(symbol.returnType),
-                    parameters = emptyList(),
-                ).takeUnless { it.isEmpty() }?.message("Field '${name.orEmpty()}'", annotation)
+                )
             }
         }
     }
 
 context(session: KaSession)
-internal fun KtProperty.getterMessages(ids: List<ClassId>): List<String> =
+internal fun KtProperty.getterMessages(ids: Set<ClassId>): List<String> =
     with(session) {
         METHOD_REQUIREMENTS.mapNotNull { requirement ->
             requirement.annotations.firstOrNull { it in ids }?.let { annotation ->
-                SignatureProblems(
-                    modifiers = listOfNotNull(
-                        requirement.staticProblem(isJvmStatic(), isPerClass = false),
-                        requirement.visibilityProblem(isPublicMember(), isPrivateMember()),
+                annotation.signatureMessageOrNull(
+                    "Method '${name.orEmpty()}'",
+                    SignatureProblems(
+                        modifiers = listOfNotNull(
+                            requirement.staticProblem(isJvmStatic(), isPerClass = false),
+                            requirement.visibilityProblem(isPublicMember(), isPrivateMember()),
+                        ),
+                        type = requirement.typeProblem(symbol.returnType),
+                        parameters = emptyList(),
                     ),
-                    type = requirement.typeProblem(symbol.returnType),
-                    parameters = emptyList(),
-                ).takeUnless { it.isEmpty() }?.message("Method '${name.orEmpty()}'", annotation)
+                )
             }
         }
     }
 
 context(session: KaSession)
-internal fun KtProperty.extensionLevelMessage(ids: List<ClassId>): String? =
+internal fun KtProperty.extensionLevelMessage(ids: Set<ClassId>): String? =
     with(session) {
         val type = symbol.returnType
         val isClassLevel = type.isSubtypeOf(BEFORE_ALL_CALLBACK) || type.isSubtypeOf(AFTER_ALL_CALLBACK)

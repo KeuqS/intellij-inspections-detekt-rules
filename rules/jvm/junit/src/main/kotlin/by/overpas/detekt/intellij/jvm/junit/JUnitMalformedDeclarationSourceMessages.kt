@@ -11,14 +11,15 @@ internal fun KaAnnotation.valueSourceMessage(): String? =
         else -> "Exactly one type of input must be provided"
     }
 
-internal fun nullSourceMessages(provided: ProvidedParameters): List<String> =
+context(provided: ProvidedParameters)
+internal fun nullSourceMessages(): List<String> =
     listOfNotNull(
         singleParameterMessage(NULL_SOURCE.quoted()).takeIf { provided.isMismatch },
         noParametersMessage(NULL_SOURCE.quoted()).takeIf { provided.parameters.isEmpty() },
     )
 
-context(session: KaSession)
-internal fun KaAnnotation.emptySourceMessage(provided: ProvidedParameters): String? =
+context(session: KaSession, provided: ProvidedParameters)
+internal fun KaAnnotation.emptySourceMessage(): String? =
     with(session) {
         val name = classId?.quoted().orEmpty()
         val type = provided.parameters.firstOrNull()?.run { symbol.returnType }
@@ -31,7 +32,7 @@ internal fun KaAnnotation.emptySourceMessage(provided: ProvidedParameters): Stri
 
             else ->
                 "$name cannot provide an argument to method because method has an unsupported parameter of " +
-                "'${type.expandedSymbol?.name?.asString().orEmpty()}' type"
+                    "'${type.expandedSymbol?.name?.asString().orEmpty()}' type"
         }
     }
 
