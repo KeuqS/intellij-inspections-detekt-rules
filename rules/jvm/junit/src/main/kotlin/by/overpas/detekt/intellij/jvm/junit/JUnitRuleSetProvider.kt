@@ -14,7 +14,14 @@ class JUnitRuleSetProvider : RuleSetProvider {
         RuleSet(
             ruleSetId,
             listOf(
+                ::AssertEqualsCalledOnArray,
+                ::AssertEqualsMayBeAssertSame,
                 ::IgnoredJUnitTest,
+                ::JUnit5AssertionsConverter,
+                ::Junit4Converter,
+                ::Junit4RunWithInspection,
+                ::SuperTearDownInFinally,
+                ::UseOfObsoleteAssert,
             ),
         )
 }

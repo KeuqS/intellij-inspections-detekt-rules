@@ -2,6 +2,7 @@ package by.overpas.detekt.intellij.jvm.junit
 
 import org.jetbrains.kotlin.name.ClassId
 import org.jetbrains.kotlin.name.FqName
+import org.jetbrains.kotlin.name.Name
 
 internal val JUNIT_FRAMEWORK_TEST_CASE = classId("junit.framework.TestCase")
 internal val JUNIT_FRAMEWORK_ASSERT = classId("junit.framework.Assert")
@@ -27,3 +28,16 @@ internal val JUPITER_REPEATED_TEST = classId("org.junit.jupiter.api.RepeatedTest
 internal val JUPITER_PARAMETERIZED_TEST = classId("org.junit.jupiter.params.ParameterizedTest")
 
 internal fun classId(fqName: String): ClassId = ClassId.topLevel(FqName(fqName))
+
+internal val ORG_JUNIT_ASSUME = classId("org.junit.Assume")
+internal val ORG_JUNIT_PARAMETERIZED = classId("org.junit.runners.Parameterized")
+internal val ORG_JUNIT_PARAMETERS = ORG_JUNIT_PARAMETERIZED.createNestedClassId(Name.identifier("Parameters"))
+internal val TESTNG_ASSERT = classId("org.testng.Assert")
+internal val TESTNG_ASSERT_JUNIT = classId("org.testng.AssertJUnit")
+internal val JUPITER_ASSUMPTIONS = classId("org.junit.jupiter.api.Assumptions")
+internal val JUPITER_TEST_TEMPLATE = classId("org.junit.jupiter.api.TestTemplate")
+internal val JUNIT_PLATFORM_TESTABLE = classId("org.junit.platform.commons.annotation.Testable")
+internal val HAMCREST_MATCHERS = classId("org.hamcrest.Matchers")
+internal val HAMCREST_CORE_MATCHERS = classId("org.hamcrest.CoreMatchers")
+internal val HAMCREST_ORDERING_COMPARISON = classId("org.hamcrest.number.OrderingComparison")
+internal val JAVA_LANG_OBJECT = classId("java.lang.Object")
