@@ -40,11 +40,30 @@ sets, download only `intellij-inspections-kotlin-all-<version>.jar`. To get all 
 download only `intellij-inspections-jvm-all-<version>.jar`. Do not add a bundle jar and
 the rule set jars that it contains together, because detekt then loads the same rule sets twice.
 
+Each rule set jar contains a default config (`config/config.yml`). The rules that are marked
+"Inactive by default" below are inactive in it. All other rules are active. To use this default
+config, set `buildUponDefaultConfig = true`.
+
 ```kotlin
 dependencies {
     detektPlugins(fileTree(rootProject.layout.projectDirectory.dir("config/detekt/plugins")) { include("*.jar") })
 }
+
+detekt {
+    buildUponDefaultConfig = true
+}
 ```
+
+Then put in the project detekt config only the changes to the default config, e.g. to activate an
+inactive rule:
+
+```yaml
+intellij-kotlin-numeric-issues:
+  KotlinBigDecimalEquals:
+    active: true
+```
+
+Without `buildUponDefaultConfig = true`, detekt ignores the default config of the jars.
 
 ## Rules
 
@@ -132,7 +151,7 @@ migration hints are inactive. detekt uses this default config with `buildUponDef
 
 | Rule | Finds |
 |---|---|
-| `KotlinLoggerInitializedWithForeignClass` | A logger that is created with the class literal of another class. |
+| `KotlinLoggerInitializedWithForeignClass` | A logger that is created with the class literal of another class. Inactive by default. |
 
 ### `intellij-kotlin-migration`
 
@@ -151,7 +170,7 @@ migration hints are inactive. detekt uses this default config with `buildUponDef
 
 | Rule | Finds |
 |---|---|
-| `KotlinBigDecimalEquals` | An `equals()` or `==` comparison of `BigDecimal` values that should use `compareTo()`. |
+| `KotlinBigDecimalEquals` | An `equals()` or `==` comparison of `BigDecimal` values that should use `compareTo()`. Inactive by default. |
 
 ### `intellij-kotlin-other-problems`
 
@@ -243,7 +262,7 @@ migration hints are inactive. detekt uses this default config with `buildUponDef
 | `RedundantSamConstructor` | A SAM constructor call in an argument where a plain lambda converts to the same type. |
 | `RedundantSetter` | A setter that is the default one or only assigns the value to the backing field. |
 | `RedundantUpperBound` | A type parameter bound that is `Any?`, the default upper bound. |
-| `RedundantValueArgument` | An argument whose constant value equals the default value of the parameter. |
+| `RedundantValueArgument` | An argument whose constant value equals the default value of the parameter. Inactive by default. |
 | `RedundantWith` | A `with` call whose lambda does not use the receiver. |
 | `RemoveExplicitSuperQualifier` | A `super<T>` qualifier that does not change the member that the call resolves to. |
 | `RemoveExplicitTypeArguments` | Explicit type arguments that the compiler can infer. |
@@ -258,7 +277,7 @@ migration hints are inactive. detekt uses this default config with `buildUponDef
 | `UnusedContextParameterCall` | A `context(...)` call whose block does not use all the arguments. |
 | `UnusedReceiverParameter` | An extension receiver that is never used. |
 | `VariableInitializerIsRedundant` | A variable initializer that is overwritten before it is read. |
-| `WhenWithOnlyElse` | A `when` with only an `else` branch. |
+| `WhenWithOnlyElse` | A `when` with only an `else` branch. Inactive by default. |
 
 ### `intellij-kotlin-style-issues`
 
@@ -303,7 +322,7 @@ migration hints are inactive. detekt uses this default config with `buildUponDef
 | `ReplaceAssertBooleanWithAssertEquality` | An `assertTrue` or `assertFalse` call with an `==` or `===` check that an equality assertion can replace. |
 | `ReplaceAssociateFunction` | An `associate` or `associateTo` call that `associateBy` or `associateWith` can replace. |
 | `ReplaceCallWithBinaryOperator` | An explicit call of `equals`, `compareTo` or an arithmetic or range operator function that a binary operator can replace. |
-| `ReplaceCollectionCountWithSize` | A `count()` call without a predicate on a collection, array or map that `size` can replace. |
+| `ReplaceCollectionCountWithSize` | A `count()` call without a predicate on a collection, array or map that `size` can replace. Inactive by default. |
 | `ReplaceContains` | A call of an operator `contains` function that the `in` operator can replace. |
 | `ReplaceIfExpressionWithFirstOrNull` | An `if` that returns the first element of a non-empty collection, string or array, else `null`, which `firstOrNull()` can replace. |
 | `ReplaceJavaStaticMethodWithKotlinAnalog` | A call of a Java static method that has a Kotlin standard library counterpart. |
@@ -312,7 +331,7 @@ migration hints are inactive. detekt uses this default config with `buildUponDef
 | `ReplaceMapIndexedWithListGenerator` | A `mapIndexed` call on a collection that ignores the element, where `List(size) { index -> ... }` fits. |
 | `ReplaceMapKeysCallChainWithKeys` | A `map { it.key }.toSet()` call chain on a map that `keys` can replace. |
 | `ReplaceNegatedIsEmptyWithIsNotEmpty` | A negated `isEmpty`, `isNotEmpty`, `isBlank` or `isNotBlank` call that the inverted function can replace. |
-| `ReplaceNotNullAssertionWithElvisReturn` | A `!!` in a function or labeled lambda that returns `Unit` or a nullable type, where `?: return` fits. |
+| `ReplaceNotNullAssertionWithElvisReturn` | A `!!` in a function or labeled lambda that returns `Unit` or a nullable type, where `?: return` fits. Inactive by default. |
 | `ReplaceRangeStartEndInclusiveWithFirstLast` | A `start` or `endInclusive` on a primitive range that the unboxed `first` or `last` can replace. |
 | `ReplaceReadLineWithReadln` | A `readLine()` call that `readln()` or `readlnOrNull()` can replace. |
 | `ReplaceSizeCheckWithIsNotEmpty` | A size, length or count comparison that `isNotEmpty()` can replace. |

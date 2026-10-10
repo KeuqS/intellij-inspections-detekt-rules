@@ -141,7 +141,7 @@ intellij-kotlin-java-interop:
 
 intellij-kotlin-logging:
   KotlinLoggerInitializedWithForeignClass:
-    active: true
+    active: false
 
 intellij-kotlin-migration:
   KotlinDeprecation:
@@ -155,7 +155,7 @@ intellij-kotlin-naming-conventions:
 
 intellij-kotlin-numeric-issues:
   KotlinBigDecimalEquals:
-    active: true
+    active: false
 
 intellij-kotlin-other-problems:
   ConvertArgumentToSet:
@@ -309,7 +309,7 @@ intellij-kotlin-redundant-constructs:
   RedundantUpperBound:
     active: true
   RedundantValueArgument:
-    active: true
+    active: false
   RedundantWith:
     active: true
   RemoveExplicitSuperQualifier:
@@ -409,7 +409,7 @@ intellij-kotlin-style-issues:
   ReplaceCallWithBinaryOperator:
     active: true
   ReplaceCollectionCountWithSize:
-    active: true
+    active: false
   ReplaceContains:
     active: true
   ReplaceIfExpressionWithFirstOrNull:
@@ -427,7 +427,7 @@ intellij-kotlin-style-issues:
   ReplaceNegatedIsEmptyWithIsNotEmpty:
     active: true
   ReplaceNotNullAssertionWithElvisReturn:
-    active: true
+    active: false
   ReplaceRangeStartEndInclusiveWithFirstLast:
     active: true
   ReplaceReadLineWithReadln:

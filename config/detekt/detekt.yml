@@ -10,7 +10,7 @@ intellij-kotlin-redundant-constructs:
   SimplifyWhenWithBooleanConstantCondition:
     active: true
   WhenWithOnlyElse:
-    active: true
+    active: false
 
 overpas-architecture:
   NonInjectedDependency:

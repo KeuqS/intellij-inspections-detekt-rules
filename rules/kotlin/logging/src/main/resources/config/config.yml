@@ -1,0 +1,4 @@
+intellij-kotlin-logging:
+  active: true
+  KotlinLoggerInitializedWithForeignClass:
+    active: false
