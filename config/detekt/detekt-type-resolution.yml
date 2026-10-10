@@ -61,6 +61,42 @@ exceptions:
     active: true
     ignoreLabeled: false
 
+intellij-jvm-junit:
+  AssertEqualsCalledOnArray:
+    active: true
+  AssertEqualsMayBeAssertSame:
+    active: true
+  IgnoredJUnitTest:
+    active: true
+  JUnit3StyleTestMethodInJUnit4Class:
+    active: true
+  JUnit5AssertionsConverter:
+    active: true
+  JUnitMalformedDeclaration:
+    active: true
+  JUnitMixedFramework:
+    active: true
+  Junit4RunWithInspection:
+    active: true
+  MigrateAssertToMatcherAssert:
+    active: true
+  ParameterizedParametersStaticCollection:
+    active: true
+  SuperTearDownInFinally:
+    active: true
+  UseOfObsoleteAssert:
+    active: true
+
+intellij-jvm-test-frameworks:
+  AssertBetweenInconvertibleTypes:
+    active: true
+  TestCaseWithConstructor:
+    active: true
+  TestCaseWithNoTestMethods:
+    active: true
+  TestMethodWithoutAssertion:
+    active: true
+
 intellij-kotlin-code-migration:
   CanConvertToMultiDollarString:
     active: true

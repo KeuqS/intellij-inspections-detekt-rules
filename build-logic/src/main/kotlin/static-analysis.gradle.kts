@@ -16,6 +16,8 @@ detekt {
 }
 
 dependencies {
+    detektPlugins(project(":rules:jvm:junit"))
+    detektPlugins(project(":rules:jvm:test-frameworks"))
     detektPlugins(project(":rules:kotlin:code-migration"))
     detektPlugins(project(":rules:kotlin:coroutines"))
     detektPlugins(project(":rules:kotlin:java-interop"))
