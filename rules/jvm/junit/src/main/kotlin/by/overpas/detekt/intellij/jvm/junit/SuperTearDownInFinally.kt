@@ -21,10 +21,10 @@ class SuperTearDownInFinally(config: Config) :
 
     override fun visitCallExpression(expression: KtCallExpression) {
         super.visitCallExpression(expression)
-        val function = expression.superTearDownFunction() ?: return
-        val containingClass = function.containingClassOrObject ?: return
-        if (expression.isInFinallyBlock(function) || !function.hasOtherCalls(expression)) return
-        if (analyze(containingClass) { containingClass.isSubclassOf(JUNIT_FRAMEWORK_TEST_CASE) }) {
+        val function = expression.superTearDownFunction()
+            ?.takeIf { !expression.isInFinallyBlock(it) && it.hasOtherCalls(expression) }
+        val containingClass = function?.containingClassOrObject ?: return
+        if (analyze(containingClass) { containingClass.isJUnit3TestCase() }) {
             report(Finding(Entity.from(expression), "'tearDown()' is not called from 'finally' block"))
         }
     }

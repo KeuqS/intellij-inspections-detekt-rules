@@ -14,4 +14,9 @@ internal fun KtAnnotated.annotationEntriesOf(vararg classIds: ClassId): List<KtA
     annotationEntries.filter { it.resolvedClassId() in classIds }
 
 context(session: KaSession)
-internal fun KtAnnotated.hasAnnotationEntry(vararg classIds: ClassId): Boolean = annotationEntriesOf(*classIds).isNotEmpty()
+internal fun KtAnnotated.annotationEntriesIn(classIds: Collection<ClassId>): List<KtAnnotationEntry> =
+    annotationEntries.filter { it.resolvedClassId() in classIds }
+
+context(session: KaSession)
+internal fun KtAnnotated.hasAnnotationEntry(vararg classIds: ClassId): Boolean =
+    annotationEntries.any { it.resolvedClassId() in classIds }

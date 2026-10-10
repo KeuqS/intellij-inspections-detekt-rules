@@ -9,7 +9,6 @@ import dev.detekt.api.Rule
 import org.jetbrains.kotlin.analysis.api.analyze
 import org.jetbrains.kotlin.psi.KtCallExpression
 import org.jetbrains.kotlin.psi.KtCallableReferenceExpression
-import org.jetbrains.kotlin.psi.KtElement
 import org.jetbrains.kotlin.psi.KtFile
 
 @IntellijInspection("JUnit5AssertionsConverter")
@@ -21,33 +20,20 @@ class JUnit5AssertionsConverter(config: Config) :
     ),
     RequiresAnalysisApi {
 
-    private var isJUnit5File = false
-
     override fun visitKtFile(file: KtFile) {
-        isJUnit5File = analyze(file) { file.isJUnit5AssertionsConverterCandidate() }
-        if (isJUnit5File) super.visitKtFile(file)
+        if (analyze(file) { file.hasJUnit5TestClass() }) super.visitKtFile(file)
     }
 
     override fun visitCallExpression(expression: KtCallExpression) {
         super.visitCallExpression(expression)
         val callee = expression.calleeExpression ?: return
-        val obsolete = analyze(expression) { expression.obsoleteAssertion() } ?: return
-        reportObsolete(callee, obsolete)
+        val (message) = analyze(expression) { expression.obsoleteAssertion() } ?: return
+        report(Finding(Entity.from(callee), message))
     }
 
     override fun visitCallableReferenceExpression(expression: KtCallableReferenceExpression) {
         super.visitCallableReferenceExpression(expression)
-        val obsolete = analyze(expression) { expression.obsoleteAssertion() } ?: return
-        reportObsolete(expression, obsolete)
-    }
-
-    private fun reportObsolete(element: KtElement, assertion: ObsoleteAssertion) {
-        report(
-            Finding(
-                Entity.from(element),
-                "Call to '${assertion.methodName}()' from '${assertion.owner}' should be replaced with a call to " +
-                    "a method from '${assertion.replacement}'",
-            ),
-        )
+        val (message) = analyze(expression) { expression.obsoleteAssertion() } ?: return
+        report(Finding(Entity.from(expression), message))
     }
 }

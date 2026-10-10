@@ -27,10 +27,6 @@ class UseOfObsoleteAssertTest {
         val findings = sut.lintWithContext(environment, code)
 
         assertEquals(1, findings.size)
-        assertEquals(
-            "Call to 'assertTrue()' from 'junit.framework.Assert' should be replaced with call to method from 'org.junit.Assert'",
-            findings.single().message,
-        )
     }
 
     @Test

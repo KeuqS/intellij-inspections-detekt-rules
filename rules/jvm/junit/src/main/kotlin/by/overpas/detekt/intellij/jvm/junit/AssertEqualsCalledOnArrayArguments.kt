@@ -6,10 +6,10 @@ import org.jetbrains.kotlin.psi.KtExpression
 
 context(session: KaSession)
 internal fun KtCallExpression.isAssertEqualsOnArrays(): Boolean {
-    val call = resolvedFunctionCall() ?: return false
-    val owner = call.ownerClassId?.asFqNameString().orEmpty()
-    val hint = call.assertEqualsHint()?.takeIf { "junit" in owner } ?: return false
-    return hint.firstArgument.isArray() && hint.secondArgument.isArray()
+    val call = resolvedFunctionCall()
+    val isJUnit = "junit" in call?.ownerClassId?.asFqNameString().orEmpty()
+    val (first, second) = call?.assertEqualsHint()?.takeIf { isJUnit } ?: return false
+    return first.isArray() && second.isArray()
 }
 
 context(session: KaSession)

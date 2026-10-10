@@ -19,37 +19,39 @@ private val OBSOLETE_ASSERTION_OWNERS = setOf(
     ORG_JUNIT_ASSUME,
 )
 
-internal class ObsoleteAssertion(val methodName: String, val owner: String, val replacement: String)
+internal data class ObsoleteAssertion(val message: String)
 
 context(session: KaSession)
-internal fun KtFile.isJUnit5AssertionsConverterCandidate(): Boolean =
+internal fun KtFile.hasJUnit5TestClass(): Boolean =
     ORG_JUNIT_TEST.isOnClasspath() &&
         JUPITER_TEST.isOnClasspath() &&
         collectDescendantsOfType<KtClassOrObject>().any { it.isJUnit5TestClass() }
 
 context(session: KaSession)
 internal fun KtCallExpression.obsoleteAssertion(): ObsoleteAssertion? {
-    val call = resolvedFunctionCall() ?: return null
-    call.assertHint { ASSERT_METHOD_PARAMETER_COUNT[it] } ?: return null
-    return (call.symbol as? KaNamedFunctionSymbol)?.obsoleteAssertion()
+    val call = resolvedFunctionCall()?.takeIf { it.assertHint { name -> ASSERT_METHOD_PARAMETER_COUNT[name] } != null }
+    return (call?.symbol as? KaNamedFunctionSymbol)?.obsoleteAssertion()
 }
 
 context(session: KaSession)
 internal fun KtCallableReferenceExpression.obsoleteAssertion(): ObsoleteAssertion? {
     val symbol = with(session) { callableReference.mainReference.resolveToSymbol() } as? KaNamedFunctionSymbol
-    val minimum = symbol?.name?.asString()?.let { ASSERT_METHOD_PARAMETER_COUNT[it] } ?: return null
+    val minimum = symbol?.run { ASSERT_METHOD_PARAMETER_COUNT[name.asString()] } ?: return null
     return symbol.takeIf { it.valueParameters.size >= minimum }?.obsoleteAssertion()
 }
 
 private fun KaNamedFunctionSymbol.obsoleteAssertion(): ObsoleteAssertion? {
     val owner = callableId?.classId?.takeIf { isStatic && it in OBSOLETE_ASSERTION_OWNERS } ?: return null
     val methodName = name.asString()
-    return ObsoleteAssertion(methodName, owner.shortClassName.asString(), replacementFor(methodName).asFqNameString())
+    return ObsoleteAssertion(
+        "Call to '$methodName()' from '${owner.shortClassName.asString()}' should be replaced with a call to " +
+            "a method from '${replacementFor(methodName).asFqNameString()}'",
+    )
 }
 
 private fun replacementFor(methodName: String): ClassId =
     when {
-        methodName == "assertThat" -> classId("org.hamcrest.MatcherAssert")
+        methodName == "assertThat" -> ClassId.fromString("org/hamcrest/MatcherAssert")
         methodName.startsWith("assume") -> JUPITER_ASSUMPTIONS
         else -> JUPITER_ASSERTIONS
     }

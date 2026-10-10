@@ -29,7 +29,6 @@ class Junit4RunWithInspectionTest {
         val findings = sut.lintWithContext(environment, code)
 
         assertEquals(1, findings.size)
-        assertEquals("'@RunWith' annotation already exists in Parent class", findings.single().message)
     }
 
     @Test

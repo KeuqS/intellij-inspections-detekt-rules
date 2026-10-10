@@ -13,7 +13,8 @@ import org.jetbrains.kotlin.psi.KtClass
 class Junit4Converter(config: Config) :
     Rule(
         config,
-        "A JUnit 3 test case extends `TestCase` while JUnit 4 is available. Convert it to a JUnit 4 test with annotations.",
+        "A JUnit 3 test case extends `TestCase` while JUnit 4 is available. " +
+            "Convert it to a JUnit 4 test with annotations.",
     ),
     RequiresAnalysisApi {
 
@@ -21,10 +22,10 @@ class Junit4Converter(config: Config) :
         super.visitClass(klass)
         if (klass.superTypeListEntries.isEmpty()) return
         val isConvertible = analyze(klass) {
-            ORG_JUNIT_TEST.isOnClasspath() && klass.isSubclassOf(JUNIT_FRAMEWORK_TEST_CASE)
+            ORG_JUNIT_TEST.isOnClasspath() && klass.isJUnit3TestCase()
         }
         if (isConvertible) {
-            report(Finding(Entity.atName(klass), "'${klass.name}' could be converted to JUnit4 test case"))
+            report(Finding(Entity.atName(klass), "'${klass.name.orEmpty()}' could be converted to JUnit4 test case"))
         }
     }
 }

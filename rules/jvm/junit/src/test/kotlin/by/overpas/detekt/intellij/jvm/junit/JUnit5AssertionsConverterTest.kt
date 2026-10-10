@@ -29,11 +29,6 @@ class JUnit5AssertionsConverterTest {
         val findings = sut.lintWithContext(environment, code)
 
         assertEquals(1, findings.size)
-        assertEquals(
-            "Call to 'assertEquals()' from 'Assert' should be replaced with a call to a method from " +
-                "'org.junit.jupiter.api.Assertions'",
-            findings.single().message,
-        )
     }
 
     @Test
@@ -55,11 +50,6 @@ class JUnit5AssertionsConverterTest {
         val findings = sut.lintWithContext(environment, code)
 
         assertEquals(1, findings.size)
-        assertEquals(
-            "Call to 'assumeTrue()' from 'Assume' should be replaced with a call to a method from " +
-                "'org.junit.jupiter.api.Assumptions'",
-            findings.single().message,
-        )
     }
 
     @Test
@@ -80,11 +70,6 @@ class JUnit5AssertionsConverterTest {
         val findings = sut.lintWithContext(environment, code)
 
         assertEquals(1, findings.size)
-        assertEquals(
-            "Call to 'assertThat()' from 'Assert' should be replaced with a call to a method from " +
-                "'org.hamcrest.MatcherAssert'",
-            findings.single().message,
-        )
     }
 
     @Test

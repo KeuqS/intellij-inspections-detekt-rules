@@ -9,8 +9,8 @@ import dev.detekt.api.RequiresAnalysisApi
 import dev.detekt.api.Rule
 import dev.detekt.api.config
 import org.jetbrains.kotlin.analysis.api.analyze
+import org.jetbrains.kotlin.analysis.api.annotations.KaAnnotation
 import org.jetbrains.kotlin.psi.KtClass
-import org.jetbrains.kotlin.psi.KtNamedDeclaration
 import org.jetbrains.kotlin.psi.KtNamedFunction
 
 @IntellijInspection("IgnoredJUnitTest")
@@ -22,27 +22,36 @@ class IgnoredJUnitTest(config: Config) :
     ),
     RequiresAnalysisApi {
 
-    @Configuration("Report only the disabled tests that do not give a reason.")
-    private val onlyReportWithoutReason: Boolean by config(true)
+    @Configuration("Do not report the disabled tests that give a reason.")
+    private val isReasonAccepted: Boolean by config(true)
 
     override fun visitClass(klass: KtClass) {
         super.visitClass(klass)
-        check(klass, "Test class '${klass.name}'")
+        val annotations = if (klass.annotationEntries.isEmpty()) {
+            emptyList()
+        } else {
+            analyze(klass) { klass.findAnnotations(ORG_JUNIT_IGNORE, JUPITER_DISABLED) }
+        }
+        ignoredMessage(
+            annotations,
+        )?.let { report(Finding(Entity.atName(klass), "Test class '${klass.name.orEmpty()}' $it")) }
     }
 
     override fun visitNamedFunction(function: KtNamedFunction) {
         super.visitNamedFunction(function)
-        check(function, "Test method '${function.name}()'")
+        val annotations = if (function.annotationEntries.isEmpty()) {
+            emptyList()
+        } else {
+            analyze(function) { function.findAnnotations(ORG_JUNIT_IGNORE, JUPITER_DISABLED) }
+        }
+        ignoredMessage(annotations)?.let {
+            report(Finding(Entity.atName(function), "Test method '${function.name.orEmpty()}()' $it"))
+        }
     }
 
-    private fun check(declaration: KtNamedDeclaration, subject: String) {
-        if (declaration.annotationEntries.isEmpty()) return
-        val annotations = analyze(declaration) { declaration.findAnnotations(ORG_JUNIT_IGNORE, JUPITER_DISABLED) }
-        if (annotations.isEmpty()) return
-        if (onlyReportWithoutReason && annotations.any { annotation -> annotation.arguments.any { it.name.asString() == "value" } }) {
-            return
-        }
-        val suffix = if (onlyReportWithoutReason) " without reason" else ""
-        report(Finding(Entity.atName(declaration), "$subject is ignored/disabled$suffix"))
+    private fun ignoredMessage(annotations: List<KaAnnotation>): String? {
+        val hasReason = annotations.any { annotation -> annotation.arguments.any { it.name.asString() == "value" } }
+        val suffix = if (isReasonAccepted) " without reason" else ""
+        return "is ignored/disabled$suffix".takeIf { annotations.isNotEmpty() && !(isReasonAccepted && hasReason) }
     }
 }

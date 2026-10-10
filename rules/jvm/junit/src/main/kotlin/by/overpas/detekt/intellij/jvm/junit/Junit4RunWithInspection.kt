@@ -21,15 +21,11 @@ class Junit4RunWithInspection(config: Config) :
     override fun visitClassOrObject(classOrObject: KtClassOrObject) {
         super.visitClassOrObject(classOrObject)
         if (classOrObject.annotationEntries.isEmpty() || classOrObject.superTypeListEntries.isEmpty()) return
-        analyze(classOrObject) {
-            val runWith = classOrObject.annotationEntriesOf(ORG_JUNIT_RUN_WITH).firstOrNull() ?: return@analyze
-            val parent = classOrObject.classSymbol?.parentWithRunWith() ?: return@analyze
-            report(
-                Finding(
-                    Entity.from(runWith),
-                    "'@RunWith' annotation already exists in ${parent.name?.asString()} class",
-                ),
-            )
-        }
+        val (runWith, parentName) = analyze(classOrObject) {
+            val runWith = classOrObject.annotationEntriesOf(ORG_JUNIT_RUN_WITH).firstOrNull()
+            val parent = classOrObject.classSymbol?.parentWithRunWith()
+            if (runWith != null && parent != null) runWith to parent.name.asString() else null
+        } ?: return
+        report(Finding(Entity.from(runWith), "'@RunWith' annotation already exists in $parentName class"))
     }
 }

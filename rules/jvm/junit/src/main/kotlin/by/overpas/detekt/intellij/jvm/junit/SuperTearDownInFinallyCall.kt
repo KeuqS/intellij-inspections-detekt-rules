@@ -19,7 +19,9 @@ internal fun KtCallExpression.superTearDownFunction(): KtNamedFunction? {
         qualified?.selectorExpression == this &&
         qualified.receiverExpression is KtSuperExpression
     val owner = getStrictParentOfType<KtDeclaration>()
-    return (owner as? KtNamedFunction)?.takeIf { isSuperTearDown && it.name == TEAR_DOWN && owner !is KtFunctionLiteral }
+    return (owner as? KtNamedFunction)?.takeIf {
+        isSuperTearDown && it.name == TEAR_DOWN && owner !is KtFunctionLiteral
+    }
 }
 
 internal fun KtCallExpression.isInFinallyBlock(function: KtNamedFunction): Boolean =

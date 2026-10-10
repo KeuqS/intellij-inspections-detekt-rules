@@ -33,45 +33,25 @@ internal val ASSERT_METHOD_PARAMETER_COUNT = mapOf(
     "assertEqualsNoOrder" to 2,
 )
 
-internal class JUnitAssertHint(
-    val call: KaFunctionCall<*>,
-    val isMessageOnFirstPosition: Boolean,
-    private val argumentIndex: Int,
-) {
-    private val parameters: List<KaValueParameterSymbol> = call.symbol.valueParameters
-
-    val firstArgument: KtExpression? get() = argumentFor(argumentIndex)
-
-    val secondArgument: KtExpression? get() = argumentFor(argumentIndex + 1)
-
-    fun parameterAt(offset: Int): KaValueParameterSymbol? = parameters.getOrNull(argumentIndex + offset)
-
-    private fun argumentFor(index: Int): KtExpression? {
-        val parameter = parameters.getOrNull(index) ?: return null
-        return call.valueArgumentMapping.entries.firstOrNull { it.value.symbol == parameter }?.key
-    }
-}
+internal data class JUnitAssertHint(
+    val firstArgument: KtExpression?,
+    val secondArgument: KtExpression?,
+)
 
 context(session: KaSession)
 internal fun KaFunctionCall<*>.assertHint(minimumParameterCount: (String) -> Int?): JUnitAssertHint? {
-    val name = functionName ?: return null
-    val minimum = minimumParameterCount(name) ?: return null
+    val minimum = functionName?.let(minimumParameterCount)
     val owner = ownerClassId
-    val messageOnFirst = owner in MESSAGE_FIRST_OWNERS
+    val isMessageOnFirst = owner in MESSAGE_FIRST_OWNERS
     val parameters = symbol.valueParameters
-    val messageIndex = when {
-        !messageOnFirst && owner !in MESSAGE_LAST_OWNERS -> return null
-        parameters.size < minimum -> return null
-        messageOnFirst -> if (parameters.firstOrNull().isString() && parameters.size > minimum) 1 else 0
-        else -> 0
-    }
-    return JUnitAssertHint(this, messageOnFirst, messageIndex)
+    val isAssertion = minimum != null &&
+        (isMessageOnFirst || owner in MESSAGE_LAST_OWNERS) &&
+        parameters.size >= minimum
+    val hasLeadingMessage = isMessageOnFirst && parameters.firstOrNull().isString() && parameters.size > (minimum ?: 0)
+    val index = if (hasLeadingMessage) 1 else 0
+    return JUnitAssertHint(argumentAt(index), argumentAt(index + 1)).takeIf { isAssertion }
 }
 
 context(session: KaSession)
-internal fun KaFunctionCall<*>.assertEqualsHint(): JUnitAssertHint? =
-    assertHint { if (it == "assertEquals") 2 else null }
-
-context(session: KaSession)
 private fun KaValueParameterSymbol?.isString(): Boolean =
-    with(session) { this@isString?.returnType?.lowerBoundIfFlexible()?.isStringType == true }
+    with(session) { this@isString?.run { returnType.lowerBoundIfFlexible().isStringType } == true }

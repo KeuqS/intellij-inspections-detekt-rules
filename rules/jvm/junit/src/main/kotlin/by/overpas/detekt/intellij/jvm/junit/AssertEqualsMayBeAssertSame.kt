@@ -22,7 +22,7 @@ class AssertEqualsMayBeAssertSame(config: Config) :
         super.visitCallExpression(expression)
         val callee = expression.calleeExpression ?: return
         if (callee.text != "assertEquals") return
-        if (analyze(expression) { expression.isAssertEqualsOnIdentityObjects() }) {
+        if (analyze(expression) { expression.isAssertEqualsOnIdentity() }) {
             report(Finding(Entity.from(callee), "'assertEquals()' may be 'assertSame()'"))
         }
     }

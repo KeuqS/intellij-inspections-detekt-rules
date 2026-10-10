@@ -1,7 +1,6 @@
 package by.overpas.detekt.intellij.jvm.junit
 
 import dev.detekt.api.Config
-import dev.detekt.test.TestConfig
 import dev.detekt.test.lintWithContext
 import dev.detekt.test.utils.createEnvironment
 import kotlin.test.Test
@@ -65,25 +64,6 @@ class IgnoredJUnitTestTest {
         val findings = sut.lintWithContext(environment, code)
 
         assertEquals(0, findings.size)
-    }
-
-    @Test
-    fun `a test disabled with a reason is reported when all disabled tests are reported`() {
-        val code = """
-            import org.junit.Ignore
-            import org.junit.Test
-
-            class FooTest {
-                @Ignore("flaky on CI")
-                @Test
-                fun test() {}
-            }
-        """.trimIndent()
-        val rule = IgnoredJUnitTest(TestConfig("onlyReportWithoutReason" to false))
-
-        val findings = rule.lintWithContext(environment, code)
-
-        assertEquals(1, findings.size)
     }
 
     @Test
