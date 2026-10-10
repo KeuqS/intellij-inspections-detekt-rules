@@ -11,7 +11,10 @@ import org.jetbrains.kotlin.psi.KtNamedFunction
 
 internal const val JUNIT4_CONSTRUCTOR_REASON = "it should have exactly one 'public' no-arg constructor"
 
-internal fun unconstructableMessage(name: String, reason: String): String =
+internal fun unconstructableMessage(
+    name: String,
+    reason: String,
+): String =
     "Test class '$name' is not constructable because $reason"
 
 context(session: KaSession)
@@ -19,7 +22,8 @@ internal fun KaNamedClassSymbol.hasJUnit4Tests(): Boolean =
     with(session) {
         !hasRunWith() &&
             memberScope.callables.any { callable ->
-                callable is KaNamedFunctionSymbol && callable.annotations.any { annotation -> annotation.classId == ORG_JUNIT_TEST }
+                callable is KaNamedFunctionSymbol &&
+                    callable.annotations.any { annotation -> annotation.classId == ORG_JUNIT_TEST }
             }
     }
 
@@ -30,7 +34,9 @@ internal fun KaNamedClassSymbol.publicConstructorShapes(): List<List<KaType>> =
             .filter { it.visibility == KaSymbolVisibility.PUBLIC || it.visibility == KaSymbolVisibility.INTERNAL }
             .flatMap { constructor ->
                 val types = constructor.valueParameters.map { it.returnType }
-                val hasDefaults = constructor.isPrimary && types.isNotEmpty() && constructor.valueParameters.all { it.hasDefaultValue }
+                val hasDefaults =
+                    constructor.isPrimary && types.isNotEmpty() &&
+                        constructor.valueParameters.all { it.hasDefaultValue }
                 if (hasDefaults) listOf(types, emptyList()) else listOf(types)
             }
             .toList()

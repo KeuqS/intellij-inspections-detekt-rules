@@ -26,7 +26,10 @@ class JUnitMalformedDeclarationTest {
 
         val findings = sut.lintWithContext(environment, code)
 
-        assertEquals(listOf("Method 'test' annotated with '@Test' should be of type 'Unit' and not declare parameter 'i'"), findings.map { it.message })
+        assertEquals(
+            listOf("Method 'test' annotated with '@Test' should be of type 'Unit' and not declare parameter 'i'"),
+            findings.map { it.message },
+        )
     }
 
     @Test
@@ -124,7 +127,10 @@ class JUnitMalformedDeclarationTest {
 
         val findings = sut.lintWithContext(environment, code)
 
-        assertEquals(listOf("Method 'test' annotated with '@Test' should not declare parameter 'i'"), findings.map { it.message })
+        assertEquals(
+            listOf("Method 'test' annotated with '@Test' should not declare parameter 'i'"),
+            findings.map { it.message },
+        )
     }
 
     @Test
@@ -140,7 +146,10 @@ class JUnitMalformedDeclarationTest {
 
         val findings = sut.lintWithContext(environment, code)
 
-        assertEquals(listOf("Method 'before' annotated with '@Before' should be of type 'Unit' and not declare parameter 'i'"), findings.map { it.message })
+        assertEquals(
+            listOf("Method 'before' annotated with '@Before' should be of type 'Unit' and not declare parameter 'i'"),
+            findings.map { it.message },
+        )
     }
 
     @Test
@@ -156,7 +165,10 @@ class JUnitMalformedDeclarationTest {
 
         val findings = sut.lintWithContext(environment, code)
 
-        assertEquals(listOf("Method 'beforeClass' annotated with '@BeforeClass' should be static"), findings.map { it.message })
+        assertEquals(
+            listOf("Method 'beforeClass' annotated with '@BeforeClass' should be static"),
+            findings.map { it.message },
+        )
     }
 
     @Test
@@ -175,7 +187,12 @@ class JUnitMalformedDeclarationTest {
 
         val findings = sut.lintWithContext(environment, code)
 
-        assertEquals(listOf("Method 'beforeClass' annotated with '@BeforeClass' should be public and not declare parameters 'a', 'b' and 'c'"), findings.map { it.message })
+        assertEquals(
+            listOf(
+                "Method 'beforeClass' annotated with '@BeforeClass' should be public and not declare parameters 'a', 'b' and 'c'",
+            ),
+            findings.map { it.message },
+        )
     }
 
     @Test
@@ -210,7 +227,10 @@ class JUnitMalformedDeclarationTest {
 
         val findings = sut.lintWithContext(environment, code)
 
-        assertEquals(listOf("Method 'beforeAll' annotated with '@BeforeAll' should be static"), findings.map { it.message })
+        assertEquals(
+            listOf("Method 'beforeAll' annotated with '@BeforeAll' should be static"),
+            findings.map { it.message },
+        )
     }
 
     @Test
@@ -247,7 +267,12 @@ class JUnitMalformedDeclarationTest {
 
         val findings = sut.lintWithContext(environment, code)
 
-        assertEquals(listOf("Method 'afterAll' annotated with '@AfterAll' should be of type 'Unit' and not declare parameters 'a' and 'b'"), findings.map { it.message })
+        assertEquals(
+            listOf(
+                "Method 'afterAll' annotated with '@AfterAll' should be of type 'Unit' and not declare parameters 'a' and 'b'",
+            ),
+            findings.map { it.message },
+        )
     }
 
     @Test
@@ -263,7 +288,10 @@ class JUnitMalformedDeclarationTest {
 
         val findings = sut.lintWithContext(environment, code)
 
-        assertEquals(listOf("Method 'beforeEach' annotated with '@BeforeEach' should be public and not declare parameter 'i'"), findings.map { it.message })
+        assertEquals(
+            listOf("Method 'beforeEach' annotated with '@BeforeEach' should be public and not declare parameter 'i'"),
+            findings.map { it.message },
+        )
     }
 
     @Test
@@ -358,7 +386,10 @@ class JUnitMalformedDeclarationTest {
 
         val findings = sut.lintWithContext(environment, code)
 
-        assertEquals(listOf("Method 'test' annotated with '@Test' should not declare parameter 'value'"), findings.map { it.message })
+        assertEquals(
+            listOf("Method 'test' annotated with '@Test' should not declare parameter 'value'"),
+            findings.map { it.message },
+        )
     }
 
     @Test
@@ -439,7 +470,10 @@ class JUnitMalformedDeclarationTest {
 
         val findings = sut.lintWithContext(environment, code)
 
-        assertEquals(listOf("Method 'test' annotated with '@Test' should not be a suspending function"), findings.map { it.message })
+        assertEquals(
+            listOf("Method 'test' annotated with '@Test' should not be a suspending function"),
+            findings.map { it.message },
+        )
     }
 
     @Test
@@ -517,7 +551,10 @@ class JUnitMalformedDeclarationTest {
 
         val findings = sut.lintWithContext(environment, code)
 
-        assertEquals(listOf("Field 'rule' annotated with '@Rule' should be non-static and public"), findings.map { it.message })
+        assertEquals(
+            listOf("Field 'rule' annotated with '@Rule' should be non-static and public"),
+            findings.map { it.message },
+        )
     }
 
     @Test
@@ -531,7 +568,10 @@ class JUnitMalformedDeclarationTest {
 
         val findings = sut.lintWithContext(environment, code)
 
-        assertEquals(listOf("Method 'rule' annotated with '@Rule' should be of type 'org.junit.rules.TestRule'"), findings.map { it.message })
+        assertEquals(
+            listOf("Method 'rule' annotated with '@Rule' should be of type 'org.junit.rules.TestRule'"),
+            findings.map { it.message },
+        )
     }
 
     @Test
@@ -563,7 +603,10 @@ class JUnitMalformedDeclarationTest {
 
         val findings = sut.lintWithContext(environment, code)
 
-        assertEquals(listOf("Field 'rule' annotated with '@ClassRule' should be public and of type 'org.junit.rules.TestRule'"), findings.map { it.message })
+        assertEquals(
+            listOf("Field 'rule' annotated with '@ClassRule' should be public and of type 'org.junit.rules.TestRule'"),
+            findings.map { it.message },
+        )
     }
 
     @Test
@@ -598,7 +641,12 @@ class JUnitMalformedDeclarationTest {
 
         val findings = sut.lintWithContext(environment, code)
 
-        assertEquals(listOf("Field 'extension' annotated with '@RegisterExtension' should be of type 'org.junit.jupiter.api.extension.Extension'"), findings.map { it.message })
+        assertEquals(
+            listOf(
+                "Field 'extension' annotated with '@RegisterExtension' should be of type 'org.junit.jupiter.api.extension.Extension'",
+            ),
+            findings.map { it.message },
+        )
     }
 
     @Test
@@ -1010,7 +1058,12 @@ class JUnitMalformedDeclarationTest {
 
         val findings = sut.lintWithContext(environment, code)
 
-        assertEquals(listOf("Method source 'values' must have one of the following return types: 'Stream<*>', 'Iterator<*>', 'Iterable<*>', 'Sequence<*>' or 'Array<*>'"), findings.map { it.message })
+        assertEquals(
+            listOf(
+                "Method source 'values' must have one of the following return types: 'Stream<*>', 'Iterator<*>', 'Iterable<*>', 'Sequence<*>' or 'Array<*>'",
+            ),
+            findings.map { it.message },
+        )
     }
 
     @Test
@@ -1088,7 +1141,10 @@ class JUnitMalformedDeclarationTest {
 
         val findings = sut.lintWithContext(environment, code)
 
-        assertEquals(listOf("'@NullSource' cannot provide an argument to method because method doesn't have parameters"), findings.map { it.message })
+        assertEquals(
+            listOf("'@NullSource' cannot provide an argument to method because method doesn't have parameters"),
+            findings.map { it.message },
+        )
     }
 
     @Test
@@ -1163,7 +1219,12 @@ class JUnitMalformedDeclarationTest {
 
         val findings = sut.lintWithContext(environment, code)
 
-        assertEquals(listOf("'@EmptySource' cannot provide an argument to method because method has an unsupported parameter of 'Int' type"), findings.map { it.message })
+        assertEquals(
+            listOf(
+                "'@EmptySource' cannot provide an argument to method because method has an unsupported parameter of 'Int' type",
+            ),
+            findings.map { it.message },
+        )
     }
 
     @Test
@@ -1359,7 +1420,10 @@ class JUnitMalformedDeclarationTest {
 
         val findings = sut.lintWithContext(environment, code)
 
-        assertEquals(listOf("Method 'setUp' should be non-private, non-static, have no parameters and of type 'Unit'"), findings.map { it.message })
+        assertEquals(
+            listOf("Method 'setUp' should be non-private, non-static, have no parameters and of type 'Unit'"),
+            findings.map { it.message },
+        )
     }
 
     @Test
@@ -1374,7 +1438,10 @@ class JUnitMalformedDeclarationTest {
 
         val findings = sut.lintWithContext(environment, code)
 
-        assertEquals(listOf("Method 'suite' should be non-private, static and have no parameters"), findings.map { it.message })
+        assertEquals(
+            listOf("Method 'suite' should be non-private, static and have no parameters"),
+            findings.map { it.message },
+        )
     }
 
     @Test
@@ -1458,7 +1525,12 @@ class JUnitMalformedDeclarationTest {
 
         val findings = sut.lintWithContext(environment, code)
 
-        assertEquals(listOf("Test class 'FooTest' is not constructable because it should have exactly one 'public' no-arg constructor"), findings.map { it.message })
+        assertEquals(
+            listOf(
+                "Test class 'FooTest' is not constructable because it should have exactly one 'public' no-arg constructor",
+            ),
+            findings.map { it.message },
+        )
     }
 
     @Test
@@ -1492,6 +1564,9 @@ class JUnitMalformedDeclarationTest {
 
         val findings = sut.lintWithContext(environment, code)
 
-        assertEquals(listOf("Test class 'FooTest' is not constructable because it is not 'public'"), findings.map { it.message })
+        assertEquals(
+            listOf("Test class 'FooTest' is not constructable because it is not 'public'"),
+            findings.map { it.message },
+        )
     }
 }

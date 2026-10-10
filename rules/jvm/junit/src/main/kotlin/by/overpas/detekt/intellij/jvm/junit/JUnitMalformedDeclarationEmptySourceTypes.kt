@@ -32,7 +32,8 @@ context(session: KaSession)
 internal fun KaType.isEmptySourceType(): Boolean =
     with(session) {
         val type = lowerBound()
-        type.isArrayOrPrimitiveArray || (type as? KaClassType)?.classId in EMPTY_SOURCE_TYPES || type.isConstructibleCollection()
+        type.isArrayOrPrimitiveArray || (type as? KaClassType)?.classId in EMPTY_SOURCE_TYPES ||
+            type.isConstructibleCollection()
     }
 
 context(session: KaSession)
@@ -43,5 +44,8 @@ private fun KaType.isConstructibleCollection(): Boolean =
             (isSubtypeOf(StandardClassIds.Collection) || isSubtypeOf(StandardClassIds.Map)) &&
             symbol.classKind == KaClassKind.CLASS &&
             symbol.modality != KaSymbolModality.ABSTRACT &&
-            symbol.declaredMemberScope.constructors.any { it.visibility == KaSymbolVisibility.PUBLIC && it.valueParameters.isEmpty() }
+            symbol.declaredMemberScope.constructors.any {
+                it.visibility == KaSymbolVisibility.PUBLIC &&
+                it.valueParameters.isEmpty()
+            }
     }

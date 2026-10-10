@@ -4,7 +4,10 @@ import org.jetbrains.kotlin.analysis.api.KaSession
 import org.jetbrains.kotlin.psi.KtNamedFunction
 
 context(session: KaSession)
-internal fun KtNamedFunction.invalidParameters(requirement: ParameterRequirement?, settings: MalformedSettings): List<String> =
+internal fun KtNamedFunction.invalidParameters(
+    requirement: ParameterRequirement?,
+    settings: MalformedSettings,
+): List<String> =
     with(session) {
         val isSkipped = requirement == null ||
             valueParameters.isEmpty() ||

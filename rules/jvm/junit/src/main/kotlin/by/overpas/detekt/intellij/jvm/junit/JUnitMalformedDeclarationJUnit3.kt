@@ -19,11 +19,19 @@ context(session: KaSession)
 internal fun KtNamedFunction.junit3Message(settings: MalformedSettings): String? {
     val name = name.orEmpty()
     return when {
-        containingClassOrObject?.isJUnit3TestCase() != true -> null
-        isSuspend() && !settings.areSuspendFunctionsAllowed && isJUnit3Candidate() -> suspendMessage("Method '$name'", null)
+        containingClassOrObject?.isRunnableJUnit3Case() != true -> null
+
+        isSuspend() && !settings.areSuspendFunctionsAllowed && isJUnit3Candidate() -> suspendMessage(
+            "Method '$name'",
+            null,
+        )
+
         name.startsWith(TEST_PREFIX) -> junit3TestMessage(settings)
+
         name in SET_UP_NAMES -> setUpMessage(settings)
+
         name == SUITE_NAME -> suiteMessage(settings)
+
         else -> null
     }
 }

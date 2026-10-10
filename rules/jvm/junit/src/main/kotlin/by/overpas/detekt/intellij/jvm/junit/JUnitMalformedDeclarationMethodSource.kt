@@ -10,12 +10,18 @@ import org.jetbrains.kotlin.psi.psiUtil.collectDescendantsOfType
 import org.jetbrains.kotlin.psi.psiUtil.containingClassOrObject
 
 context(session: KaSession)
-internal fun KtNamedFunction.methodSourceMalformations(annotation: KaAnnotation, provided: ProvidedParameters): List<Malformation> {
+internal fun KtNamedFunction.methodSourceMalformations(
+    annotation: KaAnnotation,
+    provided: ProvidedParameters,
+): List<Malformation> {
     val owner = containingClassOrObject as? KtClass
     val names = annotation.stringValues().ifEmpty { listOfNotNull(name) }
         .filter { it.isNotBlank() && '#' !in it && '(' !in it }
     return names.mapNotNull { sourceName ->
-        owner?.methodSourceMessage(sourceName, provided)?.let { Malformation(annotation.anchorFor(sourceName) ?: this, it) }
+        owner?.methodSourceMessage(
+            sourceName,
+            provided,
+        )?.let { Malformation(annotation.anchorFor(sourceName) ?: this, it) }
     }
 }
 

@@ -7,7 +7,10 @@ import org.jetbrains.kotlin.name.Name
 import org.jetbrains.kotlin.psi.KtClass
 
 context(session: KaSession)
-internal fun KtClass.methodSourceMessage(sourceName: String, provided: ProvidedParameters): String? =
+internal fun KtClass.methodSourceMessage(
+    sourceName: String,
+    provided: ProvidedParameters,
+): String? =
     with(session) {
         val ownerSymbol = classSymbol as? KaNamedClassSymbol
         val candidates = ownerSymbol?.sourceCandidates(Name.identifier(sourceName)).orEmpty()
@@ -15,11 +18,15 @@ internal fun KtClass.methodSourceMessage(sourceName: String, provided: ProvidedP
         val isAbstract = isInterface() || hasModifier(KtTokens.ABSTRACT_KEYWORD)
         when {
             ownerSymbol == null -> null
+
             candidate == null -> "Cannot resolve target method source: '$sourceName'".takeUnless { isAbstract }
+
             !candidate.isStatic && !isAbstract && !ownerSymbol.isTestInstancePerClass() ->
                 "Method source '$sourceName' must be static"
+
             candidate.symbol.valueParameters.isNotEmpty() && !hasResolverExtensionField() ->
                 "Method source '$sourceName' should have no parameters"
+
             else -> candidate.returnTypeMessage(sourceName, provided)
         }
     }

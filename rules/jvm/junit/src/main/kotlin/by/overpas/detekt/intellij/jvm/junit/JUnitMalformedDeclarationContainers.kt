@@ -17,7 +17,7 @@ internal fun KtClassOrObject.isPerClass(): Boolean =
     with(session) { classSymbol?.isTestInstancePerClass() == true }
 
 context(session: KaSession)
-internal fun KtClassOrObject.isJUnit3TestCase(): Boolean =
+internal fun KtClassOrObject.isRunnableJUnit3Case(): Boolean =
     with(session) {
         val owner = ownerClass().classSymbol
         owner != null && owner.defaultType.isSubtypeOf(JUNIT_FRAMEWORK_TEST_CASE) && !owner.hasRunWith()

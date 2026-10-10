@@ -24,14 +24,19 @@ internal fun KaAnnotation.emptySourceMessage(provided: ProvidedParameters): Stri
         val type = provided.parameters.firstOrNull()?.run { symbol.returnType }
         when {
             provided.isMismatch -> singleParameterMessage(name)
+
             type == null -> noParametersMessage(name)
+
             type.isEmptySourceType() -> null
-            else -> "$name cannot provide an argument to method because method has an unsupported parameter of " +
+
+            else ->
+                "$name cannot provide an argument to method because method has an unsupported parameter of " +
                 "'${type.expandedSymbol?.name?.asString().orEmpty()}' type"
         }
     }
 
-private fun singleParameterMessage(annotation: String): String = "Only a single parameter can be provided by $annotation"
+private fun singleParameterMessage(annotation: String): String =
+    "Only a single parameter can be provided by $annotation"
 
 private fun noParametersMessage(annotation: String): String =
     "$annotation cannot provide an argument to method because method doesn't have parameters"

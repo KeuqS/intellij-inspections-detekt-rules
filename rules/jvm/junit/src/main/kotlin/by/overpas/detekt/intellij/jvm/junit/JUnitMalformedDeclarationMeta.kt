@@ -1,7 +1,7 @@
 package by.overpas.detekt.intellij.jvm.junit
 
-import by.overpas.detekt.intellij.jvm.junit.MalformedClassIds.EXTENSIONS
 import by.overpas.detekt.intellij.jvm.junit.MalformedClassIds.EXTEND_WITH
+import by.overpas.detekt.intellij.jvm.junit.MalformedClassIds.EXTENSIONS
 import by.overpas.detekt.intellij.jvm.junit.MalformedClassIds.PARAMETER_RESOLVER
 import org.jetbrains.kotlin.analysis.api.KaSession
 import org.jetbrains.kotlin.analysis.api.annotations.KaAnnotated
@@ -16,7 +16,10 @@ internal fun KaAnnotated.hasMetaAnnotation(classId: ClassId): Boolean =
     hasMetaAnnotation(mutableSetOf()) { it.classId == classId }
 
 context(session: KaSession)
-internal fun KaAnnotated.hasMetaAnnotation(visited: MutableSet<ClassId>, predicate: (KaAnnotation) -> Boolean): Boolean =
+internal fun KaAnnotated.hasMetaAnnotation(
+    visited: MutableSet<ClassId>,
+    predicate: (KaAnnotation) -> Boolean,
+): Boolean =
     with(session) {
         annotations.any { annotation ->
             val classId = annotation.classId
@@ -28,7 +31,8 @@ internal fun KaAnnotated.hasMetaAnnotation(visited: MutableSet<ClassId>, predica
     }
 
 context(session: KaSession)
-internal fun KaAnnotated.hasParameterResolver(): Boolean = hasMetaAnnotation(mutableSetOf()) { it.extendsWithParameterResolver() }
+internal fun KaAnnotated.hasParameterResolver(): Boolean =
+    hasMetaAnnotation(mutableSetOf()) { it.extendsWithParameterResolver() }
 
 context(session: KaSession)
 private fun KaAnnotation.extendsWithParameterResolver(): Boolean =
@@ -37,8 +41,10 @@ private fun KaAnnotation.extendsWithParameterResolver(): Boolean =
         when (classId) {
             EXTEND_WITH -> values.filterIsInstance<KaAnnotationValue.ClassLiteralValue>()
                 .any { it.type.isSubtypeOf(PARAMETER_RESOLVER) }
+
             EXTENSIONS -> values.filterIsInstance<KaAnnotationValue.NestedAnnotationValue>()
                 .any { it.annotation.extendsWithParameterResolver() }
+
             else -> false
         }
     }
@@ -55,7 +61,8 @@ internal fun KaAnnotation.stringValues(): List<String> =
         .toList()
 
 context(session: KaSession)
-internal fun KtAnnotated.annotationIds(): List<ClassId> = annotationIds { true }
+internal fun KtAnnotated.annotationIds(): List<ClassId> =
+    annotationIds { true }
 
 context(session: KaSession)
 internal fun KtAnnotated.fieldAnnotationIds(): List<ClassId> =

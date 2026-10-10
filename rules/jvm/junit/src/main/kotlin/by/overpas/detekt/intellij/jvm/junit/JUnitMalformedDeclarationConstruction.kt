@@ -14,13 +14,23 @@ internal fun KtClass.constructionMessages(): List<String> =
         val isJUnit4 = symbol != null && !isJUnit3 && symbol.hasJUnit4Tests()
         val shapes = symbol?.publicConstructorShapes().orEmpty()
         val reason = when {
-            isJUnit3 -> JUNIT3_CONSTRUCTOR_REASON.takeUnless { shapes.any { shape -> shape.isEmpty() || shape.singleOrNull()?.isStringType == true } }
+            isJUnit3 -> JUNIT3_CONSTRUCTOR_REASON.takeUnless {
+                shapes.any { shape ->
+                    shape.isEmpty() ||
+                shape.singleOrNull()?.isStringType == true
+                }
+            }
+
             isJUnit4 -> JUNIT4_CONSTRUCTOR_REASON.takeUnless { shapes.singleOrNull()?.isEmpty() == true }
+
             else -> null
         }
         val className = name.orEmpty()
         listOfNotNull(
-            unconstructableMessage(className, "it is not 'public'").takeIf { (isJUnit3 || isJUnit4) && !isPublicMember() },
+            unconstructableMessage(
+                className,
+                "it is not 'public'",
+            ).takeIf { (isJUnit3 || isJUnit4) && !isPublicMember() },
             reason?.let { unconstructableMessage(className, it) },
         )
     }

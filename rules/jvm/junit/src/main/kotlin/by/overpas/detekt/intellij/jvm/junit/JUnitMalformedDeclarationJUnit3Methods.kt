@@ -16,8 +16,12 @@ internal fun KtNamedFunction.junit3TestMessage(settings: MalformedSettings): Str
 context(session: KaSession)
 internal fun KtNamedFunction.setUpMessage(settings: MalformedSettings): String? =
     with(session) {
-        val isMalformed = !symbol.returnType.isUnitType || isPrivateMember() || isJvmStatic() || hasRequiredParameters(settings)
-        "Method '${name.orEmpty()}' should be non-private, non-static, have no parameters and of type 'Unit'".takeIf { isMalformed }
+        val isMalformed = !symbol.returnType.isUnitType || isPrivateMember() || isJvmStatic() || hasRequiredParameters(
+            settings,
+        )
+        "Method '${name.orEmpty()}' should be non-private, non-static, have no parameters and of type 'Unit'".takeIf {
+            isMalformed
+        }
     }
 
 context(session: KaSession)

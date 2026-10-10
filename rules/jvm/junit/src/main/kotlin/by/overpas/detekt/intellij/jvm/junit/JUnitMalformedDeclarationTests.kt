@@ -12,7 +12,12 @@ import org.jetbrains.kotlin.analysis.api.KaSession
 import org.jetbrains.kotlin.analysis.api.annotations.KaAnnotationValue
 import org.jetbrains.kotlin.psi.KtNamedFunction
 
-private val NON_COMBINED_TESTS = listOf(JUPITER_TEST, JUPITER_TEST_FACTORY, JUPITER_REPEATED_TEST, JUPITER_PARAMETERIZED_TEST)
+private val NON_COMBINED_TESTS = listOf(
+    JUPITER_TEST,
+    JUPITER_TEST_FACTORY,
+    JUPITER_REPEATED_TEST,
+    JUPITER_PARAMETERIZED_TEST,
+)
 
 private val PARAMETERIZED_SOURCES = listOf(
     METHOD_SOURCE,
@@ -31,7 +36,17 @@ internal fun KtNamedFunction.combinationMessage(): String? =
         val functionSymbol = symbol
         val tests = NON_COMBINED_TESTS.filter { functionSymbol.hasMetaAnnotation(it) }
         val test = tests.singleOrNull()?.takeIf { it != JUPITER_PARAMETERIZED_TEST }
-        val sources = if (test == null) emptyList() else PARAMETERIZED_SOURCES.filter { functionSymbol.hasMetaAnnotation(it) }
+        val sources = if (test ==
+            null
+        ) {
+                emptyList()
+            } else {
+                PARAMETERIZED_SOURCES.filter {
+                functionSymbol.hasMetaAnnotation(
+                it,
+            )
+            }
+            }
         when {
             tests.size > 1 -> combinationMessage(tests.dropLast(1), tests.last())
             test != null && sources.isNotEmpty() -> combinationMessage(sources, test)
@@ -46,6 +61,10 @@ internal fun KtNamedFunction.repetitionMalformation(): Malformation? =
         val value = annotation?.run { arguments.firstOrNull { it.name.asString() == "value" }?.expression }
         val count = (value as? KaAnnotationValue.ConstantValue)?.run { this.value.value } as? Int
         val call = annotation?.psi
-        val anchor = call?.run { valueArguments.firstOrNull()?.getArgumentExpression() ?: this } ?: this@repetitionMalformation
-        Malformation(anchor, "The number of repetitions must be greater than zero").takeIf { count != null && count <= 0 }
+        val anchor =
+            call?.run { valueArguments.firstOrNull()?.getArgumentExpression() ?: this } ?: this@repetitionMalformation
+        Malformation(
+            anchor,
+            "The number of repetitions must be greater than zero",
+        ).takeIf { count != null && count <= 0 }
     }

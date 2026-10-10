@@ -19,8 +19,11 @@ internal fun KaType.isInjectable(requirement: ParameterRequirement): Boolean =
         when (requirement) {
             ParameterRequirement.EACH_CALLBACK ->
                 isClassType(TEST_INFO) || isClassType(REPETITION_INFO) || isClassType(TEST_REPORTER)
+
             ParameterRequirement.ALL_CALLBACK -> isClassType(TEST_INFO)
+
             ParameterRequirement.JUPITER_TEST -> isSubtypeOf(TEST_INFO) || isSubtypeOf(TEST_REPORTER)
+
             ParameterRequirement.NONE -> false
         }
     }

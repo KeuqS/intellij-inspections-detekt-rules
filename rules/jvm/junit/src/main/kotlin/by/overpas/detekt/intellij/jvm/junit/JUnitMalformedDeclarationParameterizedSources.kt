@@ -19,19 +19,29 @@ import org.jetbrains.kotlin.analysis.api.annotations.KaAnnotation
 import org.jetbrains.kotlin.psi.KtNamedFunction
 import org.jetbrains.kotlin.psi.KtParameter
 
-private val SINGLE_PARAMETER_SOURCES = listOf(ENUM_SOURCE, VALUE_SOURCE, NULL_SOURCE, EMPTY_SOURCE, NULL_AND_EMPTY_SOURCE)
+private val SINGLE_PARAMETER_SOURCES = listOf(
+    ENUM_SOURCE,
+    VALUE_SOURCE,
+    NULL_SOURCE,
+    EMPTY_SOURCE,
+    NULL_AND_EMPTY_SOURCE,
+)
 
 private val MULTIPLE_PARAMETER_SOURCES = listOf(METHOD_SOURCE, FIELD_SOURCE, CSV_FILE_SOURCE, CSV_SOURCE)
 
 private val KNOWN_SOURCES = SINGLE_PARAMETER_SOURCES + MULTIPLE_PARAMETER_SOURCES
 
-internal data class ProvidedParameters(val parameters: List<KtParameter>, val isMismatch: Boolean)
+internal data class ProvidedParameters(
+    val parameters: List<KtParameter>,
+    val isMismatch: Boolean,
+)
 
 context(session: KaSession)
 internal fun KaAnnotated.hasArgumentsSource(): Boolean =
     hasMetaAnnotation(ARGUMENTS_SOURCE) || annotations.any { it.classId == ARGUMENTS_SOURCES }
 
-internal fun KaAnnotated.knownSources(): List<KaAnnotation> = annotations.filter { it.classId in KNOWN_SOURCES }
+internal fun KaAnnotated.knownSources(): List<KaAnnotation> =
+    annotations.filter { it.classId in KNOWN_SOURCES }
 
 context(session: KaSession)
 internal fun KtNamedFunction.providedParameters(settings: MalformedSettings): ProvidedParameters =
@@ -58,7 +68,11 @@ internal fun KaAnnotation.isCustomSource(): Boolean =
         }
     }
 
-internal fun sourceConflictMessage(sources: List<KaAnnotation>, provided: ProvidedParameters, hasCustomSource: Boolean): String? {
+internal fun sourceConflictMessage(
+    sources: List<KaAnnotation>,
+    provided: ProvidedParameters,
+    hasCustomSource: Boolean,
+): String? {
     val single = sources.firstOrNull { it.classId in SINGLE_PARAMETER_SOURCES }?.classId
     return when {
         sources.any { it.classId in MULTIPLE_PARAMETER_SOURCES } -> null

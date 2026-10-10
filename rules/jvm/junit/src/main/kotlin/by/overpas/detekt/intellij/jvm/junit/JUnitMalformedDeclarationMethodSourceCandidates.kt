@@ -6,7 +6,10 @@ import org.jetbrains.kotlin.analysis.api.symbols.KaNamedClassSymbol
 import org.jetbrains.kotlin.analysis.api.symbols.KaNamedFunctionSymbol
 import org.jetbrains.kotlin.name.Name
 
-internal data class SourceCandidate(val symbol: KaNamedFunctionSymbol, val isStatic: Boolean)
+internal data class SourceCandidate(
+    val symbol: KaNamedFunctionSymbol,
+    val isStatic: Boolean,
+)
 
 context(session: KaSession)
 internal fun KaNamedClassSymbol.sourceCandidates(name: Name): List<SourceCandidate> =
@@ -20,12 +23,18 @@ internal fun KaNamedClassSymbol.sourceCandidates(name: Name): List<SourceCandida
     }
 
 context(session: KaSession)
-internal fun SourceCandidate.returnTypeMessage(sourceName: String, provided: ProvidedParameters): String? {
+internal fun SourceCandidate.returnTypeMessage(
+    sourceName: String,
+    provided: ProvidedParameters,
+): String? {
     val component = symbol.returnType.sourceComponentType()
     return when {
-        component == null -> "Method source '$sourceName' must have one of the following return types: " +
+        component == null ->
+            "Method source '$sourceName' must have one of the following return types: " +
             "'Stream<*>', 'Iterator<*>', 'Iterable<*>', 'Sequence<*>' or 'Array<*>'"
+
         provided.isMismatch && !component.isArgumentsLike() -> "Multiple parameters have to be wrapped in 'Arguments'"
+
         else -> null
     }
 }

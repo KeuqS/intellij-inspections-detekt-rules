@@ -25,7 +25,9 @@ class JUnitMalformedDeclaration(config: Config) :
     RequiresAnalysisApi {
 
     @Configuration("Fully qualified names of annotations that let a test or lifecycle method declare a parameter.")
-    private val ignorableAnnotations: List<String> by config(listOf("mockit.Mocked", "org.junit.jupiter.api.io.TempDir"))
+    private val ignorableAnnotations: List<String> by config(
+        listOf("mockit.Mocked", "org.junit.jupiter.api.io.TempDir"),
+    )
 
     @Configuration("Allow suspend test and lifecycle functions. JUnit 6 and later runs them.")
     private val areSuspendFunctionsAllowed: Boolean by config(false)
@@ -55,7 +57,8 @@ class JUnitMalformedDeclaration(config: Config) :
         analyze(property) { property.propertyMalformations() }.forEach(::reportMalformation)
     }
 
-    private fun settings(): MalformedSettings = MalformedSettings(ignorableAnnotations.toSet(), areSuspendFunctionsAllowed)
+    private fun settings(): MalformedSettings =
+        MalformedSettings(ignorableAnnotations.toSet(), areSuspendFunctionsAllowed)
 
     private fun reportMalformation(malformation: Malformation) =
         report(Finding(Entity.from(malformation.anchor), malformation.message))

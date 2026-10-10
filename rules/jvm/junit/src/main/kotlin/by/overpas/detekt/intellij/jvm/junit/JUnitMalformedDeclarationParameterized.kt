@@ -25,7 +25,10 @@ internal fun KtNamedFunction.parameterizedMalformations(settings: MalformedSetti
     }
 
 context(session: KaSession)
-private fun KtNamedFunction.sourceMalformations(annotation: KaAnnotation, provided: ProvidedParameters): List<Malformation> {
+private fun KtNamedFunction.sourceMalformations(
+    annotation: KaAnnotation,
+    provided: ProvidedParameters,
+): List<Malformation> {
     val anchor = annotation.psi ?: this
     val messages = when (annotation.classId) {
         VALUE_SOURCE -> listOfNotNull(annotation.valueSourceMessage())
@@ -33,6 +36,13 @@ private fun KtNamedFunction.sourceMalformations(annotation: KaAnnotation, provid
         EMPTY_SOURCE, NULL_AND_EMPTY_SOURCE -> listOfNotNull(annotation.emptySourceMessage(provided))
         else -> emptyList()
     }
-    val methodSource = if (annotation.classId == METHOD_SOURCE) methodSourceMalformations(annotation, provided) else emptyList()
+    val methodSource = if (annotation.classId == METHOD_SOURCE) {
+        methodSourceMalformations(
+            annotation,
+            provided,
+        )
+    } else {
+        emptyList()
+    }
     return messages.map { Malformation(anchor, it) } + methodSource
 }

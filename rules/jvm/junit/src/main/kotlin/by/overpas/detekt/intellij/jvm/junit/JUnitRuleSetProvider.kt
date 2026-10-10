@@ -20,6 +20,7 @@ class JUnitRuleSetProvider : RuleSetProvider {
                 ::JUnit3StyleTestMethodInJUnit4Class,
                 ::JUnit5AssertionsConverter,
                 ::JUnit5Converter,
+                ::JUnitMalformedDeclaration,
                 ::JUnitMixedFramework,
                 ::Junit4Converter,
                 ::Junit4RunWithInspection,
