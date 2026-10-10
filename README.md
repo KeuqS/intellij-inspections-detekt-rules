@@ -2,13 +2,16 @@
 
 [![Build](https://github.com/overpas/intellij-inspections-detekt-rules/actions/workflows/build.yml/badge.svg)](https://github.com/overpas/intellij-inspections-detekt-rules/actions/workflows/build.yml)
 
-[detekt](https://detekt.dev) rules ported from the Kotlin inspections of IntelliJ IDEA. They give
-the same hints outside the IDE, e.g. to AI agents and CI.
+[detekt](https://detekt.dev) rules ported from the Kotlin and JVM inspections of IntelliJ IDEA. They
+give the same hints outside the IDE, e.g. to AI agents and CI.
 
-Each module is one inspection group of the IDE settings (Editor | Inspections | Kotlin).
+Each module is one inspection group of the IDE settings (Editor | Inspections | Kotlin, or
+Editor | Inspections | JVM languages).
 
 | Module | Rule set id | Jar |
 |---|---|---|
+| `rules:jvm:junit` | `intellij-jvm-junit` | `intellij-inspections-jvm-junit-<version>.jar` |
+| `rules:jvm:test-frameworks` | `intellij-jvm-test-frameworks` | `intellij-inspections-jvm-test-frameworks-<version>.jar` |
 | `rules:kotlin:code-migration` | `intellij-kotlin-code-migration` | `intellij-inspections-kotlin-code-migration-<version>.jar` |
 | `rules:kotlin:coroutines` | `intellij-kotlin-coroutines` | `intellij-inspections-kotlin-coroutines-<version>.jar` |
 | `rules:kotlin:java-interop` | `intellij-kotlin-java-interop` | `intellij-inspections-kotlin-java-interop-<version>.jar` |
@@ -25,6 +28,7 @@ Each bundle module puts all rule sets of one language in one jar.
 
 | Module | Rule sets | Jar |
 |---|---|---|
+| `bundles:jvm` | All `intellij-jvm-*` rule sets | `intellij-inspections-jvm-all-<version>.jar` |
 | `bundles:kotlin` | All `intellij-kotlin-*` rule sets | `intellij-inspections-kotlin-all-<version>.jar` |
 
 ## Use in a project
@@ -32,7 +36,8 @@ Each bundle module puts all rule sets of one language in one jar.
 Download the jars of a release from
 [GitHub Releases](https://github.com/overpas/intellij-inspections-detekt-rules/releases) into the
 project, e.g. `config/detekt/plugins/`, and add them to the detekt plugins. To get all Kotlin rule
-sets, download only `intellij-inspections-kotlin-all-<version>.jar`. Do not add a bundle jar and
+sets, download only `intellij-inspections-kotlin-all-<version>.jar`. To get all JVM rule sets,
+download only `intellij-inspections-jvm-all-<version>.jar`. Do not add a bundle jar and
 the rule set jars that it contains together, because detekt then loads the same rule sets twice.
 
 ```kotlin
@@ -45,6 +50,44 @@ dependencies {
 
 Every rule takes the standard detekt options (`active`, `excludes`, `includes`, ...). The rule
 names are the short names of the IntelliJ inspections.
+
+### `intellij-jvm-junit`
+
+| Rule | Finds |
+|---|---|
+| `AssertEqualsCalledOnArray` | An `assertEquals()` call on two arrays, which compares them by identity and not by content. |
+| `AssertEqualsMayBeAssertSame` | An `assertEquals()` call on two objects of a final class that does not override `equals()`, where `assertSame()` fits. |
+| `IgnoredJUnitTest` | A test class or test method that `@Ignore` or `@Disabled` turns off. Option `isReasonAccepted` (default `true`) does not report the ones that give a reason. |
+| `JUnit3StyleTestMethodInJUnit4Class` | A `test...` method without `@Test` in a JUnit 4 class, which JUnit 4 does not run. |
+| `JUnit5AssertionsConverter` | A JUnit 3 or JUnit 4 assertion or assumption in a JUnit 5 test. |
+| `JUnit5Converter` | A JUnit 4 test class that JUnit 5 can run with no changes in behavior, when JUnit 5 is on the classpath. |
+| `JUnitMalformedDeclaration` | A JUnit test class, test method, lifecycle method, rule, extension or parameter source with a declaration that JUnit cannot run or rejects. Option `ignorableAnnotations` (default `mockit.Mocked`, `org.junit.jupiter.api.io.TempDir`) lists the parameter annotations to accept. Option `areSuspendFunctionsAllowed` (default `false`) accepts suspend test and lifecycle functions. |
+| `JUnitMixedFramework` | A test class that uses annotations of a JUnit version other than the version of the class. |
+| `Junit4Converter` | A JUnit 3 `TestCase` subclass, when JUnit 4 is on the classpath. |
+| `Junit4RunWithInspection` | A `@RunWith` on a test class whose superclass already has `@RunWith`. |
+| `MigrateAssertToMatcherAssert` | A JUnit assertion such as `assertEquals()` that a Hamcrest `assertThat()` can replace, when Hamcrest is on the classpath. |
+| `ParameterizedParametersStaticCollection` | A JUnit 4 `Parameterized` test class with no `@Parameters` method, more than one, or one with a bad signature. |
+| `SuperTearDownInFinally` | A `super.tearDown()` call in a JUnit 3 `tearDown()` that is not in a `finally` block. |
+| `UseOfObsoleteAssert` | A call of the JUnit 3 `junit.framework.Assert` or `TestCase` assertions, when JUnit 4 or later is on the classpath. |
+
+### `intellij-jvm-test-frameworks`
+
+| Rule | Finds |
+|---|---|
+| `AssertBetweenInconvertibleTypes` | A JUnit, TestNG or AssertJ equality or identity assertion between objects of inconvertible types. |
+| `TestCaseWithConstructor` | A test class that does initialization work in a constructor or an `init` block instead of a set-up method. |
+| `TestCaseWithNoTestMethods` | A test class without test methods. Option `isSupersIgnored` (default `true`) does not report a class when a superclass has test methods. |
+| `TestMethodWithoutAssertion` | A test method without assertions. Option `assertionMethods` lists the assertion methods as `<class or package>#<method name regex>`. Option `isAssertKeywordAssertion` (default `true`) counts `assert()` as an assertion. Option `isThrowingIgnored` (default `false`) does not report a method with `@Throws`. |
+
+### Not ported JVM inspections
+
+| Inspection | Reason |
+|---|---|
+| `ExpectedExceptionNeverThrown` | Checks the checked exceptions of the test body. Kotlin has no checked exceptions. |
+| `MultipleExceptionsDeclaredOnTestMethod` | Checks the Java `throws` clause. Kotlin functions do not declare one. |
+| `TestFailedLine` | Needs the results of a test run in the IDE. |
+| `TestInProductSource` | Needs the test source roots of the module. |
+| `TestOnlyProblems` | Needs the test source roots of the module. |
 
 ### `intellij-kotlin-code-migration`
 
@@ -309,7 +352,8 @@ names are the short names of the IntelliJ inspections.
 ## Backlog
 
 [docs/inspections.md](docs/inspections.md) lists every Kotlin inspection of IntelliJ IDEA with its
-target module and a verdict on how to port it. Refresh it with:
+target module and a verdict on how to port it. The JVM inspections are not in the catalog; the
+[not ported JVM inspections](#not-ported-jvm-inspections) table above gives their verdicts. Refresh it with:
 
 ```shell
 python3 scripts/inspection-catalog.py <intellij-community checkout> --ref master
