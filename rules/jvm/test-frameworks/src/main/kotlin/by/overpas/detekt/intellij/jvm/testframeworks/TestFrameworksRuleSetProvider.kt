@@ -13,6 +13,11 @@ class TestFrameworksRuleSetProvider : RuleSetProvider {
     override fun instance() =
         RuleSet(
             ruleSetId,
-            listOf(),
+            listOf(
+                ::AssertBetweenInconvertibleTypes,
+                ::TestCaseWithConstructor,
+                ::TestCaseWithNoTestMethods,
+                ::TestMethodWithoutAssertion,
+            ),
         )
 }
