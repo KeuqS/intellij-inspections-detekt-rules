@@ -18,6 +18,10 @@ dependencies {
     testImplementation(libs.kotlin.test)
 }
 
+tasks.withType<Test>().configureEach {
+    maxParallelForks = 2
+}
+
 tasks.shadowJar {
     archiveBaseName = "intellij-inspections-${project.path.removePrefix(":rules:").replace(':', '-')}"
     archiveClassifier = ""
