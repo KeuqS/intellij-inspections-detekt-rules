@@ -12,7 +12,6 @@ Editor | Inspections | JVM languages, or a group of Editor | Inspections | Java)
 |---|---|---|
 | `rules:jvm:code-maturity` | `intellij-jvm-code-maturity` | `intellij-inspections-jvm-code-maturity-<version>.jar` |
 | `rules:jvm:declaration-redundancy` | `intellij-jvm-declaration-redundancy` | `intellij-inspections-jvm-declaration-redundancy-<version>.jar` |
-| `rules:jvm:error-handling` | `intellij-jvm-error-handling` | `intellij-inspections-jvm-error-handling-<version>.jar` |
 | `rules:jvm:general` | `intellij-jvm-general` | `intellij-inspections-jvm-general-<version>.jar` |
 | `rules:jvm:junit` | `intellij-jvm-junit` | `intellij-inspections-jvm-junit-<version>.jar` |
 | `rules:jvm:logging` | `intellij-jvm-logging` | `intellij-inspections-jvm-logging-<version>.jar` |
@@ -96,12 +95,6 @@ Kotlin is active. detekt uses this default config with `buildUponDefaultConfig =
 | `SameParameterValue` | A parameter of a function that gets the same constant value in every call, when all calls are in the same file. Option `highestModifier` (default `protected`) is the highest visibility to check. Option `minimalUsageCount` (default `1`) is the number of calls needed to report. |
 | `SameReturnValue` | A function that cannot be overridden and that always returns the same constant value. |
 
-### `intellij-jvm-error-handling`
-
-| Rule | Finds |
-|---|---|
-| `ReturnFromFinallyBlock` | A `return` that leaves a `finally` block. |
-
 ### `intellij-jvm-general`
 
 | Rule | Finds |
@@ -118,7 +111,6 @@ Kotlin is active. detekt uses this default config with `buildUponDefaultConfig =
 | `UnstableApiUsage` | A usage of a library API that an unstable API annotation such as `@ApiStatus.Experimental` or `@ApiStatus.Internal` marks, or whose signature refers to such a type. Option `unstableApiAnnotations` lists the annotations. Option `isInsideImportsIgnored` (default `true`) does not report imports. Option `isApiDeclaredInThisProjectIgnored` (default `true`) reports only compiled library APIs. |
 | `UnstableTypeUsedInSignature` | A public declaration whose signature refers to a type marked with an unstable API annotation, but that does not have the same annotation itself. Option `unstableApiAnnotations` lists the annotations. Inactive by default. |
 | `UrlHashCode` | An `equals()` or `hashCode()` call or an `==` comparison on `java.net.URL`, or a map or set of URLs, which can resolve the host over the network. |
-| `UsagesOfObsoleteApi` | A usage or override of an API marked with `@ApiStatus.Obsolete`. |
 
 ### `intellij-jvm-junit`
 
@@ -141,11 +133,9 @@ Kotlin is active. detekt uses this default config with `buildUponDefaultConfig =
 
 | Rule | Finds |
 |---|---|
-| `LogStatementNotGuardedByLogCondition` | A logging call with computed arguments that a log level condition such as `if (logger.isDebugEnabled)` does not guard. Option `limitLevelType` (default `DEBUG_AND_LOWER`) sets the log levels to check. Option `isUnguardedConstantFlagged` (default `false`) also reports the calls with only constant arguments. Opposite of `LoggingGuardedByCondition`, which is active by default. Inactive by default. |
+| `LogStatementNotGuardedByLogCondition` | A logging call with computed arguments that a log level condition such as `if (logger.isDebugEnabled)` does not guard. Option `limitLevelType` (default `DEBUG_AND_LOWER`) sets the log levels to check. Option `isUnguardedConstantFlagged` (default `false`) also reports the calls with only constant arguments. Inactive by default. |
 | `LoggingConditionDisagreesWithLogLevelStatement` | A log level condition whose level does not agree with the level of the logging call that it guards. Inactive by default. |
-| `LoggingGuardedByCondition` | A log level condition around a logging call that does not need it. Option `isReportedOnlyIfFixPossible` (default `true`) reports only the conditions that the logging call can replace. Opposite of `LogStatementNotGuardedByLogCondition`. |
 | `LoggingPlaceholderCountMatchesArgumentCount` | A logging call whose number of placeholders does not match the number of arguments. Option `slf4jToLog4J2Type` (default `AUTO`) tells if SLF4J calls go to Log4j 2 (`AUTO`, `YES` or `NO`). |
-| `LoggingSimilarMessage` | A logging call whose message is similar to the message of another logging call in the file, which makes the log hard to trace. Option `isErrorLogLevelSkipped` (default `true`) does not check error calls. Option `minTextLength` (default `5`) is the minimum length of the text to compare. |
 | `LoggingStringTemplateAsArgument` | A logging call that builds its message with a string template or concatenation instead of placeholders. Option `limitLevelType` (default `DEBUG_AND_LOWER`) sets the log levels to check. Option `arePrimitivesSkipped` (default `true`) does not report templates with only primitive values. Option `isOnlyExceptionSkipped` (default `false`) does not report calls whose only other argument is an exception. |
 
 ### `intellij-jvm-test-frameworks`
@@ -167,18 +157,22 @@ Kotlin is active. detekt uses this default config with `buildUponDefaultConfig =
 | `Deprecation` | The Kotlin compiler already reports the usages of deprecated APIs. |
 | `DialogTitleCapitalization` | Needs the message bundles of IntelliJ plugin projects. |
 | `EmptyMethod` | Needs a search for overriding methods and usages in the whole project. |
+| `ExpectedExceptionNeverThrown` | Checks the checked exceptions of the test body. Kotlin has no checked exceptions. |
 | `HardCodedStringLiteral` | Needs the internationalization settings of the IDE and `@NonNls` data from the whole project. |
 | `IllegalDependencyOnInternalPackage` | Needs the Java module graph of the project. |
 | `ImplicitSubclassInspection` | Needs framework plugins of the IDE that create subclasses at runtime. |
+| `LoggingGuardedByCondition` | Only a hint that a log level condition is not needed, not a problem in the code. |
+| `LoggingSimilarMessage` | A text similarity heuristic that gives noisy findings and sees only one file. |
+| `MultipleExceptionsDeclaredOnTestMethod` | Checks the Java `throws` clause. Kotlin functions do not declare one. |
+| `ReturnFromFinallyBlock` | The `ReturnFromFinally` rule of detekt already finds this. |
 | `Since15` | Needs the API version data of the JDK and the language level of the module. |
 | `SourceToSinkFlow` | Needs data flow analysis across methods of the whole project. |
 | `SuspiciousPackagePrivateAccess` | Needs the module structure of the project. Kotlin has no package-private visibility. |
-| `UnsupportedCharacter` | Checks `.properties` files, not Kotlin code. |
-| `ExpectedExceptionNeverThrown` | Checks the checked exceptions of the test body. Kotlin has no checked exceptions. |
-| `MultipleExceptionsDeclaredOnTestMethod` | Checks the Java `throws` clause. Kotlin functions do not declare one. |
 | `TestFailedLine` | Needs the results of a test run in the IDE. |
 | `TestInProductSource` | Needs the test source roots of the module. |
 | `TestOnlyProblems` | Needs the test source roots of the module. |
+| `UnsupportedCharacter` | Checks `.properties` files, not Kotlin code. |
+| `UsagesOfObsoleteApi` | `@ApiStatus.Obsolete` APIs are still safe to use. IntelliJ IDEA only strikes them through. |
 
 ### `intellij-kotlin-code-migration`
 

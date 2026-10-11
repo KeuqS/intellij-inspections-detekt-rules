@@ -6,16 +6,9 @@ intellij-jvm-logging:
     isUnguardedConstantFlagged: false
   LoggingConditionDisagreesWithLogLevelStatement:
     active: false
-  LoggingGuardedByCondition:
-    active: true
-    isReportedOnlyIfFixPossible: true
   LoggingPlaceholderCountMatchesArgumentCount:
     active: true
     slf4jToLog4J2Type: 'AUTO'
-  LoggingSimilarMessage:
-    active: true
-    isErrorLogLevelSkipped: true
-    minTextLength: 5
   LoggingStringTemplateAsArgument:
     active: true
     limitLevelType: 'DEBUG_AND_LOWER'

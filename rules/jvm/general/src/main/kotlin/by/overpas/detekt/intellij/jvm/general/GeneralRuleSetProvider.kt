@@ -13,7 +13,6 @@ import by.overpas.detekt.intellij.jvm.general.threadrun.ThreadRun
 import by.overpas.detekt.intellij.jvm.general.unstableapiusage.UnstableApiUsage
 import by.overpas.detekt.intellij.jvm.general.unstabletypeusedinsignature.UnstableTypeUsedInSignature
 import by.overpas.detekt.intellij.jvm.general.urlhashcode.UrlHashCode
-import by.overpas.detekt.intellij.jvm.general.usagesofobsoleteapi.UsagesOfObsoleteApi
 import dev.detekt.api.RuleSet
 import dev.detekt.api.RuleSetId
 import dev.detekt.api.RuleSetProvider
@@ -39,7 +38,6 @@ class GeneralRuleSetProvider : RuleSetProvider {
                 ::UnstableApiUsage,
                 ::UnstableTypeUsedInSignature,
                 ::UrlHashCode,
-                ::UsagesOfObsoleteApi,
             ),
         )
 }

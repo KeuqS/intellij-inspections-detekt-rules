@@ -71,10 +71,6 @@ intellij-jvm-declaration-redundancy:
   SameReturnValue:
     active: true
 
-intellij-jvm-error-handling:
-  ReturnFromFinallyBlock:
-    active: true
-
 intellij-jvm-general:
   BlockingMethodInNonBlockingContext:
     active: true
@@ -99,8 +95,6 @@ intellij-jvm-general:
   UnstableTypeUsedInSignature:
     active: false
   UrlHashCode:
-    active: true
-  UsagesOfObsoleteApi:
     active: true
 
 intellij-jvm-junit:
@@ -134,11 +128,7 @@ intellij-jvm-logging:
     active: false
   LoggingConditionDisagreesWithLogLevelStatement:
     active: false
-  LoggingGuardedByCondition:
-    active: true
   LoggingPlaceholderCountMatchesArgumentCount:
-    active: true
-  LoggingSimilarMessage:
     active: true
   LoggingStringTemplateAsArgument:
     active: true

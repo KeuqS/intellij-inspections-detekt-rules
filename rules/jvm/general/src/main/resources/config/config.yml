@@ -63,5 +63,3 @@ intellij-jvm-general:
       - 'org.gradle.api.Incubating'
   UrlHashCode:
     active: true
-  UsagesOfObsoleteApi:
-    active: true

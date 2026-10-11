@@ -1,9 +1,7 @@
 package by.overpas.detekt.intellij.jvm.logging.logstatementnotguardedbylogcondition
 
 import by.overpas.detekt.intellij.IntellijInspection
-import by.overpas.detekt.intellij.OppositeRule
 import by.overpas.detekt.intellij.jvm.logging.LimitLevelType
-import by.overpas.detekt.intellij.jvm.logging.loggingguardedbycondition.LoggingGuardedByCondition
 import by.overpas.detekt.intellij.jvm.logging.qualifiedOrThis
 import dev.detekt.api.Config
 import dev.detekt.api.Configuration
@@ -15,7 +13,6 @@ import dev.detekt.api.config
 import org.jetbrains.kotlin.analysis.api.analyze
 import org.jetbrains.kotlin.psi.KtCallExpression
 
-@OppositeRule(LoggingGuardedByCondition::class)
 @IntellijInspection("LogStatementNotGuardedByLogCondition")
 class LogStatementNotGuardedByLogCondition(config: Config) :
     Rule(
