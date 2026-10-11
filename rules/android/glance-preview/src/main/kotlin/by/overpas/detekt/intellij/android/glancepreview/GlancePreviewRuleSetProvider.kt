@@ -1,6 +1,9 @@
 package by.overpas.detekt.intellij.android.glancepreview
 
 import by.overpas.detekt.intellij.IntellijInspectionGroup
+import by.overpas.detekt.intellij.android.glancepreview.glancepreviewdimensionrespectslimit.GlancePreviewDimensionRespectsLimit
+import by.overpas.detekt.intellij.android.glancepreview.glancepreviewmustbetoplevelfunction.GlancePreviewMustBeTopLevelFunction
+import by.overpas.detekt.intellij.android.glancepreview.glancepreviewneedscomposableannotation.GlancePreviewNeedsComposableAnnotation
 import dev.detekt.api.RuleSet
 import dev.detekt.api.RuleSetId
 import dev.detekt.api.RuleSetProvider
@@ -13,6 +16,10 @@ class GlancePreviewRuleSetProvider : RuleSetProvider {
     override fun instance() =
         RuleSet(
             ruleSetId,
-            emptyList(),
+            listOf(
+                ::GlancePreviewDimensionRespectsLimit,
+                ::GlancePreviewMustBeTopLevelFunction,
+                ::GlancePreviewNeedsComposableAnnotation,
+            ),
         )
 }
