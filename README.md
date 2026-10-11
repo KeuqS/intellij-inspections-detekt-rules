@@ -2,13 +2,14 @@
 
 [![Build](https://github.com/overpas/intellij-inspections-detekt-rules/actions/workflows/build.yml/badge.svg)](https://github.com/overpas/intellij-inspections-detekt-rules/actions/workflows/build.yml)
 
-[detekt](https://detekt.dev) rules ported from the Kotlin, JVM, Android and Compose Multiplatform
-inspections of IntelliJ IDEA. They give the same hints outside the IDE, e.g. to AI agents and CI.
+[detekt](https://detekt.dev) rules ported from the Kotlin, JVM, Android, Gradle and Compose
+Multiplatform inspections of IntelliJ IDEA. They give the same hints outside the IDE, e.g. to AI
+agents and CI.
 
 Each module is one inspection group of the IDE settings (Editor | Inspections | Kotlin,
 Editor | Inspections | JVM languages, a group of Editor | Inspections | Java, an Android group
-such as Editor | Inspections | Compose preview, or Editor | Inspections | Compose Multiplatform
-Preview).
+such as Editor | Inspections | Compose preview, a group of Editor | Inspections | Gradle, or
+Editor | Inspections | Compose Multiplatform Preview).
 
 | Module | Rule set id | Jar |
 |---|---|---|
@@ -17,6 +18,7 @@ Preview).
 | `rules:android:kotlin` | `intellij-android-kotlin` | `intellij-inspections-android-kotlin-<version>.jar` |
 | `rules:android:wear-tile-preview` | `intellij-android-wear-tile-preview` | `intellij-inspections-android-wear-tile-preview-<version>.jar` |
 | `rules:compose:multiplatform-preview` | `intellij-compose-multiplatform-preview` | `intellij-inspections-compose-multiplatform-preview-<version>.jar` |
+| `rules:gradle:best-practices` | `intellij-gradle-best-practices` | `intellij-inspections-gradle-best-practices-<version>.jar` |
 | `rules:jvm:code-maturity` | `intellij-jvm-code-maturity` | `intellij-inspections-jvm-code-maturity-<version>.jar` |
 | `rules:jvm:declaration-redundancy` | `intellij-jvm-declaration-redundancy` | `intellij-inspections-jvm-declaration-redundancy-<version>.jar` |
 | `rules:jvm:general` | `intellij-jvm-general` | `intellij-inspections-jvm-general-<version>.jar` |
@@ -36,7 +38,7 @@ Preview).
 | `rules:kotlin:style-issues` | `intellij-kotlin-style-issues` | `intellij-inspections-kotlin-style-issues-<version>.jar` |
 
 Each bundle module puts all rule sets of one kind (Android, JVM or Kotlin) in one jar. The
-Compose Multiplatform kind has only one rule set, so it has no bundle.
+Gradle and Compose Multiplatform kinds have only one rule set each, so they have no bundle.
 
 | Module | Rule sets | Jar |
 |---|---|---|
@@ -54,7 +56,6 @@ The project must use detekt 2 (Gradle plugin `dev.detekt`).
    - For all Kotlin rule sets: `intellij-inspections-kotlin-all-<version>.jar`.
    - For all JVM rule sets: `intellij-inspections-jvm-all-<version>.jar`.
    - For all Android rule sets: `intellij-inspections-android-all-<version>.jar`.
-   - For the Compose Multiplatform preview rules: `intellij-inspections-compose-multiplatform-preview-<version>.jar`.
    - For some rule sets only: their jars from the table above.
 
    Do not add a bundle jar and its rule set jars together. Detekt then loads the same rule sets
@@ -168,6 +169,33 @@ MultiPreview annotation counts only on a `@Composable` function.
 |---|---|
 | `ComposableCallWithoutComposePlugin` | Needs the Gradle configuration of the module, to know if the Compose compiler plugin is applied. |
 | `ComposeResourcesImageResource` | Needs the Compose resource files of the module, to know if a drawable is a vector (`.xml` or `.svg`). |
+
+### `intellij-gradle-best-practices`
+
+These rules check only Gradle Kotlin DSL scripts (`*.gradle.kts`). detekt checks a script only if
+it is in the `source` of the detekt task, for example
+`source.from(layout.projectDirectory.file("build.gradle.kts"))`. The rules use only the syntax of
+the script, because detekt does not have the Gradle model.
+
+| Rule | Finds |
+|---|---|
+| `AvoidApplyPluginMethod` | An `apply(plugin = ...)` or `apply<T>()` call in place of the `plugins` block. |
+| `AvoidDependencyNamedArgumentsNotation` | A dependency in a `dependencies` block with a named `group` argument or with positional string coordinates, in place of one `group:name:version` string. |
+| `AvoidDuplicateDependencies` | A dependency that the top-level `dependencies` blocks declare more than one time in the same configuration. It does not check the configurations that extend other configurations. |
+| `AvoidDuplicateRepositories` | A repository that one `repositories` block declares more than one time. Whitespace and comments do not count. |
+| `AvoidRepositoriesInBuildGradle` | A `repositories` block in a `build.gradle.kts` script, except in `publishing`. Inactive by default. |
+| `RedundantKotlinStdLibDependency` | A `kotlin-stdlib` dependency with the version of the `kotlin("jvm")` plugin, which adds this dependency itself. It does not read `kotlin.stdlib.default.dependency` from `gradle.properties`. |
+| `TaskMissingDescription` | A task that `tasks.register`, `tasks.create`, `tasks.registering` or `tasks.creating` makes without a `description`. |
+
+### Not ported Gradle inspections
+
+| Inspection | Reason |
+|---|---|
+| `ConfigurationAvoidance`, `DependencyNotationArgument`, `DeprecatedConfigurations`, `ForeignDelegate`, `IncorrectPluginDslStructure` | IntelliJ IDEA checks only Groovy build scripts. In Kotlin DSL scripts, the compiler already reports these problems. |
+| `BintrayPublishingPlugin`, `JCenterRepository`, `MultipleRepositoryUrls`, `DifferentKotlinGradleVersion`, `DifferentStdlibGradleVersion` | Check Groovy build scripts only. |
+| `KotlinOptionsToCompilerOptions` | The Kotlin Gradle plugin already reports `kotlinOptions` as deprecated. Since Kotlin 2.2, it is an error. |
+| `LatestMinorVersion` | Checks `gradle-wrapper.properties`, not Kotlin code. |
+| `UnusedVersionCatalogEntry` | Checks TOML version catalogs and searches for usages in all build scripts. |
 
 ### `intellij-jvm-code-maturity`
 
@@ -524,9 +552,10 @@ MultiPreview annotation counts only on a `@Composable` function.
 ## Backlog
 
 [docs/inspections.md](docs/inspections.md) lists every Kotlin inspection of IntelliJ IDEA with its
-target module and a verdict on how to port it. The JVM, Android and Compose Multiplatform
+target module and a verdict on how to port it. The JVM, Android, Gradle and Compose Multiplatform
 inspections are not in the catalog; the [not ported JVM inspections](#not-ported-jvm-inspections),
-[not ported Android inspections](#not-ported-android-inspections) and
+[not ported Android inspections](#not-ported-android-inspections),
+[not ported Gradle inspections](#not-ported-gradle-inspections) and
 [not ported Compose Multiplatform inspections](#not-ported-compose-multiplatform-inspections) tables
 above give their verdicts.
 Refresh the catalog with:

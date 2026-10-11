@@ -21,6 +21,7 @@ dependencies {
     detektPlugins(project(":rules:android:kotlin"))
     detektPlugins(project(":rules:android:wear-tile-preview"))
     detektPlugins(project(":rules:compose:multiplatform-preview"))
+    detektPlugins(project(":rules:gradle:best-practices"))
     detektPlugins(project(":rules:jvm:code-maturity"))
     detektPlugins(project(":rules:jvm:declaration-redundancy"))
     detektPlugins(project(":rules:jvm:general"))
