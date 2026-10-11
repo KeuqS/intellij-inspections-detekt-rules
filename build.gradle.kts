@@ -9,6 +9,7 @@ val ruleSets = listOf(
     "android:glance-preview",
     "android:kotlin",
     "android:wear-tile-preview",
+    "compose:multiplatform-preview",
     "gradle:best-practices",
     "jvm:code-maturity",
     "jvm:declaration-redundancy",

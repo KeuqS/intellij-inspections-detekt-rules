@@ -1,0 +1,6 @@
+intellij-compose-multiplatform-preview:
+  active: true
+  MultiplatformPreviewAnnotationInFunctionWithParameters:
+    active: true
+  MultiplatformPreviewMultipleParameterProviders:
+    active: true
