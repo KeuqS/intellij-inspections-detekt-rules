@@ -1,0 +1,4 @@
+intellij-jvm-error-handling:
+  active: true
+  ReturnFromFinallyBlock:
+    active: true
