@@ -1,0 +1,4 @@
+intellij-android-compose-preview:
+  active: true
+  ComposePreviewNeedsComposableAnnotation:
+    active: true

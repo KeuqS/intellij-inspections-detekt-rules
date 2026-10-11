@@ -5,6 +5,10 @@ plugins {
 }
 
 val ruleSets = listOf(
+    "android:compose-preview",
+    "android:glance-preview",
+    "android:kotlin",
+    "android:wear-tile-preview",
     "jvm:code-maturity",
     "jvm:declaration-redundancy",
     "jvm:general",
@@ -25,6 +29,7 @@ val ruleSets = listOf(
 )
 
 val bundles = listOf(
+    "android",
     "jvm",
     "kotlin",
 )

@@ -16,6 +16,10 @@ detekt {
 }
 
 dependencies {
+    detektPlugins(project(":rules:android:compose-preview"))
+    detektPlugins(project(":rules:android:glance-preview"))
+    detektPlugins(project(":rules:android:kotlin"))
+    detektPlugins(project(":rules:android:wear-tile-preview"))
     detektPlugins(project(":rules:jvm:code-maturity"))
     detektPlugins(project(":rules:jvm:declaration-redundancy"))
     detektPlugins(project(":rules:jvm:general"))
