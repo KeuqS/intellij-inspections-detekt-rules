@@ -1,0 +1,41 @@
+intellij-jvm-general:
+  active: true
+  MissingDeprecatedAnnotationOnScheduledForRemovalApi:
+    active: true
+  MustAlreadyBeRemovedApi:
+    active: true
+    currentVersion: ''
+  NonExtendableApiUsage:
+    active: true
+  OverrideOnly:
+    active: true
+  UnstableApiUsage:
+    active: true
+    unstableApiAnnotations:
+      - 'org.jetbrains.annotations.ApiStatus.ScheduledForRemoval'
+      - 'org.jetbrains.annotations.ApiStatus.Experimental'
+      - 'org.jetbrains.annotations.ApiStatus.Internal'
+      - 'com.google.common.annotations.Beta'
+      - 'io.reactivex.annotations.Beta'
+      - 'io.reactivex.annotations.Experimental'
+      - 'rx.annotations.Experimental'
+      - 'rx.annotations.Beta'
+      - 'org.apache.http.annotation.Beta'
+      - 'org.gradle.api.Incubating'
+    isInsideImportsIgnored: true
+    isApiDeclaredInThisProjectIgnored: true
+  UnstableTypeUsedInSignature:
+    active: false
+    unstableApiAnnotations:
+      - 'org.jetbrains.annotations.ApiStatus.ScheduledForRemoval'
+      - 'org.jetbrains.annotations.ApiStatus.Experimental'
+      - 'org.jetbrains.annotations.ApiStatus.Internal'
+      - 'com.google.common.annotations.Beta'
+      - 'io.reactivex.annotations.Beta'
+      - 'io.reactivex.annotations.Experimental'
+      - 'rx.annotations.Experimental'
+      - 'rx.annotations.Beta'
+      - 'org.apache.http.annotation.Beta'
+      - 'org.gradle.api.Incubating'
+  UsagesOfObsoleteApi:
+    active: true
