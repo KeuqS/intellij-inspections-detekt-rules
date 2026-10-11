@@ -4,15 +4,14 @@ private const val MAX_PART_COUNT = 10
 
 internal class MessageSimilarity(private val minTextLength: Int) {
 
-    fun isSimilar(
-        first: List<PartHolder>?,
-        second: List<PartHolder>?,
-    ): Boolean =
-        !first.isNullOrEmpty() &&
-            !second.isNullOrEmpty() &&
-            first.hasSameCallArgumentsAs(second) &&
+    fun isSimilar(messages: Pair<List<PartHolder>?, List<PartHolder>?>): Boolean {
+        val (first, second) = messages
+        if (first.isNullOrEmpty() || second.isNullOrEmpty()) return false
+        val parts = first to second
+        return parts.hasSameCallArguments() &&
             first.size < MAX_PART_COUNT &&
             second.size < MAX_PART_COUNT &&
-            first.hasSameShapeAs(second) &&
-            PartIntersection(PartIterator(first) to PartIterator(second)).length()?.let { it >= minTextLength } == true
+            parts.hasSameShape() &&
+            PartIntersection(PartCursor(first) to PartCursor(second)).length()?.let { it >= minTextLength } == true
+    }
 }

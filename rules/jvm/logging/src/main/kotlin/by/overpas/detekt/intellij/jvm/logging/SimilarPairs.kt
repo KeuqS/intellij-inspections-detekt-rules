@@ -11,7 +11,7 @@ internal class SimilarPairs(private val similarity: MessageSimilarity) {
             for (secondIndex in firstIndex + 1..group.lastIndex) {
                 val (firstCall, firstParts) = group[firstIndex]
                 val (secondCall, secondParts) = group[secondIndex]
-                if (similarity.isSimilar(firstParts, secondParts) && !firstCall.isInSequenceWith(secondCall)) {
+                if (similarity.isSimilar(firstParts to secondParts) && !(firstCall to secondCall).isInSequence()) {
                     if (reported.add(firstIndex)) result += firstCall to secondCall
                     if (reported.add(secondIndex)) result += secondCall to firstCall
                 }

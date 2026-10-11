@@ -12,24 +12,26 @@ internal class UnguardedLogCalls(
 
     context(session: KaSession)
     fun isUnguarded(call: KtCallExpression): Boolean =
-        call.logMethod()?.kind == LogMethodKind.LOGGER &&
-            !limitLevelType.skips(call.loggerLevel()) &&
-            !call.isSurroundedByLogGuard() &&
-            !arguments.areOnlyConstant(call) &&
-            !continuesSimilarCall(call) &&
-            !call.qualifiedOrThis.isImplicitlyReturned()
+        with(call) {
+            logMethod()?.kind == LogMethodKind.LOGGER &&
+                !limitLevelType.skips(loggerLevel()) &&
+                !isSurroundedByLogGuard() &&
+                !arguments.areOnlyConstant(this) &&
+                !continuesSimilarCall() &&
+                !qualifiedOrThis.isImplicitlyReturned()
+        }
 
     context(session: KaSession)
-    private fun continuesSimilarCall(call: KtCallExpression): Boolean {
-        val previous = PsiTreeUtil.skipWhitespacesAndCommentsBackward(call.qualifiedOrThis) as? KtQualifiedExpression
+    private fun KtCallExpression.continuesSimilarCall(): Boolean {
+        val previous = PsiTreeUtil.skipWhitespacesAndCommentsBackward(qualifiedOrThis) as? KtQualifiedExpression
         val previousCall = previous?.selectorExpression as? KtCallExpression
-        val receiverText = call.callReceiver?.text
+        val receiverText = callReceiver?.text
         return previousCall != null &&
             receiverText != null &&
             previousCall.logMethod()?.kind == LogMethodKind.LOGGER &&
             previousCall.callReceiver?.text == receiverText &&
             !arguments.areOnlyConstant(previousCall) &&
-            previousCall.calleeName == call.calleeName &&
-            previousCall.loggerLevel() == call.loggerLevel()
+            previousCall.calleeName == calleeName &&
+            previousCall.loggerLevel() == loggerLevel()
     }
 }

@@ -7,10 +7,10 @@ import org.jetbrains.kotlin.psi.KtCallExpression
 import org.jetbrains.kotlin.psi.KtDeclarationWithBody
 import org.jetbrains.kotlin.psi.KtIfExpression
 
-internal fun KtCallExpression.isInSequenceWith(other: KtCallExpression): Boolean {
-    val common = PsiTreeUtil.findCommonParent(this, other)
+internal fun Pair<KtCallExpression, KtCallExpression>.isInSequence(): Boolean {
+    val common = PsiTreeUtil.findCommonParent(first, second)
     if (common !is KtBlockExpression && common !is KtDeclarationWithBody) return false
-    return isDirectlyIn(common) || other.isDirectlyIn(common)
+    return first.isDirectlyIn(common) || second.isDirectlyIn(common)
 }
 
 private fun KtCallExpression.isDirectlyIn(common: PsiElement): Boolean {

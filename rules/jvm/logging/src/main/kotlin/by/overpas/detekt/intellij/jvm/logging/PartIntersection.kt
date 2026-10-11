@@ -1,28 +1,22 @@
 package by.overpas.detekt.intellij.jvm.logging
 
-internal class PartIntersection(private val iterators: Pair<PartIterator, PartIterator>) {
+internal class PartIntersection(private val cursors: Pair<PartCursor, PartCursor>) {
 
     fun length(): Int? {
-        val (first, second) = iterators
-        var intersection = 0
-        var isMismatch = false
-        while (!isMismatch && first.hasNext && second.hasNext) {
-            val step = nextStep()
-            isMismatch = step == null
-            intersection += step ?: 0
-        }
-        return intersection.takeIf { !isMismatch }
+        val (first, second) = cursors
+        if (!first.hasNext || !second.hasNext) return 0
+        return nextStep()?.let { (length, next) -> PartIntersection(next).length()?.plus(length) }
     }
 
-    private fun nextStep(): Int? {
-        val (first, second) = iterators
+    private fun nextStep(): PartStep? {
+        val (first, second) = cursors
         return when {
-            !first.isText -> 0.also { first.move() }
-            !second.isText -> 0.also { second.move() }
-            first.current == second.current -> iterators.equalStep()
-            first.isFirst && second.isFirst -> iterators.prefixStep()
-            first.isLast && second.isLast -> iterators.suffixStep()
-            else -> iterators.containedStep()
+            !first.isText -> PartStep(0, first.advance() to second)
+            !second.isText -> PartStep(0, first to second.advance())
+            first.current == second.current -> cursors.equalStep()
+            first.isFirst && second.isFirst -> cursors.prefixStep()
+            first.isLast && second.isLast -> cursors.suffixStep()
+            else -> cursors.containedStep()
         }
     }
 }

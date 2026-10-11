@@ -1,10 +1,10 @@
 package by.overpas.detekt.intellij.jvm.logging
 
-internal class PartIterator(private val parts: List<PartHolder>) {
-
-    private var index = 0
-
-    private var partial: String? = null
+internal class PartCursor(
+    private val parts: List<PartHolder>,
+    private val index: Int = 0,
+    private val partial: String? = null,
+) {
 
     val hasNext: Boolean
         get() = index < parts.size
@@ -24,12 +24,9 @@ internal class PartIterator(private val parts: List<PartHolder>) {
     val current: String
         get() = partial ?: parts[index].text.orEmpty()
 
-    fun move() {
-        index++
-        partial = null
-    }
+    fun advance(): PartCursor =
+        PartCursor(parts, index + 1)
 
-    fun move(delta: Int) {
-        partial = current.substring(delta)
-    }
+    fun skip(delta: Int): PartCursor =
+        PartCursor(parts, index, current.substring(delta))
 }

@@ -22,12 +22,13 @@ internal fun ApiStatusUsage.overrideOnlyMethodName(): String? {
         isOverridable &&
         method.isApiStatusLibrary() &&
         isOverrideOnly &&
-        !isSuperOrDelegateCall(method)
+        !isSuperOrDelegateCall()
     return method.apiStatusName(isQualified = false).takeIf { isReported }
 }
 
 context(session: KaSession)
-private fun ApiStatusUsage.isSuperOrDelegateCall(method: KaNamedFunctionSymbol): Boolean {
+private fun ApiStatusUsage.isSuperOrDelegateCall(): Boolean {
+    val method = target as? KaNamedFunctionSymbol ?: return false
     val owner = with(session) { method.containingDeclaration } as? KaClassLikeSymbol
     val container = element.parents.filterIsInstance<KtNamedFunction>().firstOrNull { !it.isLocal }
     val containerSymbol = container?.let { with(session) { it.symbol } } as? KaNamedFunctionSymbol

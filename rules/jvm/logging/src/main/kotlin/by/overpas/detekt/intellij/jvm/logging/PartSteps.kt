@@ -1,31 +1,19 @@
 package by.overpas.detekt.intellij.jvm.logging
 
-internal fun Pair<PartIterator, PartIterator>.equalStep(): Int {
-    val length = first.current.length
-    first.move()
-    second.move()
-    return length
-}
+internal fun Pair<PartCursor, PartCursor>.equalStep(): PartStep =
+    PartStep(first.current.length, first.advance() to second.advance())
 
-internal fun Pair<PartIterator, PartIterator>.prefixStep(): Int? {
-    val firstText = first.current
-    val secondText = second.current
+internal fun Pair<PartCursor, PartCursor>.prefixStep(): PartStep? {
+    val firstLength = first.current.length
+    val secondLength = second.current.length
     return when {
-        firstText.startsWith(secondText) -> secondText.length.also { length ->
-            second.move()
-            first.move(length)
-        }
-
-        secondText.startsWith(firstText) -> firstText.length.also { length ->
-            first.move()
-            second.move(length)
-        }
-
+        first.current.startsWith(second.current) -> PartStep(secondLength, first.skip(secondLength) to second.advance())
+        second.current.startsWith(first.current) -> PartStep(firstLength, first.advance() to second.skip(firstLength))
         else -> null
     }
 }
 
-internal fun Pair<PartIterator, PartIterator>.suffixStep(): Int? {
+internal fun Pair<PartCursor, PartCursor>.suffixStep(): PartStep? {
     val firstText = first.current
     val secondText = second.current
     val length = when {
@@ -33,29 +21,19 @@ internal fun Pair<PartIterator, PartIterator>.suffixStep(): Int? {
         secondText.endsWith(firstText) -> firstText.length
         else -> null
     }
-    if (length != null) {
-        first.move()
-        second.move()
-    }
-    return length
+    return length?.let { PartStep(it, first.advance() to second.advance()) }
 }
 
-internal fun Pair<PartIterator, PartIterator>.containedStep(): Int? {
+internal fun Pair<PartCursor, PartCursor>.containedStep(): PartStep? {
     val firstText = first.current
     val secondText = second.current
     val secondIndex = firstText.indexOf(secondText).takeIf { second.isPreviousUnknown && it != -1 }
     val firstIndex = secondText.indexOf(firstText).takeIf { secondIndex == null && first.isPreviousUnknown && it != -1 }
+    val secondEnd = secondIndex?.plus(secondText.length)
+    val firstEnd = firstIndex?.plus(firstText.length)
     return when {
-        secondIndex != null -> (secondIndex + secondText.length).also { length ->
-            second.move()
-            first.move(length)
-        }
-
-        firstIndex != null -> (firstIndex + firstText.length).also { length ->
-            first.move()
-            second.move(length)
-        }
-
+        secondEnd != null -> PartStep(secondEnd, first.skip(secondEnd) to second.advance())
+        firstEnd != null -> PartStep(firstEnd, first.advance() to second.skip(firstEnd))
         else -> null
     }
 }
