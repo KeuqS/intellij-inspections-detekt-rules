@@ -5,7 +5,12 @@ plugins {
 }
 
 val ruleSets = listOf(
+    "jvm:code-maturity",
+    "jvm:declaration-redundancy",
+    "jvm:error-handling",
+    "jvm:general",
     "jvm:junit",
+    "jvm:logging",
     "jvm:test-frameworks",
     "kotlin:code-migration",
     "kotlin:coroutines",

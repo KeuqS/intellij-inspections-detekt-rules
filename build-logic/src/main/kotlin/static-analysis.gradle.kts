@@ -16,7 +16,12 @@ detekt {
 }
 
 dependencies {
+    detektPlugins(project(":rules:jvm:code-maturity"))
+    detektPlugins(project(":rules:jvm:declaration-redundancy"))
+    detektPlugins(project(":rules:jvm:error-handling"))
+    detektPlugins(project(":rules:jvm:general"))
     detektPlugins(project(":rules:jvm:junit"))
+    detektPlugins(project(":rules:jvm:logging"))
     detektPlugins(project(":rules:jvm:test-frameworks"))
     detektPlugins(project(":rules:kotlin:code-migration"))
     detektPlugins(project(":rules:kotlin:coroutines"))
