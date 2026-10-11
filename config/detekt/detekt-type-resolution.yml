@@ -110,6 +110,22 @@ intellij-android-wear-tile-preview:
   WearTilePreviewShouldBeTopLevelFunction:
     active: true
 
+intellij-gradle-best-practices:
+  AvoidApplyPluginMethod:
+    active: true
+  AvoidDependencyNamedArgumentsNotation:
+    active: true
+  AvoidDuplicateDependencies:
+    active: true
+  AvoidDuplicateRepositories:
+    active: true
+  AvoidRepositoriesInBuildGradle:
+    active: false
+  RedundantKotlinStdLibDependency:
+    active: true
+  TaskMissingDescription:
+    active: true
+
 intellij-jvm-code-maturity:
   MarkedForRemoval:
     active: true

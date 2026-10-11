@@ -1,0 +1,16 @@
+intellij-gradle-best-practices:
+  active: true
+  AvoidApplyPluginMethod:
+    active: true
+  AvoidDependencyNamedArgumentsNotation:
+    active: true
+  AvoidDuplicateDependencies:
+    active: true
+  AvoidDuplicateRepositories:
+    active: true
+  AvoidRepositoriesInBuildGradle:
+    active: false
+  RedundantKotlinStdLibDependency:
+    active: true
+  TaskMissingDescription:
+    active: true
