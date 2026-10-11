@@ -14,12 +14,18 @@ class GeneralRuleSetProvider : RuleSetProvider {
         RuleSet(
             ruleSetId,
             listOf(
+                ::BlockingMethodInNonBlockingContext,
                 ::MissingDeprecatedAnnotationOnScheduledForRemovalApi,
                 ::MustAlreadyBeRemovedApi,
                 ::NonExtendableApiUsage,
                 ::OverrideOnly,
+                ::SerializableHasSerialVersionUIDField,
+                ::SuppressionAnnotation,
+                ::SystemGetProperty,
+                ::ThreadRun,
                 ::UnstableApiUsage,
                 ::UnstableTypeUsedInSignature,
+                ::UrlHashCode,
                 ::UsagesOfObsoleteApi,
             ),
         )

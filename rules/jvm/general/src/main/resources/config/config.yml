@@ -1,5 +1,17 @@
 intellij-jvm-general:
   active: true
+  BlockingMethodInNonBlockingContext:
+    active: true
+    isUnknownContextBlocking: true
+    isSuspendContextNonBlocking: true
+    blockingAnnotations:
+      - 'org.jetbrains.annotations.Blocking'
+      - 'io.micronaut.core.annotation.Blocking'
+      - 'io.smallrye.common.annotation.Blocking'
+    nonBlockingAnnotations:
+      - 'org.jetbrains.annotations.NonBlocking'
+      - 'io.micronaut.core.annotation.NonBlocking'
+      - 'io.smallrye.common.annotation.NonBlocking'
   MissingDeprecatedAnnotationOnScheduledForRemovalApi:
     active: true
   MustAlreadyBeRemovedApi:
@@ -8,6 +20,18 @@ intellij-jvm-general:
   NonExtendableApiUsage:
     active: true
   OverrideOnly:
+    active: true
+  SerializableHasSerialVersionUIDField:
+    active: false
+    isAnonymousClassIgnored: false
+    ignoredSuperClasses:
+      - 'java.awt.Component'
+  SuppressionAnnotation:
+    active: false
+    allowedSuppressions: []
+  SystemGetProperty:
+    active: true
+  ThreadRun:
     active: true
   UnstableApiUsage:
     active: true
@@ -37,5 +61,7 @@ intellij-jvm-general:
       - 'rx.annotations.Beta'
       - 'org.apache.http.annotation.Beta'
       - 'org.gradle.api.Incubating'
+  UrlHashCode:
+    active: true
   UsagesOfObsoleteApi:
     active: true
