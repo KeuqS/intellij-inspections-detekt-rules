@@ -1,4 +1,16 @@
 intellij-android-compose-preview:
   active: true
+  ComposePreviewDimensionRespectsLimit:
+    active: true
   ComposePreviewNeedsComposableAnnotation:
+    active: true
+  PreviewApiLevelMustBeValid:
+    active: true
+    minApiLevel: 22
+    maxApiLevel: 37
+  PreviewDeviceShouldUseNewSpec:
+    active: true
+  PreviewFontScaleMustBeGreaterThanZero:
+    active: true
+  PreviewShouldNotBeCalledRecursively:
     active: true
