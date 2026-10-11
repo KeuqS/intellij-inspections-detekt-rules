@@ -1,6 +1,8 @@
 package by.overpas.detekt.intellij.android.kotlin
 
 import by.overpas.detekt.intellij.IntellijInspectionGroup
+import by.overpas.detekt.intellij.android.kotlin.illegalidentifier.IllegalIdentifier
+import by.overpas.detekt.intellij.android.kotlin.k2typeparameterfindviewbyid.K2TypeParameterFindViewById
 import dev.detekt.api.RuleSet
 import dev.detekt.api.RuleSetId
 import dev.detekt.api.RuleSetProvider
@@ -13,6 +15,9 @@ class KotlinAndroidRuleSetProvider : RuleSetProvider {
     override fun instance() =
         RuleSet(
             ruleSetId,
-            emptyList(),
+            listOf(
+                ::IllegalIdentifier,
+                ::K2TypeParameterFindViewById,
+            ),
         )
 }
