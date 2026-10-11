@@ -2,14 +2,19 @@
 
 [![Build](https://github.com/overpas/intellij-inspections-detekt-rules/actions/workflows/build.yml/badge.svg)](https://github.com/overpas/intellij-inspections-detekt-rules/actions/workflows/build.yml)
 
-[detekt](https://detekt.dev) rules ported from the Kotlin and JVM inspections of IntelliJ IDEA. They
-give the same hints outside the IDE, e.g. to AI agents and CI.
+[detekt](https://detekt.dev) rules ported from the Kotlin, JVM and Android inspections of IntelliJ
+IDEA. They give the same hints outside the IDE, e.g. to AI agents and CI.
 
 Each module is one inspection group of the IDE settings (Editor | Inspections | Kotlin,
-Editor | Inspections | JVM languages, or a group of Editor | Inspections | Java).
+Editor | Inspections | JVM languages, a group of Editor | Inspections | Java, or an Android group
+such as Editor | Inspections | Compose preview).
 
 | Module | Rule set id | Jar |
 |---|---|---|
+| `rules:android:compose-preview` | `intellij-android-compose-preview` | `intellij-inspections-android-compose-preview-<version>.jar` |
+| `rules:android:glance-preview` | `intellij-android-glance-preview` | `intellij-inspections-android-glance-preview-<version>.jar` |
+| `rules:android:kotlin` | `intellij-android-kotlin` | `intellij-inspections-android-kotlin-<version>.jar` |
+| `rules:android:wear-tile-preview` | `intellij-android-wear-tile-preview` | `intellij-inspections-android-wear-tile-preview-<version>.jar` |
 | `rules:jvm:code-maturity` | `intellij-jvm-code-maturity` | `intellij-inspections-jvm-code-maturity-<version>.jar` |
 | `rules:jvm:declaration-redundancy` | `intellij-jvm-declaration-redundancy` | `intellij-inspections-jvm-declaration-redundancy-<version>.jar` |
 | `rules:jvm:general` | `intellij-jvm-general` | `intellij-inspections-jvm-general-<version>.jar` |
@@ -28,10 +33,11 @@ Editor | Inspections | JVM languages, or a group of Editor | Inspections | Java)
 | `rules:kotlin:redundant-constructs` | `intellij-kotlin-redundant-constructs` | `intellij-inspections-kotlin-redundant-constructs-<version>.jar` |
 | `rules:kotlin:style-issues` | `intellij-kotlin-style-issues` | `intellij-inspections-kotlin-style-issues-<version>.jar` |
 
-Each bundle module puts all rule sets of one language in one jar.
+Each bundle module puts all rule sets of one kind (Android, JVM or Kotlin) in one jar.
 
 | Module | Rule sets | Jar |
 |---|---|---|
+| `bundles:android` | All `intellij-android-*` rule sets | `intellij-inspections-android-all-<version>.jar` |
 | `bundles:jvm` | All `intellij-jvm-*` rule sets | `intellij-inspections-jvm-all-<version>.jar` |
 | `bundles:kotlin` | All `intellij-kotlin-*` rule sets | `intellij-inspections-kotlin-all-<version>.jar` |
 
@@ -44,6 +50,7 @@ The project must use detekt 2 (Gradle plugin `dev.detekt`).
    `config/detekt/plugins/` of your project. Download one of these:
    - For all Kotlin rule sets: `intellij-inspections-kotlin-all-<version>.jar`.
    - For all JVM rule sets: `intellij-inspections-jvm-all-<version>.jar`.
+   - For all Android rule sets: `intellij-inspections-android-all-<version>.jar`.
    - For some rule sets only: their jars from the table above.
 
    Do not add a bundle jar and its rule set jars together. Detekt then loads the same rule sets
@@ -79,8 +86,66 @@ Every rule takes the standard detekt options (`active`, `excludes`, `includes`, 
 names are the short names of the IntelliJ inspections.
 
 Each rule set jar contains a default config (`config/config.yml`). The rules that IntelliJ IDEA
-disables by default are inactive. Of two opposite rules, only the one that is more idiomatic for
+disables by default are inactive, and so are some rules that give noisy findings in CI. Of two opposite rules, only the one that is more idiomatic for
 Kotlin is active. detekt uses this default config with `buildUponDefaultConfig = true`.
+
+### `intellij-android-compose-preview`
+
+| Rule | Finds |
+|---|---|
+| `ComposePreviewDimensionRespectsLimit` | A `@Preview` whose `widthDp` or `heightDp` is not between 1 and 3000. |
+| `ComposePreviewMustBeTopLevelFunction` | A function with `@Preview` or a MultiPreview annotation that is not top level and is not a non-nested function of a top-level class with a no-parameter constructor. |
+| `ComposePreviewNeedsComposableAnnotation` | A function with `@Preview` or a MultiPreview annotation that is not `@Composable`. |
+| `PreviewAnnotationInFunctionWithParameters` | A function with `@Preview` or a MultiPreview annotation that has a parameter with no default value and no `@PreviewParameter`. |
+| `PreviewApiLevelMustBeValid` | A `@Preview` whose `apiLevel` is outside the supported range (`minApiLevel`, default 22, to `maxApiLevel`, default 37). |
+| `PreviewDeviceShouldUseNewSpec` | A `@Preview` whose `device` is a legacy device spec that starts with `spec:id`, such as the old `Devices.PIXEL_4`. |
+| `PreviewFontScaleMustBeGreaterThanZero` | A `@Preview` whose `fontScale` is zero or negative. |
+| `PreviewMultipleParameterProviders` | A function with `@Preview` or a MultiPreview annotation that has more than one `@PreviewParameter`. |
+| `PreviewParameterProviderOnFirstParameter` | A function with `@Preview` or a MultiPreview annotation that has its first `@PreviewParameter` on a parameter other than the first. |
+| `PreviewShouldNotBeCalledRecursively` | A call inside a function with `@Preview` or a MultiPreview annotation to a function with the same name as that preview. Inactive by default. |
+| `PreviewWrapperUsage` | A `@PreviewWrapper` on a function without both `@Composable` and `@Preview` (or a MultiPreview), a repeated `@PreviewWrapper` on an annotation class, or a composable function or annotation class with more than one `@PreviewWrapper` in its annotation graph. |
+
+### `intellij-android-glance-preview`
+
+| Rule | Finds |
+|---|---|
+| `GlancePreviewDimensionRespectsLimit` | A Glance `@Preview` annotation on a function or an annotation class with a constant `widthDp` or `heightDp` value outside 1..3000. |
+| `GlancePreviewMustBeTopLevelFunction` | A Glance `@Preview` or MultiPreview annotation on a function that is not top level and not in a top level class with a default constructor. |
+| `GlancePreviewNeedsComposableAnnotation` | A Glance `@Preview` or MultiPreview annotation on a function that is not `@Composable`. |
+
+### `intellij-android-kotlin`
+
+| Rule | Finds |
+|---|---|
+| `IllegalIdentifier` | A backticked identifier with characters that the dex format does not allow in a simple name, for example a space or a dot. These names fail on Android versions before 11. By default, unit test source sets are excluded (`excludes`). |
+
+### `intellij-android-wear-tile-preview`
+
+| Rule | Finds |
+|---|---|
+| `WearTilePreviewComposableAnnotationIsNotSupported` | A `@Composable` annotation on a Tile preview function. |
+| `WearTilePreviewContextComesFromParameter` | A `Context` in a Tile preview function that does not come from the `Context` parameter of the function. |
+| `WearTilePreviewHasValidMethodSignature` | A function with a Tile `@Preview` annotation that does not return `TilePreviewData`, or has parameters other than one `Context`. |
+| `WearTilePreviewMethodIsAnnotatedWithTilePreviewAnnotation` | A `Preview` annotation from another package, or a MultiPreview annotation that refers to one, on a function with the Tile preview signature. |
+| `WearTilePreviewShouldBeTopLevelFunction` | A function with a Tile `@Preview` annotation in another function, in a nested class, or in a class without a default constructor. |
+
+### Not ported Android inspections
+
+The Android plugin of IntelliJ IDEA also shows the Android Lint checks as inspections. These are
+not ported, because Android Lint runs them in CI itself.
+
+| Inspection | Reason |
+|---|---|
+| `ComposePreviewNotSupportedInUnitTestFiles`, `GlancePreviewNotSupportedInUnitTestFiles`, `WearTilePreviewNotSupportedInUnitTestFiles` | Need the test source roots of the module. |
+| `PreviewPickerAnnotation`, `WearTilePreviewDeviceSpec` | Check the `device` parameter against the device catalog of the IDE. |
+| `K2TypeParameterFindViewById` | Only a hint to give `findViewById()` a type argument in place of a cast, not a problem in the code. |
+| `AndroidNonConstantResIdsInSwitch` | Checks Java `switch` statements. Kotlin `when` accepts non-constant resource ids. |
+| `AndroidDomInspection`, `AndroidElementNotAllowed`, `AndroidMissingOnClickHandler`, `AndroidUnknownAttribute`, `AndroidUnresolvableTag`, `NavigationFile`, `XmlWrongFileType` | Check Android XML resource files, not Kotlin code. |
+| `AccessibilityTestFramework`, `BottomAppBar`, `BottomNav`, `Bounds`, `ButtonSize`, `LocaleText`, `LongText`, `Overlap`, `SystemUi`, `TextFieldSize`, `WearMargin` | Check the layouts that the layout editor renders. |
+| `ConsumerRulesInspection`, `ExpensiveKeepRuleInspection`, `R8IgnoredFlags`, `ShrinkerArrayType`, `ShrinkerInnerClassSeparator`, `ShrinkerInvalidFlags`, `ShrinkerUnresolvedReference` | Check R8 and ProGuard keep rule files, not Kotlin code. |
+| `AndroidRoomQuestionMarkBindParameter`, `AndroidRoomSqlBooleanLiteral`, `AndroidUnresolvedRoomSqlReference` | Check the SQL in Room `@Query` strings, which needs an SQL parser and the database schema. |
+| `DeclarativeUnresolvedReference` | Checks declarative Gradle build files, not Kotlin code. |
+| `FeatureRequiresHigherWFFVersion`, `InvalidColorIndexWFFExpression`, `InvalidColorIndexXml`, `InvalidComplicationDataSourceLocation`, `UnknownWFFVersion` | Check Watch Face Format XML files, not Kotlin code. |
 
 ### `intellij-jvm-code-maturity`
 
@@ -437,8 +502,10 @@ Kotlin is active. detekt uses this default config with `buildUponDefaultConfig =
 ## Backlog
 
 [docs/inspections.md](docs/inspections.md) lists every Kotlin inspection of IntelliJ IDEA with its
-target module and a verdict on how to port it. The JVM inspections are not in the catalog; the
-[not ported JVM inspections](#not-ported-jvm-inspections) table above gives their verdicts. Refresh it with:
+target module and a verdict on how to port it. The JVM and Android inspections are not in the
+catalog; the [not ported JVM inspections](#not-ported-jvm-inspections) and
+[not ported Android inspections](#not-ported-android-inspections) tables above give their verdicts.
+Refresh the catalog with:
 
 ```shell
 python3 scripts/inspection-catalog.py <intellij-community checkout> --ref master

@@ -19,8 +19,13 @@ plugins {
 }
 
 include(":annotations")
+include(":bundles:android")
 include(":bundles:jvm")
 include(":bundles:kotlin")
+include(":rules:android:compose-preview")
+include(":rules:android:glance-preview")
+include(":rules:android:kotlin")
+include(":rules:android:wear-tile-preview")
 include(":rules:jvm:code-maturity")
 include(":rules:jvm:declaration-redundancy")
 include(":rules:jvm:general")
