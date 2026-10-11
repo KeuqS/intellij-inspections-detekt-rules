@@ -33,37 +33,41 @@ Each bundle module puts all rule sets of one language in one jar.
 
 ## Use in a project
 
-Download the jars of a release from
-[GitHub Releases](https://github.com/overpas/intellij-inspections-detekt-rules/releases) into the
-project, e.g. `config/detekt/plugins/`, and add them to the detekt plugins. To get all Kotlin rule
-sets, download only `intellij-inspections-kotlin-all-<version>.jar`. To get all JVM rule sets,
-download only `intellij-inspections-jvm-all-<version>.jar`. Do not add a bundle jar and
-the rule set jars that it contains together, because detekt then loads the same rule sets twice.
+The project must use detekt 2 (Gradle plugin `dev.detekt`).
 
-Each rule set jar contains a default config (`config/config.yml`). The rules that are marked
-"Inactive by default" below are inactive in it. All other rules are active. To use this default
-config, set `buildUponDefaultConfig = true`.
+1. Download the jars from
+   [GitHub Releases](https://github.com/overpas/intellij-inspections-detekt-rules/releases) into
+   `config/detekt/plugins/` of your project. Download one of these:
+   - For all Kotlin rule sets: `intellij-inspections-kotlin-all-<version>.jar`.
+   - For all JVM rule sets: `intellij-inspections-jvm-all-<version>.jar`.
+   - For some rule sets only: their jars from the table above.
 
-```kotlin
-dependencies {
-    detektPlugins(fileTree(rootProject.layout.projectDirectory.dir("config/detekt/plugins")) { include("*.jar") })
-}
+   Do not add a bundle jar and its rule set jars together. Detekt then loads the same rule sets
+   two times.
+2. In `build.gradle.kts`, add the jars to the detekt plugins and set
+   `buildUponDefaultConfig = true`:
 
-detekt {
-    buildUponDefaultConfig = true
-}
-```
+   ```kotlin
+   dependencies {
+       detektPlugins(fileTree(rootProject.layout.projectDirectory.dir("config/detekt/plugins")) { include("*.jar") })
+   }
 
-Then put in the project detekt config only the changes to the default config, e.g. to activate an
-inactive rule:
+   detekt {
+       buildUponDefaultConfig = true
+   }
+   ```
 
-```yaml
-intellij-kotlin-numeric-issues:
-  KotlinBigDecimalEquals:
-    active: true
-```
+   Each jar has a default config. Without `buildUponDefaultConfig = true`, detekt does not use it.
+3. Optional: to change a rule, write only the change in your detekt config. For example, to
+   activate a rule that is "Inactive by default" in [Rules](#rules):
 
-Without `buildUponDefaultConfig = true`, detekt ignores the default config of the jars.
+   ```yaml
+   intellij-kotlin-numeric-issues:
+     KotlinBigDecimalEquals:
+       active: true
+   ```
+
+4. Run `./gradlew detekt`.
 
 ## Rules
 
