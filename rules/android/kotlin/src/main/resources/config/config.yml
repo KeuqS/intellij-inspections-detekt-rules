@@ -3,5 +3,3 @@ intellij-android-kotlin:
   IllegalIdentifier:
     active: true
     excludes: ['**/test/**', '**/testDebug/**', '**/testRelease/**', '**/commonTest/**', '**/jvmTest/**', '**/androidUnitTest/**', '**/androidHostTest/**']
-  K2TypeParameterFindViewById:
-    active: true

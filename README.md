@@ -86,7 +86,7 @@ Every rule takes the standard detekt options (`active`, `excludes`, `includes`, 
 names are the short names of the IntelliJ inspections.
 
 Each rule set jar contains a default config (`config/config.yml`). The rules that IntelliJ IDEA
-disables by default are inactive. Of two opposite rules, only the one that is more idiomatic for
+disables by default are inactive, and so are some rules that give noisy findings in CI. Of two opposite rules, only the one that is more idiomatic for
 Kotlin is active. detekt uses this default config with `buildUponDefaultConfig = true`.
 
 ### `intellij-android-compose-preview`
@@ -102,7 +102,7 @@ Kotlin is active. detekt uses this default config with `buildUponDefaultConfig =
 | `PreviewFontScaleMustBeGreaterThanZero` | A `@Preview` whose `fontScale` is zero or negative. |
 | `PreviewMultipleParameterProviders` | A function with `@Preview` or a MultiPreview annotation that has more than one `@PreviewParameter`. |
 | `PreviewParameterProviderOnFirstParameter` | A function with `@Preview` or a MultiPreview annotation that has its first `@PreviewParameter` on a parameter other than the first. |
-| `PreviewShouldNotBeCalledRecursively` | A call inside a function with `@Preview` or a MultiPreview annotation to a function with the same name as that preview. |
+| `PreviewShouldNotBeCalledRecursively` | A call inside a function with `@Preview` or a MultiPreview annotation to a function with the same name as that preview. Inactive by default. |
 | `PreviewWrapperUsage` | A `@PreviewWrapper` on a function without both `@Composable` and `@Preview` (or a MultiPreview), a repeated `@PreviewWrapper` on an annotation class, or a composable function or annotation class with more than one `@PreviewWrapper` in its annotation graph. |
 
 ### `intellij-android-glance-preview`
@@ -118,7 +118,6 @@ Kotlin is active. detekt uses this default config with `buildUponDefaultConfig =
 | Rule | Finds |
 |---|---|
 | `IllegalIdentifier` | A backticked identifier with characters that the dex format does not allow in a simple name, for example a space or a dot. These names fail on Android versions before 11. By default, unit test source sets are excluded (`excludes`). |
-| `K2TypeParameterFindViewById` | An unsafe `as` cast of a `findViewById`, `findViewWithTag` or `requireViewById` call that has no type argument, where the function returns its single type parameter and the cast type is within that parameter's bounds. Give the type as a type argument instead. |
 
 ### `intellij-android-wear-tile-preview`
 
@@ -139,6 +138,7 @@ not ported, because Android Lint runs them in CI itself.
 |---|---|
 | `ComposePreviewNotSupportedInUnitTestFiles`, `GlancePreviewNotSupportedInUnitTestFiles`, `WearTilePreviewNotSupportedInUnitTestFiles` | Need the test source roots of the module. |
 | `PreviewPickerAnnotation`, `WearTilePreviewDeviceSpec` | Check the `device` parameter against the device catalog of the IDE. |
+| `K2TypeParameterFindViewById` | Only a hint to give `findViewById()` a type argument in place of a cast, not a problem in the code. |
 | `AndroidNonConstantResIdsInSwitch` | Checks Java `switch` statements. Kotlin `when` accepts non-constant resource ids. |
 | `AndroidDomInspection`, `AndroidElementNotAllowed`, `AndroidMissingOnClickHandler`, `AndroidUnknownAttribute`, `AndroidUnresolvableTag`, `NavigationFile`, `XmlWrongFileType` | Check Android XML resource files, not Kotlin code. |
 | `AccessibilityTestFramework`, `BottomAppBar`, `BottomNav`, `Bounds`, `ButtonSize`, `LocaleText`, `LongText`, `Overlap`, `SystemUi`, `TextFieldSize`, `WearMargin` | Check the layouts that the layout editor renders. |

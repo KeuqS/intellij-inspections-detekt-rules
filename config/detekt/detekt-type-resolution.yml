@@ -81,7 +81,7 @@ intellij-android-compose-preview:
   PreviewParameterProviderOnFirstParameter:
     active: true
   PreviewShouldNotBeCalledRecursively:
-    active: true
+    active: false
   PreviewWrapperUsage:
     active: true
 
@@ -97,8 +97,6 @@ intellij-android-kotlin:
   IllegalIdentifier:
     active: true
     excludes: ['**/test/**', '**/testDebug/**', '**/testRelease/**', '**/commonTest/**', '**/jvmTest/**', '**/androidUnitTest/**', '**/androidHostTest/**']
-  K2TypeParameterFindViewById:
-    active: true
 
 intellij-android-wear-tile-preview:
   WearTilePreviewComposableAnnotationIsNotSupported:

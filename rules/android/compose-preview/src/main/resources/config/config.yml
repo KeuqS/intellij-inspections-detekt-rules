@@ -21,6 +21,6 @@ intellij-android-compose-preview:
   PreviewParameterProviderOnFirstParameter:
     active: true
   PreviewShouldNotBeCalledRecursively:
-    active: true
+    active: false
   PreviewWrapperUsage:
     active: true
