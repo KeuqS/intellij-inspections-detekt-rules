@@ -1,0 +1,8 @@
+intellij-jvm-declaration-redundancy:
+  active: true
+  SameParameterValue:
+    active: true
+    highestModifier: 'protected'
+    minimalUsageCount: 1
+  SameReturnValue:
+    active: true
