@@ -1,4 +1,14 @@
 intellij-android-compose-preview:
   active: true
+  ComposePreviewMustBeTopLevelFunction:
+    active: true
   ComposePreviewNeedsComposableAnnotation:
+    active: true
+  PreviewAnnotationInFunctionWithParameters:
+    active: true
+  PreviewMultipleParameterProviders:
+    active: true
+  PreviewParameterProviderOnFirstParameter:
+    active: true
+  PreviewWrapperUsage:
     active: true
