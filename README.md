@@ -2,12 +2,13 @@
 
 [![Build](https://github.com/overpas/intellij-inspections-detekt-rules/actions/workflows/build.yml/badge.svg)](https://github.com/overpas/intellij-inspections-detekt-rules/actions/workflows/build.yml)
 
-[detekt](https://detekt.dev) rules ported from the Kotlin, JVM and Android inspections of IntelliJ
-IDEA. They give the same hints outside the IDE, e.g. to AI agents and CI.
+[detekt](https://detekt.dev) rules ported from the Kotlin, JVM, Android and Compose Multiplatform
+inspections of IntelliJ IDEA. They give the same hints outside the IDE, e.g. to AI agents and CI.
 
 Each module is one inspection group of the IDE settings (Editor | Inspections | Kotlin,
-Editor | Inspections | JVM languages, a group of Editor | Inspections | Java, or an Android group
-such as Editor | Inspections | Compose preview).
+Editor | Inspections | JVM languages, a group of Editor | Inspections | Java, an Android group
+such as Editor | Inspections | Compose preview, or Editor | Inspections | Compose Multiplatform
+Preview).
 
 | Module | Rule set id | Jar |
 |---|---|---|
@@ -15,6 +16,7 @@ such as Editor | Inspections | Compose preview).
 | `rules:android:glance-preview` | `intellij-android-glance-preview` | `intellij-inspections-android-glance-preview-<version>.jar` |
 | `rules:android:kotlin` | `intellij-android-kotlin` | `intellij-inspections-android-kotlin-<version>.jar` |
 | `rules:android:wear-tile-preview` | `intellij-android-wear-tile-preview` | `intellij-inspections-android-wear-tile-preview-<version>.jar` |
+| `rules:compose:multiplatform-preview` | `intellij-compose-multiplatform-preview` | `intellij-inspections-compose-multiplatform-preview-<version>.jar` |
 | `rules:jvm:code-maturity` | `intellij-jvm-code-maturity` | `intellij-inspections-jvm-code-maturity-<version>.jar` |
 | `rules:jvm:declaration-redundancy` | `intellij-jvm-declaration-redundancy` | `intellij-inspections-jvm-declaration-redundancy-<version>.jar` |
 | `rules:jvm:general` | `intellij-jvm-general` | `intellij-inspections-jvm-general-<version>.jar` |
@@ -33,7 +35,8 @@ such as Editor | Inspections | Compose preview).
 | `rules:kotlin:redundant-constructs` | `intellij-kotlin-redundant-constructs` | `intellij-inspections-kotlin-redundant-constructs-<version>.jar` |
 | `rules:kotlin:style-issues` | `intellij-kotlin-style-issues` | `intellij-inspections-kotlin-style-issues-<version>.jar` |
 
-Each bundle module puts all rule sets of one kind (Android, JVM or Kotlin) in one jar.
+Each bundle module puts all rule sets of one kind (Android, JVM or Kotlin) in one jar. The
+Compose Multiplatform kind has only one rule set, so it has no bundle.
 
 | Module | Rule sets | Jar |
 |---|---|---|
@@ -51,6 +54,7 @@ The project must use detekt 2 (Gradle plugin `dev.detekt`).
    - For all Kotlin rule sets: `intellij-inspections-kotlin-all-<version>.jar`.
    - For all JVM rule sets: `intellij-inspections-jvm-all-<version>.jar`.
    - For all Android rule sets: `intellij-inspections-android-all-<version>.jar`.
+   - For the Compose Multiplatform preview rules: `intellij-inspections-compose-multiplatform-preview-<version>.jar`.
    - For some rule sets only: their jars from the table above.
 
    Do not add a bundle jar and its rule set jars together. Detekt then loads the same rule sets
@@ -146,6 +150,24 @@ not ported, because Android Lint runs them in CI itself.
 | `AndroidRoomQuestionMarkBindParameter`, `AndroidRoomSqlBooleanLiteral`, `AndroidUnresolvedRoomSqlReference` | Check the SQL in Room `@Query` strings, which needs an SQL parser and the database schema. |
 | `DeclarativeUnresolvedReference` | Checks declarative Gradle build files, not Kotlin code. |
 | `FeatureRequiresHigherWFFVersion`, `InvalidColorIndexWFFExpression`, `InvalidColorIndexXml`, `InvalidComplicationDataSourceLocation`, `UnknownWFFVersion` | Check Watch Face Format XML files, not Kotlin code. |
+
+### `intellij-compose-multiplatform-preview`
+
+These rules check the Jetpack (`androidx.compose.ui.tooling.preview`) and the Compose Multiplatform
+(`org.jetbrains.compose.ui.tooling.preview`) `@Preview` and `@PreviewParameter` annotations. A
+MultiPreview annotation counts only on a `@Composable` function.
+
+| Rule | Finds |
+|---|---|
+| `MultiplatformPreviewAnnotationInFunctionWithParameters` | A preview function that has a parameter with no default value and no `@PreviewParameter`. |
+| `MultiplatformPreviewMultipleParameterProviders` | A preview function that has more than one `@PreviewParameter`. |
+
+### Not ported Compose Multiplatform inspections
+
+| Inspection | Reason |
+|---|---|
+| `ComposableCallWithoutComposePlugin` | Needs the Gradle configuration of the module, to know if the Compose compiler plugin is applied. |
+| `ComposeResourcesImageResource` | Needs the Compose resource files of the module, to know if a drawable is a vector (`.xml` or `.svg`). |
 
 ### `intellij-jvm-code-maturity`
 
@@ -502,9 +524,11 @@ not ported, because Android Lint runs them in CI itself.
 ## Backlog
 
 [docs/inspections.md](docs/inspections.md) lists every Kotlin inspection of IntelliJ IDEA with its
-target module and a verdict on how to port it. The JVM and Android inspections are not in the
-catalog; the [not ported JVM inspections](#not-ported-jvm-inspections) and
-[not ported Android inspections](#not-ported-android-inspections) tables above give their verdicts.
+target module and a verdict on how to port it. The JVM, Android and Compose Multiplatform
+inspections are not in the catalog; the [not ported JVM inspections](#not-ported-jvm-inspections),
+[not ported Android inspections](#not-ported-android-inspections) and
+[not ported Compose Multiplatform inspections](#not-ported-compose-multiplatform-inspections) tables
+above give their verdicts.
 Refresh the catalog with:
 
 ```shell

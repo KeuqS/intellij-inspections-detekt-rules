@@ -110,6 +110,12 @@ intellij-android-wear-tile-preview:
   WearTilePreviewShouldBeTopLevelFunction:
     active: true
 
+intellij-compose-multiplatform-preview:
+  MultiplatformPreviewAnnotationInFunctionWithParameters:
+    active: true
+  MultiplatformPreviewMultipleParameterProviders:
+    active: true
+
 intellij-jvm-code-maturity:
   MarkedForRemoval:
     active: true
