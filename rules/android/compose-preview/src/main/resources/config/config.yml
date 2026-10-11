@@ -2,7 +2,11 @@ intellij-android-compose-preview:
   active: true
   ComposePreviewDimensionRespectsLimit:
     active: true
+  ComposePreviewMustBeTopLevelFunction:
+    active: true
   ComposePreviewNeedsComposableAnnotation:
+    active: true
+  PreviewAnnotationInFunctionWithParameters:
     active: true
   PreviewApiLevelMustBeValid:
     active: true
@@ -12,5 +16,11 @@ intellij-android-compose-preview:
     active: true
   PreviewFontScaleMustBeGreaterThanZero:
     active: true
+  PreviewMultipleParameterProviders:
+    active: true
+  PreviewParameterProviderOnFirstParameter:
+    active: true
   PreviewShouldNotBeCalledRecursively:
+    active: true
+  PreviewWrapperUsage:
     active: true
