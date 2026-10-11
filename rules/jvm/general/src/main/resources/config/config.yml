@@ -1,0 +1,28 @@
+intellij-jvm-general:
+  active: true
+  BlockingMethodInNonBlockingContext:
+    active: true
+    isUnknownContextBlocking: true
+    isSuspendContextNonBlocking: true
+    blockingAnnotations:
+      - 'org.jetbrains.annotations.Blocking'
+      - 'io.micronaut.core.annotation.Blocking'
+      - 'io.smallrye.common.annotation.Blocking'
+    nonBlockingAnnotations:
+      - 'org.jetbrains.annotations.NonBlocking'
+      - 'io.micronaut.core.annotation.NonBlocking'
+      - 'io.smallrye.common.annotation.NonBlocking'
+  SerializableHasSerialVersionUIDField:
+    active: false
+    isAnonymousClassIgnored: false
+    ignoredSuperClasses:
+      - 'java.awt.Component'
+  SuppressionAnnotation:
+    active: false
+    allowedSuppressions: []
+  SystemGetProperty:
+    active: true
+  ThreadRun:
+    active: true
+  UrlHashCode:
+    active: true
