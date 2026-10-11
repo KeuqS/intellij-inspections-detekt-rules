@@ -1,6 +1,9 @@
 package by.overpas.detekt.intellij.kotlin.javainterop
 
 import by.overpas.detekt.intellij.IntellijInspectionGroup
+import by.overpas.detekt.intellij.kotlin.javainterop.javacollectionsstaticmethodonimmutablelist.JavaCollectionsStaticMethodOnImmutableList
+import by.overpas.detekt.intellij.kotlin.javainterop.javacollectionwithnullabletypeargument.JavaCollectionWithNullableTypeArgument
+import by.overpas.detekt.intellij.kotlin.javainterop.javadefaultmethodsnotoverriddenbydelegation.JavaDefaultMethodsNotOverriddenByDelegation
 import dev.detekt.api.RuleSet
 import dev.detekt.api.RuleSetId
 import dev.detekt.api.RuleSetProvider
