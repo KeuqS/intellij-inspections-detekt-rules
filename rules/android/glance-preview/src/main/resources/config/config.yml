@@ -1,2 +1,8 @@
 intellij-android-glance-preview:
   active: true
+  GlancePreviewDimensionRespectsLimit:
+    active: true
+  GlancePreviewMustBeTopLevelFunction:
+    active: true
+  GlancePreviewNeedsComposableAnnotation:
+    active: true
