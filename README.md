@@ -5,12 +5,17 @@
 [detekt](https://detekt.dev) rules ported from the Kotlin and JVM inspections of IntelliJ IDEA. They
 give the same hints outside the IDE, e.g. to AI agents and CI.
 
-Each module is one inspection group of the IDE settings (Editor | Inspections | Kotlin, or
-Editor | Inspections | JVM languages).
+Each module is one inspection group of the IDE settings (Editor | Inspections | Kotlin,
+Editor | Inspections | JVM languages, or a group of Editor | Inspections | Java).
 
 | Module | Rule set id | Jar |
 |---|---|---|
+| `rules:jvm:code-maturity` | `intellij-jvm-code-maturity` | `intellij-inspections-jvm-code-maturity-<version>.jar` |
+| `rules:jvm:declaration-redundancy` | `intellij-jvm-declaration-redundancy` | `intellij-inspections-jvm-declaration-redundancy-<version>.jar` |
+| `rules:jvm:error-handling` | `intellij-jvm-error-handling` | `intellij-inspections-jvm-error-handling-<version>.jar` |
+| `rules:jvm:general` | `intellij-jvm-general` | `intellij-inspections-jvm-general-<version>.jar` |
 | `rules:jvm:junit` | `intellij-jvm-junit` | `intellij-inspections-jvm-junit-<version>.jar` |
+| `rules:jvm:logging` | `intellij-jvm-logging` | `intellij-inspections-jvm-logging-<version>.jar` |
 | `rules:jvm:test-frameworks` | `intellij-jvm-test-frameworks` | `intellij-inspections-jvm-test-frameworks-<version>.jar` |
 | `rules:kotlin:code-migration` | `intellij-kotlin-code-migration` | `intellij-inspections-kotlin-code-migration-<version>.jar` |
 | `rules:kotlin:coroutines` | `intellij-kotlin-coroutines` | `intellij-inspections-kotlin-coroutines-<version>.jar` |
@@ -78,6 +83,43 @@ Each rule set jar contains a default config (`config/config.yml`). The rules tha
 disables by default are inactive. Of two opposite rules, only the one that is more idiomatic for
 Kotlin is active. detekt uses this default config with `buildUponDefaultConfig = true`.
 
+### `intellij-jvm-code-maturity`
+
+| Rule | Finds |
+|---|---|
+| `MarkedForRemoval` | A usage of an API that is deprecated with `@Deprecated(forRemoval = true)`, or an override of a method marked for removal. Option `isSameOutermostClassIgnored` (default `true`) does not report the usages in the same outermost class. |
+
+### `intellij-jvm-declaration-redundancy`
+
+| Rule | Finds |
+|---|---|
+| `SameParameterValue` | A parameter of a function that gets the same constant value in every call, when all calls are in the same file. Option `highestModifier` (default `protected`) is the highest visibility to check. Option `minimalUsageCount` (default `1`) is the number of calls needed to report. |
+| `SameReturnValue` | A function that cannot be overridden and that always returns the same constant value. |
+
+### `intellij-jvm-error-handling`
+
+| Rule | Finds |
+|---|---|
+| `ReturnFromFinallyBlock` | A `return` that leaves a `finally` block. |
+
+### `intellij-jvm-general`
+
+| Rule | Finds |
+|---|---|
+| `BlockingMethodInNonBlockingContext` | A possibly blocking call, such as `Thread.sleep()`, a JDK method that throws `IOException` or a method annotated with `@Blocking`, in a non-blocking context such as a suspend function, a coroutine on a non-IO dispatcher or a method annotated with `@NonBlocking`. Option `isUnknownContextBlocking` (default `true`) does not report the calls in contexts that are not known. Option `isSuspendContextNonBlocking` (default `true`) considers suspend functions and suspend lambdas non-blocking. Options `blockingAnnotations` and `nonBlockingAnnotations` add annotations to the default ones. |
+| `MissingDeprecatedAnnotationOnScheduledForRemovalApi` | A declaration marked with `@ApiStatus.ScheduledForRemoval` that is not also marked with `@Deprecated`. |
+| `MustAlreadyBeRemovedApi` | A declaration marked with `@ApiStatus.ScheduledForRemoval` for a version that is not later than the current version. Option `currentVersion` (default empty, which turns the rule off) gives the current version. |
+| `NonExtendableApiUsage` | A class, interface or override that extends, implements or overrides a library API marked with `@ApiStatus.NonExtendable`, or the annotation on a declaration that cannot be extended. |
+| `OverrideOnly` | A call or reference of a library method marked with `@ApiStatus.OverrideOnly` outside a super or delegate call in its override, or the annotation on a declaration that cannot be overridden. |
+| `SerializableHasSerialVersionUIDField` | A `Serializable` class without a `serialVersionUID` field. Option `isAnonymousClassIgnored` (default `false`) does not report anonymous objects. Option `ignoredSuperClasses` (default `java.awt.Component`) does not report the subclasses of these classes that do not implement `Serializable` directly. Inactive by default. |
+| `SuppressionAnnotation` | A `@Suppress` or `@SuppressWarnings` annotation or a `//noinspection` comment that suppresses inspections. Option `allowedSuppressions` lists the suppressed ids to accept. Inactive by default. |
+| `SystemGetProperty` | A `System.getProperty()` call for `file.separator`, `path.separator`, `line.separator` or `file.encoding`, which a dedicated API gives directly. |
+| `ThreadRun` | A call of `run()` on a `Thread`, which runs the code in the current thread instead of starting a new one. |
+| `UnstableApiUsage` | A usage of a library API that an unstable API annotation such as `@ApiStatus.Experimental` or `@ApiStatus.Internal` marks, or whose signature refers to such a type. Option `unstableApiAnnotations` lists the annotations. Option `isInsideImportsIgnored` (default `true`) does not report imports. Option `isApiDeclaredInThisProjectIgnored` (default `true`) reports only compiled library APIs. |
+| `UnstableTypeUsedInSignature` | A public declaration whose signature refers to a type marked with an unstable API annotation, but that does not have the same annotation itself. Option `unstableApiAnnotations` lists the annotations. Inactive by default. |
+| `UrlHashCode` | An `equals()` or `hashCode()` call or an `==` comparison on `java.net.URL`, or a map or set of URLs, which can resolve the host over the network. |
+| `UsagesOfObsoleteApi` | A usage or override of an API marked with `@ApiStatus.Obsolete`. |
+
 ### `intellij-jvm-junit`
 
 | Rule | Finds |
@@ -95,6 +137,17 @@ Kotlin is active. detekt uses this default config with `buildUponDefaultConfig =
 | `SuperTearDownInFinally` | A `super.tearDown()` call in a JUnit 3 `tearDown()` that is not in a `finally` block. Inactive by default. |
 | `UseOfObsoleteAssert` | A call of the JUnit 3 `junit.framework.Assert` or `TestCase` assertions, when JUnit 4 or later is on the classpath. Inactive by default. |
 
+### `intellij-jvm-logging`
+
+| Rule | Finds |
+|---|---|
+| `LogStatementNotGuardedByLogCondition` | A logging call with computed arguments that a log level condition such as `if (logger.isDebugEnabled)` does not guard. Option `limitLevelType` (default `DEBUG_AND_LOWER`) sets the log levels to check. Option `isUnguardedConstantFlagged` (default `false`) also reports the calls with only constant arguments. Opposite of `LoggingGuardedByCondition`, which is active by default. Inactive by default. |
+| `LoggingConditionDisagreesWithLogLevelStatement` | A log level condition whose level does not agree with the level of the logging call that it guards. Inactive by default. |
+| `LoggingGuardedByCondition` | A log level condition around a logging call that does not need it. Option `isReportedOnlyIfFixPossible` (default `true`) reports only the conditions that the logging call can replace. Opposite of `LogStatementNotGuardedByLogCondition`. |
+| `LoggingPlaceholderCountMatchesArgumentCount` | A logging call whose number of placeholders does not match the number of arguments. Option `slf4jToLog4J2Type` (default `AUTO`) tells if SLF4J calls go to Log4j 2 (`AUTO`, `YES` or `NO`). |
+| `LoggingSimilarMessage` | A logging call whose message is similar to the message of another logging call in the file, which makes the log hard to trace. Option `isErrorLogLevelSkipped` (default `true`) does not check error calls. Option `minTextLength` (default `5`) is the minimum length of the text to compare. |
+| `LoggingStringTemplateAsArgument` | A logging call that builds its message with a string template or concatenation instead of placeholders. Option `limitLevelType` (default `DEBUG_AND_LOWER`) sets the log levels to check. Option `arePrimitivesSkipped` (default `true`) does not report templates with only primitive values. Option `isOnlyExceptionSkipped` (default `false`) does not report calls whose only other argument is an exception. |
+
 ### `intellij-jvm-test-frameworks`
 
 | Rule | Finds |
@@ -110,6 +163,17 @@ Kotlin is active. detekt uses this default config with `buildUponDefaultConfig =
 |---|---|
 | `JUnit5Converter` | Only a hint to migrate from JUnit 4 to JUnit 5, not a problem in the code. |
 | `Junit4Converter` | Only a hint to migrate from JUnit 3 to JUnit 4, not a problem in the code. |
+| `Dependency` | Needs the dependency rules of the IDE project settings. |
+| `Deprecation` | The Kotlin compiler already reports the usages of deprecated APIs. |
+| `DialogTitleCapitalization` | Needs the message bundles of IntelliJ plugin projects. |
+| `EmptyMethod` | Needs a search for overriding methods and usages in the whole project. |
+| `HardCodedStringLiteral` | Needs the internationalization settings of the IDE and `@NonNls` data from the whole project. |
+| `IllegalDependencyOnInternalPackage` | Needs the Java module graph of the project. |
+| `ImplicitSubclassInspection` | Needs framework plugins of the IDE that create subclasses at runtime. |
+| `Since15` | Needs the API version data of the JDK and the language level of the module. |
+| `SourceToSinkFlow` | Needs data flow analysis across methods of the whole project. |
+| `SuspiciousPackagePrivateAccess` | Needs the module structure of the project. Kotlin has no package-private visibility. |
+| `UnsupportedCharacter` | Checks `.properties` files, not Kotlin code. |
 | `ExpectedExceptionNeverThrown` | Checks the checked exceptions of the test body. Kotlin has no checked exceptions. |
 | `MultipleExceptionsDeclaredOnTestMethod` | Checks the Java `throws` clause. Kotlin functions do not declare one. |
 | `TestFailedLine` | Needs the results of a test run in the IDE. |
