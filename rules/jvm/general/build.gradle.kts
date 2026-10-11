@@ -3,6 +3,6 @@ plugins {
 }
 
 dependencies {
-    testRuntimeOnly(libs.jetbrains.annotations)
+    testImplementation(libs.jetbrains.annotations)
     testRuntimeOnly(libs.kotlinx.coroutines.core)
 }
