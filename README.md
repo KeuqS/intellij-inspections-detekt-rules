@@ -93,25 +93,42 @@ Kotlin is active. detekt uses this default config with `buildUponDefaultConfig =
 
 | Rule | Finds |
 |---|---|
-@@compose-preview@@
+| `ComposePreviewDimensionRespectsLimit` | A `@Preview` whose `widthDp` or `heightDp` is not between 1 and 3000. |
+| `ComposePreviewMustBeTopLevelFunction` | A function with `@Preview` or a MultiPreview annotation that is not top level and is not a non-nested function of a top-level class with a no-parameter constructor. |
+| `ComposePreviewNeedsComposableAnnotation` | A function with `@Preview` or a MultiPreview annotation that is not `@Composable`. |
+| `PreviewAnnotationInFunctionWithParameters` | A function with `@Preview` or a MultiPreview annotation that has a parameter with no default value and no `@PreviewParameter`. |
+| `PreviewApiLevelMustBeValid` | A `@Preview` whose `apiLevel` is outside the supported range (`minApiLevel`, default 22, to `maxApiLevel`, default 37). |
+| `PreviewDeviceShouldUseNewSpec` | A `@Preview` whose `device` is a legacy device spec that starts with `spec:id`, such as the old `Devices.PIXEL_4`. |
+| `PreviewFontScaleMustBeGreaterThanZero` | A `@Preview` whose `fontScale` is zero or negative. |
+| `PreviewMultipleParameterProviders` | A function with `@Preview` or a MultiPreview annotation that has more than one `@PreviewParameter`. |
+| `PreviewParameterProviderOnFirstParameter` | A function with `@Preview` or a MultiPreview annotation that has its first `@PreviewParameter` on a parameter other than the first. |
+| `PreviewShouldNotBeCalledRecursively` | A call inside a function with `@Preview` or a MultiPreview annotation to a function with the same name as that preview. |
+| `PreviewWrapperUsage` | A `@PreviewWrapper` on a function without both `@Composable` and `@Preview` (or a MultiPreview), a repeated `@PreviewWrapper` on an annotation class, or a composable function or annotation class with more than one `@PreviewWrapper` in its annotation graph. |
 
 ### `intellij-android-glance-preview`
 
 | Rule | Finds |
 |---|---|
-@@glance-preview@@
+| `GlancePreviewDimensionRespectsLimit` | A Glance `@Preview` annotation on a function or an annotation class with a constant `widthDp` or `heightDp` value outside 1..3000. |
+| `GlancePreviewMustBeTopLevelFunction` | A Glance `@Preview` or MultiPreview annotation on a function that is not top level and not in a top level class with a default constructor. |
+| `GlancePreviewNeedsComposableAnnotation` | A Glance `@Preview` or MultiPreview annotation on a function that is not `@Composable`. |
 
 ### `intellij-android-kotlin`
 
 | Rule | Finds |
 |---|---|
-@@kotlin@@
+| `IllegalIdentifier` | A backticked identifier with characters that the dex format does not allow in a simple name, for example a space or a dot. These names fail on Android versions before 11. By default, unit test source sets are excluded (`excludes`). |
+| `K2TypeParameterFindViewById` | An unsafe `as` cast of a `findViewById`, `findViewWithTag` or `requireViewById` call that has no type argument, where the function returns its single type parameter and the cast type is within that parameter's bounds. Give the type as a type argument instead. |
 
 ### `intellij-android-wear-tile-preview`
 
 | Rule | Finds |
 |---|---|
-@@wear-tile-preview@@
+| `WearTilePreviewComposableAnnotationIsNotSupported` | A `@Composable` annotation on a Tile preview function. |
+| `WearTilePreviewContextComesFromParameter` | A `Context` in a Tile preview function that does not come from the `Context` parameter of the function. |
+| `WearTilePreviewHasValidMethodSignature` | A function with a Tile `@Preview` annotation that does not return `TilePreviewData`, or has parameters other than one `Context`. |
+| `WearTilePreviewMethodIsAnnotatedWithTilePreviewAnnotation` | A `Preview` annotation from another package, or a MultiPreview annotation that refers to one, on a function with the Tile preview signature. |
+| `WearTilePreviewShouldBeTopLevelFunction` | A function with a Tile `@Preview` annotation in another function, in a nested class, or in a class without a default constructor. |
 
 ### Not ported Android inspections
 

@@ -1,7 +1,6 @@
 package by.overpas.detekt.intellij.android.weartilepreview.weartilepreviewcontextcomesfromparameter
 
 import by.overpas.detekt.intellij.IntellijInspection
-import by.overpas.detekt.intellij.android.weartilepreview.hasContextType
 import by.overpas.detekt.intellij.android.weartilepreview.hasTilePreviewAnnotation
 import by.overpas.detekt.intellij.android.weartilepreview.hasTilePreviewSignature
 import dev.detekt.api.Config
@@ -26,8 +25,8 @@ class WearTilePreviewContextComesFromParameter(config: Config) :
         if (function.isLocal) return
         analyze(function) {
             if (function.hasTilePreviewSignature() && function.hasTilePreviewAnnotation()) {
-                val contextParameter = function.valueParameters.firstOrNull { it.hasContextType() }
-                function.foreignContextArguments(contextParameter) + function.foreignContextReceivers(contextParameter)
+                val contexts = TilePreviewContexts(function)
+                contexts.foreignArguments() + contexts.foreignReceivers()
             } else {
                 emptyList()
             }

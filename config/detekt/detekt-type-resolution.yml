@@ -61,6 +61,56 @@ exceptions:
     active: true
     ignoreLabeled: false
 
+intellij-android-compose-preview:
+  ComposePreviewDimensionRespectsLimit:
+    active: true
+  ComposePreviewMustBeTopLevelFunction:
+    active: true
+  ComposePreviewNeedsComposableAnnotation:
+    active: true
+  PreviewAnnotationInFunctionWithParameters:
+    active: true
+  PreviewApiLevelMustBeValid:
+    active: true
+  PreviewDeviceShouldUseNewSpec:
+    active: true
+  PreviewFontScaleMustBeGreaterThanZero:
+    active: true
+  PreviewMultipleParameterProviders:
+    active: true
+  PreviewParameterProviderOnFirstParameter:
+    active: true
+  PreviewShouldNotBeCalledRecursively:
+    active: true
+  PreviewWrapperUsage:
+    active: true
+
+intellij-android-glance-preview:
+  GlancePreviewDimensionRespectsLimit:
+    active: true
+  GlancePreviewMustBeTopLevelFunction:
+    active: true
+  GlancePreviewNeedsComposableAnnotation:
+    active: true
+
+intellij-android-kotlin:
+  IllegalIdentifier:
+    active: true
+  K2TypeParameterFindViewById:
+    active: true
+
+intellij-android-wear-tile-preview:
+  WearTilePreviewComposableAnnotationIsNotSupported:
+    active: true
+  WearTilePreviewContextComesFromParameter:
+    active: true
+  WearTilePreviewHasValidMethodSignature:
+    active: true
+  WearTilePreviewMethodIsAnnotatedWithTilePreviewAnnotation:
+    active: true
+  WearTilePreviewShouldBeTopLevelFunction:
+    active: true
+
 intellij-jvm-code-maturity:
   MarkedForRemoval:
     active: true
