@@ -1,6 +1,8 @@
 package by.overpas.detekt.intellij.jvm.declarationredundancy
 
 import by.overpas.detekt.intellij.IntellijInspectionGroup
+import by.overpas.detekt.intellij.jvm.declarationredundancy.sameparametervalue.SameParameterValue
+import by.overpas.detekt.intellij.jvm.declarationredundancy.samereturnvalue.SameReturnValue
 import dev.detekt.api.RuleSet
 import dev.detekt.api.RuleSetId
 import dev.detekt.api.RuleSetProvider

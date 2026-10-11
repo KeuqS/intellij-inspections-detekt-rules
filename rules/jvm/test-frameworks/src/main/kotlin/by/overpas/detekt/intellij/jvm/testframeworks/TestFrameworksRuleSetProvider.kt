@@ -1,6 +1,10 @@
 package by.overpas.detekt.intellij.jvm.testframeworks
 
 import by.overpas.detekt.intellij.IntellijInspectionGroup
+import by.overpas.detekt.intellij.jvm.testframeworks.assertbetweeninconvertibletypes.AssertBetweenInconvertibleTypes
+import by.overpas.detekt.intellij.jvm.testframeworks.testcasewithconstructor.TestCaseWithConstructor
+import by.overpas.detekt.intellij.jvm.testframeworks.testcasewithnotestmethods.TestCaseWithNoTestMethods
+import by.overpas.detekt.intellij.jvm.testframeworks.testmethodwithoutassertion.TestMethodWithoutAssertion
 import dev.detekt.api.RuleSet
 import dev.detekt.api.RuleSetId
 import dev.detekt.api.RuleSetProvider

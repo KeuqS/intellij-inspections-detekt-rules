@@ -1,6 +1,7 @@
 package by.overpas.detekt.intellij.jvm.codematurity
 
 import by.overpas.detekt.intellij.IntellijInspectionGroup
+import by.overpas.detekt.intellij.jvm.codematurity.markedforremoval.MarkedForRemoval
 import dev.detekt.api.RuleSet
 import dev.detekt.api.RuleSetId
 import dev.detekt.api.RuleSetProvider

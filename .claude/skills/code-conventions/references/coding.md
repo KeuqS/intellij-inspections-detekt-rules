@@ -14,6 +14,9 @@
 - Annotate each rule with the inspection annotation and the short name of its IntelliJ inspection,
   and each rule set provider with the group annotation. The catalog and the upstream sync scripts
   read them.
+- Put each rule in its own package, named after the rule in lowercase, with the helpers that only
+  this rule uses and with its test. Keep the helpers that more than one rule uses in the rule set
+  package, so that the logic of one rule is in one place.
 
 ## Kotlin
 

@@ -1,6 +1,7 @@
 package by.overpas.detekt.intellij.jvm.errorhandling
 
 import by.overpas.detekt.intellij.IntellijInspectionGroup
+import by.overpas.detekt.intellij.jvm.errorhandling.returnfromfinallyblock.ReturnFromFinallyBlock
 import dev.detekt.api.RuleSet
 import dev.detekt.api.RuleSetId
 import dev.detekt.api.RuleSetProvider
