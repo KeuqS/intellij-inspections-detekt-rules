@@ -2,14 +2,19 @@
 
 [![Build](https://github.com/overpas/intellij-inspections-detekt-rules/actions/workflows/build.yml/badge.svg)](https://github.com/overpas/intellij-inspections-detekt-rules/actions/workflows/build.yml)
 
-[detekt](https://detekt.dev) rules ported from the Kotlin and JVM inspections of IntelliJ IDEA. They
-give the same hints outside the IDE, e.g. to AI agents and CI.
+[detekt](https://detekt.dev) rules ported from the Kotlin, JVM and Android inspections of IntelliJ
+IDEA. They give the same hints outside the IDE, e.g. to AI agents and CI.
 
 Each module is one inspection group of the IDE settings (Editor | Inspections | Kotlin,
-Editor | Inspections | JVM languages, or a group of Editor | Inspections | Java).
+Editor | Inspections | JVM languages, a group of Editor | Inspections | Java, or an Android group
+such as Editor | Inspections | Compose preview).
 
 | Module | Rule set id | Jar |
 |---|---|---|
+| `rules:android:compose-preview` | `intellij-android-compose-preview` | `intellij-inspections-android-compose-preview-<version>.jar` |
+| `rules:android:glance-preview` | `intellij-android-glance-preview` | `intellij-inspections-android-glance-preview-<version>.jar` |
+| `rules:android:kotlin` | `intellij-android-kotlin` | `intellij-inspections-android-kotlin-<version>.jar` |
+| `rules:android:wear-tile-preview` | `intellij-android-wear-tile-preview` | `intellij-inspections-android-wear-tile-preview-<version>.jar` |
 | `rules:jvm:code-maturity` | `intellij-jvm-code-maturity` | `intellij-inspections-jvm-code-maturity-<version>.jar` |
 | `rules:jvm:declaration-redundancy` | `intellij-jvm-declaration-redundancy` | `intellij-inspections-jvm-declaration-redundancy-<version>.jar` |
 | `rules:jvm:general` | `intellij-jvm-general` | `intellij-inspections-jvm-general-<version>.jar` |
@@ -28,10 +33,11 @@ Editor | Inspections | JVM languages, or a group of Editor | Inspections | Java)
 | `rules:kotlin:redundant-constructs` | `intellij-kotlin-redundant-constructs` | `intellij-inspections-kotlin-redundant-constructs-<version>.jar` |
 | `rules:kotlin:style-issues` | `intellij-kotlin-style-issues` | `intellij-inspections-kotlin-style-issues-<version>.jar` |
 
-Each bundle module puts all rule sets of one language in one jar.
+Each bundle module puts all rule sets of one kind (Android, JVM or Kotlin) in one jar.
 
 | Module | Rule sets | Jar |
 |---|---|---|
+| `bundles:android` | All `intellij-android-*` rule sets | `intellij-inspections-android-all-<version>.jar` |
 | `bundles:jvm` | All `intellij-jvm-*` rule sets | `intellij-inspections-jvm-all-<version>.jar` |
 | `bundles:kotlin` | All `intellij-kotlin-*` rule sets | `intellij-inspections-kotlin-all-<version>.jar` |
 
@@ -44,6 +50,7 @@ The project must use detekt 2 (Gradle plugin `dev.detekt`).
    `config/detekt/plugins/` of your project. Download one of these:
    - For all Kotlin rule sets: `intellij-inspections-kotlin-all-<version>.jar`.
    - For all JVM rule sets: `intellij-inspections-jvm-all-<version>.jar`.
+   - For all Android rule sets: `intellij-inspections-android-all-<version>.jar`.
    - For some rule sets only: their jars from the table above.
 
    Do not add a bundle jar and its rule set jars together. Detekt then loads the same rule sets
@@ -81,6 +88,47 @@ names are the short names of the IntelliJ inspections.
 Each rule set jar contains a default config (`config/config.yml`). The rules that IntelliJ IDEA
 disables by default are inactive. Of two opposite rules, only the one that is more idiomatic for
 Kotlin is active. detekt uses this default config with `buildUponDefaultConfig = true`.
+
+### `intellij-android-compose-preview`
+
+| Rule | Finds |
+|---|---|
+@@compose-preview@@
+
+### `intellij-android-glance-preview`
+
+| Rule | Finds |
+|---|---|
+@@glance-preview@@
+
+### `intellij-android-kotlin`
+
+| Rule | Finds |
+|---|---|
+@@kotlin@@
+
+### `intellij-android-wear-tile-preview`
+
+| Rule | Finds |
+|---|---|
+@@wear-tile-preview@@
+
+### Not ported Android inspections
+
+The Android plugin of IntelliJ IDEA also shows the Android Lint checks as inspections. These are
+not ported, because Android Lint runs them in CI itself.
+
+| Inspection | Reason |
+|---|---|
+| `ComposePreviewNotSupportedInUnitTestFiles`, `GlancePreviewNotSupportedInUnitTestFiles`, `WearTilePreviewNotSupportedInUnitTestFiles` | Need the test source roots of the module. |
+| `PreviewPickerAnnotation`, `WearTilePreviewDeviceSpec` | Check the `device` parameter against the device catalog of the IDE. |
+| `AndroidNonConstantResIdsInSwitch` | Checks Java `switch` statements. Kotlin `when` accepts non-constant resource ids. |
+| `AndroidDomInspection`, `AndroidElementNotAllowed`, `AndroidMissingOnClickHandler`, `AndroidUnknownAttribute`, `AndroidUnresolvableTag`, `NavigationFile`, `XmlWrongFileType` | Check Android XML resource files, not Kotlin code. |
+| `AccessibilityTestFramework`, `BottomAppBar`, `BottomNav`, `Bounds`, `ButtonSize`, `LocaleText`, `LongText`, `Overlap`, `SystemUi`, `TextFieldSize`, `WearMargin` | Check the layouts that the layout editor renders. |
+| `ConsumerRulesInspection`, `ExpensiveKeepRuleInspection`, `R8IgnoredFlags`, `ShrinkerArrayType`, `ShrinkerInnerClassSeparator`, `ShrinkerInvalidFlags`, `ShrinkerUnresolvedReference` | Check R8 and ProGuard keep rule files, not Kotlin code. |
+| `AndroidRoomQuestionMarkBindParameter`, `AndroidRoomSqlBooleanLiteral`, `AndroidUnresolvedRoomSqlReference` | Check the SQL in Room `@Query` strings, which needs an SQL parser and the database schema. |
+| `DeclarativeUnresolvedReference` | Checks declarative Gradle build files, not Kotlin code. |
+| `FeatureRequiresHigherWFFVersion`, `InvalidColorIndexWFFExpression`, `InvalidColorIndexXml`, `InvalidComplicationDataSourceLocation`, `UnknownWFFVersion` | Check Watch Face Format XML files, not Kotlin code. |
 
 ### `intellij-jvm-code-maturity`
 
@@ -437,8 +485,10 @@ Kotlin is active. detekt uses this default config with `buildUponDefaultConfig =
 ## Backlog
 
 [docs/inspections.md](docs/inspections.md) lists every Kotlin inspection of IntelliJ IDEA with its
-target module and a verdict on how to port it. The JVM inspections are not in the catalog; the
-[not ported JVM inspections](#not-ported-jvm-inspections) table above gives their verdicts. Refresh it with:
+target module and a verdict on how to port it. The JVM and Android inspections are not in the
+catalog; the [not ported JVM inspections](#not-ported-jvm-inspections) and
+[not ported Android inspections](#not-ported-android-inspections) tables above give their verdicts.
+Refresh the catalog with:
 
 ```shell
 python3 scripts/inspection-catalog.py <intellij-community checkout> --ref master
