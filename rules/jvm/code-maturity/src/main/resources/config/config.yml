@@ -1,0 +1,5 @@
+intellij-jvm-code-maturity:
+  active: true
+  MarkedForRemoval:
+    active: true
+    isSameOutermostClassIgnored: true

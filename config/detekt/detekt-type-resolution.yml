@@ -61,6 +61,42 @@ exceptions:
     active: true
     ignoreLabeled: false
 
+intellij-jvm-code-maturity:
+  MarkedForRemoval:
+    active: true
+
+intellij-jvm-declaration-redundancy:
+  SameParameterValue:
+    active: true
+  SameReturnValue:
+    active: true
+
+intellij-jvm-general:
+  BlockingMethodInNonBlockingContext:
+    active: true
+  MissingDeprecatedAnnotationOnScheduledForRemovalApi:
+    active: true
+  MustAlreadyBeRemovedApi:
+    active: true
+  NonExtendableApiUsage:
+    active: true
+  OverrideOnly:
+    active: true
+  SerializableHasSerialVersionUIDField:
+    active: false
+  SuppressionAnnotation:
+    active: false
+  SystemGetProperty:
+    active: true
+  ThreadRun:
+    active: true
+  UnstableApiUsage:
+    active: true
+  UnstableTypeUsedInSignature:
+    active: false
+  UrlHashCode:
+    active: true
+
 intellij-jvm-junit:
   AssertEqualsCalledOnArray:
     active: true
@@ -85,6 +121,16 @@ intellij-jvm-junit:
   SuperTearDownInFinally:
     active: true
   UseOfObsoleteAssert:
+    active: true
+
+intellij-jvm-logging:
+  LogStatementNotGuardedByLogCondition:
+    active: false
+  LoggingConditionDisagreesWithLogLevelStatement:
+    active: false
+  LoggingPlaceholderCountMatchesArgumentCount:
+    active: true
+  LoggingStringTemplateAsArgument:
     active: true
 
 intellij-jvm-test-frameworks:

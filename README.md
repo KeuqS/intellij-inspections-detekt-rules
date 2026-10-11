@@ -5,12 +5,16 @@
 [detekt](https://detekt.dev) rules ported from the Kotlin and JVM inspections of IntelliJ IDEA. They
 give the same hints outside the IDE, e.g. to AI agents and CI.
 
-Each module is one inspection group of the IDE settings (Editor | Inspections | Kotlin, or
-Editor | Inspections | JVM languages).
+Each module is one inspection group of the IDE settings (Editor | Inspections | Kotlin,
+Editor | Inspections | JVM languages, or a group of Editor | Inspections | Java).
 
 | Module | Rule set id | Jar |
 |---|---|---|
+| `rules:jvm:code-maturity` | `intellij-jvm-code-maturity` | `intellij-inspections-jvm-code-maturity-<version>.jar` |
+| `rules:jvm:declaration-redundancy` | `intellij-jvm-declaration-redundancy` | `intellij-inspections-jvm-declaration-redundancy-<version>.jar` |
+| `rules:jvm:general` | `intellij-jvm-general` | `intellij-inspections-jvm-general-<version>.jar` |
 | `rules:jvm:junit` | `intellij-jvm-junit` | `intellij-inspections-jvm-junit-<version>.jar` |
+| `rules:jvm:logging` | `intellij-jvm-logging` | `intellij-inspections-jvm-logging-<version>.jar` |
 | `rules:jvm:test-frameworks` | `intellij-jvm-test-frameworks` | `intellij-inspections-jvm-test-frameworks-<version>.jar` |
 | `rules:kotlin:code-migration` | `intellij-kotlin-code-migration` | `intellij-inspections-kotlin-code-migration-<version>.jar` |
 | `rules:kotlin:coroutines` | `intellij-kotlin-coroutines` | `intellij-inspections-kotlin-coroutines-<version>.jar` |
@@ -74,15 +78,45 @@ The project must use detekt 2 (Gradle plugin `dev.detekt`).
 Every rule takes the standard detekt options (`active`, `excludes`, `includes`, ...). The rule
 names are the short names of the IntelliJ inspections.
 
-### `intellij-jvm-junit`
+Each rule set jar contains a default config (`config/config.yml`). The rules that IntelliJ IDEA
+disables by default are inactive. Of two opposite rules, only the one that is more idiomatic for
+Kotlin is active. detekt uses this default config with `buildUponDefaultConfig = true`.
 
-The JVM rule set jars contain a default config (`config/config.yml`) that activates the rules
-that find bugs. The rules that IntelliJ IDEA disables by default and that only give style or
-migration hints are inactive. detekt uses this default config with `buildUponDefaultConfig = true`.
+### `intellij-jvm-code-maturity`
 
 | Rule | Finds |
 |---|---|
-| `AssertEqualsCalledOnArray` | An `assertEquals()` call on two arrays, which compares them by identity and not by content. |
+| `MarkedForRemoval` | A usage of an API that is deprecated with `@Deprecated(forRemoval = true)`, or an override of a method marked for removal. Option `isSameOutermostClassIgnored` (default `true`) does not report the usages in the same outermost class. |
+
+### `intellij-jvm-declaration-redundancy`
+
+| Rule | Finds |
+|---|---|
+| `SameParameterValue` | A parameter of a function that gets the same constant value in every call, when all calls are in the same file. Option `highestModifier` (default `protected`) is the highest visibility to check. Option `minimalUsageCount` (default `1`) is the number of calls needed to report. |
+| `SameReturnValue` | A function that cannot be overridden and that always returns the same constant value. |
+
+### `intellij-jvm-general`
+
+| Rule | Finds |
+|---|---|
+| `BlockingMethodInNonBlockingContext` | A possibly blocking call, such as `Thread.sleep()`, a JDK method that throws `IOException` or a method annotated with `@Blocking`, in a non-blocking context such as a suspend function, a coroutine on a non-IO dispatcher or a method annotated with `@NonBlocking`. Option `isUnknownContextBlocking` (default `true`) does not report the calls in contexts that are not known. Option `isSuspendContextNonBlocking` (default `true`) considers suspend functions and suspend lambdas non-blocking. Options `blockingAnnotations` and `nonBlockingAnnotations` add annotations to the default ones. |
+| `MissingDeprecatedAnnotationOnScheduledForRemovalApi` | A declaration marked with `@ApiStatus.ScheduledForRemoval` that is not also marked with `@Deprecated`. |
+| `MustAlreadyBeRemovedApi` | A declaration marked with `@ApiStatus.ScheduledForRemoval` for a version that is not later than the current version. Option `currentVersion` (default empty, which turns the rule off) gives the current version. |
+| `NonExtendableApiUsage` | A class, interface or override that extends, implements or overrides a library API marked with `@ApiStatus.NonExtendable`, or the annotation on a declaration that cannot be extended. |
+| `OverrideOnly` | A call or reference of a library method marked with `@ApiStatus.OverrideOnly` outside a super or delegate call in its override, or the annotation on a declaration that cannot be overridden. |
+| `SerializableHasSerialVersionUIDField` | A `Serializable` class without a `serialVersionUID` field. Option `isAnonymousClassIgnored` (default `false`) does not report anonymous objects. Option `ignoredSuperClasses` (default `java.awt.Component`) does not report the subclasses of these classes that do not implement `Serializable` directly. Inactive by default. |
+| `SuppressionAnnotation` | A `@Suppress` or `@SuppressWarnings` annotation or a `//noinspection` comment that suppresses inspections. Option `allowedSuppressions` lists the suppressed ids to accept. Inactive by default. |
+| `SystemGetProperty` | A `System.getProperty()` call for `file.separator`, `path.separator`, `line.separator` or `file.encoding`, which a dedicated API gives directly. |
+| `ThreadRun` | A call of `run()` on a `Thread`, which runs the code in the current thread instead of starting a new one. |
+| `UnstableApiUsage` | A usage of a library API that an unstable API annotation such as `@ApiStatus.Experimental` or `@ApiStatus.Internal` marks, or whose signature refers to such a type. Option `unstableApiAnnotations` lists the annotations. Option `isInsideImportsIgnored` (default `true`) does not report imports. Option `isApiDeclaredInThisProjectIgnored` (default `true`) reports only compiled library APIs. |
+| `UnstableTypeUsedInSignature` | A public declaration whose signature refers to a type marked with an unstable API annotation, but that does not have the same annotation itself. Option `unstableApiAnnotations` lists the annotations. Inactive by default. |
+| `UrlHashCode` | An `equals()` or `hashCode()` call or an `==` comparison on `java.net.URL`, or a map or set of URLs, which can resolve the host over the network. |
+
+### `intellij-jvm-junit`
+
+| Rule | Finds |
+|---|---|
+| `AssertEqualsCalledOnArray` | An `assertEquals()` call on two arrays, which compares them by identity and not by content. Inactive by default. |
 | `AssertEqualsMayBeAssertSame` | An `assertEquals()` call on two objects of a final class that does not override `equals()`, where `assertSame()` fits. Inactive by default. |
 | `IgnoredJUnitTest` | A test class or test method that `@Ignore` or `@Disabled` turns off. Option `isReasonAccepted` (default `true`) does not report the ones that give a reason. Inactive by default. |
 | `JUnit3StyleTestMethodInJUnit4Class` | A `test...` method without `@Test` in a JUnit 4 class, which JUnit 4 does not run. |
@@ -91,9 +125,18 @@ migration hints are inactive. detekt uses this default config with `buildUponDef
 | `JUnitMixedFramework` | A test class that uses annotations of a JUnit version other than the version of the class. |
 | `Junit4RunWithInspection` | A `@RunWith` on a test class whose superclass already has `@RunWith`. |
 | `MigrateAssertToMatcherAssert` | A JUnit assertion such as `assertEquals()` that a Hamcrest `assertThat()` can replace, when Hamcrest is on the classpath. Inactive by default. |
-| `ParameterizedParametersStaticCollection` | A JUnit 4 `Parameterized` test class with no `@Parameters` method, more than one, or one with a bad signature. |
-| `SuperTearDownInFinally` | A `super.tearDown()` call in a JUnit 3 `tearDown()` that is not in a `finally` block. |
+| `ParameterizedParametersStaticCollection` | A JUnit 4 `Parameterized` test class with no `@Parameters` method, more than one, or one with a bad signature. Inactive by default. |
+| `SuperTearDownInFinally` | A `super.tearDown()` call in a JUnit 3 `tearDown()` that is not in a `finally` block. Inactive by default. |
 | `UseOfObsoleteAssert` | A call of the JUnit 3 `junit.framework.Assert` or `TestCase` assertions, when JUnit 4 or later is on the classpath. Inactive by default. |
+
+### `intellij-jvm-logging`
+
+| Rule | Finds |
+|---|---|
+| `LogStatementNotGuardedByLogCondition` | A logging call with computed arguments that a log level condition such as `if (logger.isDebugEnabled)` does not guard. Option `limitLevelType` (default `DEBUG_AND_LOWER`) sets the log levels to check. Option `isUnguardedConstantFlagged` (default `false`) also reports the calls with only constant arguments. Inactive by default. |
+| `LoggingConditionDisagreesWithLogLevelStatement` | A log level condition whose level does not agree with the level of the logging call that it guards. Inactive by default. |
+| `LoggingPlaceholderCountMatchesArgumentCount` | A logging call whose number of placeholders does not match the number of arguments. Option `slf4jToLog4J2Type` (default `AUTO`) tells if SLF4J calls go to Log4j 2 (`AUTO`, `YES` or `NO`). |
+| `LoggingStringTemplateAsArgument` | A logging call that builds its message with a string template or concatenation instead of placeholders. Option `limitLevelType` (default `DEBUG_AND_LOWER`) sets the log levels to check. Option `arePrimitivesSkipped` (default `true`) does not report templates with only primitive values. Option `isOnlyExceptionSkipped` (default `false`) does not report calls whose only other argument is an exception. |
 
 ### `intellij-jvm-test-frameworks`
 
@@ -110,20 +153,35 @@ migration hints are inactive. detekt uses this default config with `buildUponDef
 |---|---|
 | `JUnit5Converter` | Only a hint to migrate from JUnit 4 to JUnit 5, not a problem in the code. |
 | `Junit4Converter` | Only a hint to migrate from JUnit 3 to JUnit 4, not a problem in the code. |
+| `Dependency` | Needs the dependency rules of the IDE project settings. |
+| `Deprecation` | The Kotlin compiler already reports the usages of deprecated APIs. |
+| `DialogTitleCapitalization` | Needs the message bundles of IntelliJ plugin projects. |
+| `EmptyMethod` | Needs a search for overriding methods and usages in the whole project. |
 | `ExpectedExceptionNeverThrown` | Checks the checked exceptions of the test body. Kotlin has no checked exceptions. |
+| `HardCodedStringLiteral` | Needs the internationalization settings of the IDE and `@NonNls` data from the whole project. |
+| `IllegalDependencyOnInternalPackage` | Needs the Java module graph of the project. |
+| `ImplicitSubclassInspection` | Needs framework plugins of the IDE that create subclasses at runtime. |
+| `LoggingGuardedByCondition` | Only a hint that a log level condition is not needed, not a problem in the code. |
+| `LoggingSimilarMessage` | A text similarity heuristic that gives noisy findings and sees only one file. |
 | `MultipleExceptionsDeclaredOnTestMethod` | Checks the Java `throws` clause. Kotlin functions do not declare one. |
+| `ReturnFromFinallyBlock` | The `ReturnFromFinally` rule of detekt already finds this. |
+| `Since15` | Needs the API version data of the JDK and the language level of the module. |
+| `SourceToSinkFlow` | Needs data flow analysis across methods of the whole project. |
+| `SuspiciousPackagePrivateAccess` | Needs the module structure of the project. Kotlin has no package-private visibility. |
 | `TestFailedLine` | Needs the results of a test run in the IDE. |
 | `TestInProductSource` | Needs the test source roots of the module. |
 | `TestOnlyProblems` | Needs the test source roots of the module. |
+| `UnsupportedCharacter` | Checks `.properties` files, not Kotlin code. |
+| `UsagesOfObsoleteApi` | `@ApiStatus.Obsolete` APIs are still safe to use. IntelliJ IDEA only strikes them through. |
 
 ### `intellij-kotlin-code-migration`
 
 | Rule | Finds |
 |---|---|
-| `CanConvertToMultiDollarString` | A string that escapes dollar characters and can use an interpolation prefix instead. Opposite of `ConvertFromMultiDollarToRegularString`; enable one of them. |
-| `ConvertFromMultiDollarToRegularString` | A string with an interpolation prefix that can be a regular string. Opposite of `CanConvertToMultiDollarString`; enable one of them. |
+| `CanConvertToMultiDollarString` | A string that escapes dollar characters and can use an interpolation prefix instead. Opposite of `ConvertFromMultiDollarToRegularString`. |
+| `ConvertFromMultiDollarToRegularString` | A string with an interpolation prefix that can be a regular string. Opposite of `CanConvertToMultiDollarString`, which is active by default. Inactive by default. |
 | `ConvertLongToDuration` | A kotlinx.coroutines call that uses the `Long` milliseconds overload instead of `Duration`. |
-| `InfixCallToOrdinary` | An infix call that can be an ordinary call. Opposite of `ConvertPairConstructorToToFunction` and `ReplaceToWithInfixForm`; enable one of them. |
+| `InfixCallToOrdinary` | An infix call that can be an ordinary call. Opposite of `ConvertPairConstructorToToFunction` and `ReplaceToWithInfixForm`, which are active by default. Inactive by default. |
 
 ### `intellij-kotlin-coroutines`
 
@@ -246,7 +304,7 @@ migration hints are inactive. detekt uses this default config with `buildUponDef
 | `CanBePrimaryConstructorProperty` | A property that is initialized from the constructor parameter of the same name and type. |
 | `CanUnescapeDollarLiteral` | An escaped dollar in a string literal that can be a plain `$`. |
 | `ConstantConditionIf` | An `if` whose condition is the constant `true` or `false`. |
-| `ExplicitThis` | An explicit `this` receiver that the code resolves the same without. Opposite of `ImplicitThis`; enable one of them. |
+| `ExplicitThis` | An explicit `this` receiver that the code resolves the same without. Opposite of `ImplicitThis`. |
 | `IfExpressionWithIdenticalBranches` | An `if` whose `then` and `else` branches are identical. |
 | `KotlinRedundantOverride` | An override that only calls the super implementation with the same arguments. |
 | `NullChecksToSafeCall` | Chained null checks on a receiver and on a call on it that one safe call check can replace. |
@@ -292,23 +350,23 @@ migration hints are inactive. detekt uses this default config with `buildUponDef
 | `BooleanLiteralArgument` | Adjacent `true` or `false` arguments without parameter names. |
 | `CascadeIf` | An `if`-`else if` chain on one subject that `when` can replace. |
 | `CollectionConcatenationToBuildCollection` | A chain of two or more `+` or `-` operations on a list or set that `buildList` or `buildSet` can replace. |
-| `ConvertPairConstructorToToFunction` | An explicit `Pair(a, b)` constructor call that can be the infix `a to b`. Opposite of `InfixCallToOrdinary`; enable one of them. |
-| `ConvertRangeCheckToTwoComparisons` | An `in` or `!in` check of simple values against a standard range that can be two comparisons. Opposite of `ConvertTwoComparisonsToRangeCheck`; enable one of them. |
+| `ConvertPairConstructorToToFunction` | An explicit `Pair(a, b)` constructor call that can be the infix `a to b`. Opposite of `InfixCallToOrdinary`. |
+| `ConvertRangeCheckToTwoComparisons` | An `in` or `!in` check of simple values against a standard range that can be two comparisons. Opposite of `ConvertTwoComparisonsToRangeCheck`, which is active by default. Inactive by default. |
 | `ConvertReferenceToLambda` | A callable reference that a lambda can replace. |
-| `ConvertSealedClassToSealedInterface` | A sealed class without state, constructor parameters or final members that can be a sealed interface. Opposite of `ConvertSealedInterfaceToSealedClass`; enable one of them. |
-| `ConvertSealedInterfaceToSealedClass` | A sealed interface whose inheritors are all plain classes or objects that can extend a sealed class. Opposite of `ConvertSealedClassToSealedInterface`; enable one of them. |
+| `ConvertSealedClassToSealedInterface` | A sealed class without state, constructor parameters or final members that can be a sealed interface. Opposite of `ConvertSealedInterfaceToSealedClass`. |
+| `ConvertSealedInterfaceToSealedClass` | A sealed interface whose inheritors are all plain classes or objects that can extend a sealed class. Opposite of `ConvertSealedClassToSealedInterface`, which is active by default. Inactive by default. |
 | `ConvertSecondaryConstructorToPrimary` | A secondary constructor that every other constructor delegates to and that can be the primary constructor. |
-| `ConvertToExplicitBackingFields` | A property whose getter only returns a private property of a narrower type, which an explicit backing field can replace. Opposite of `RevertExplicitBackingFields`; enable one of them. |
+| `ConvertToExplicitBackingFields` | A property whose getter only returns a private property of a narrower type, which an explicit backing field can replace. Opposite of `RevertExplicitBackingFields`. |
 | `ConvertToStringTemplate` | A `String` concatenation of literals and simple values that a string template can replace. |
 | `ConvertTryFinallyToUseCall` | A `try`-`finally` that only closes a `Closeable` in `finally`, which `use()` can replace. |
-| `ConvertTwoComparisonsToRangeCheck` | Two comparisons of one value with a lower and an upper bound that an `in` or `!in` range check can replace. Opposite of `ConvertRangeCheckToTwoComparisons`; enable one of them. |
+| `ConvertTwoComparisonsToRangeCheck` | Two comparisons of one value with a lower and an upper bound that an `in` or `!in` range check can replace. Opposite of `ConvertRangeCheckToTwoComparisons`. |
 | `CopyWithoutNamedArguments` | A data class `copy` call that passes arguments without names. |
 | `DestructuringDeclaration` | A local variable, loop variable or lambda parameter of a data class or `Map.Entry` type that is only used to read its components. |
 | `FilterIsInstanceCallWithClassLiteralArgument` | A `filterIsInstance(X::class.java)` call that `filterIsInstance<X>()` can replace. |
 | `FoldInitializerAndIfToElvis` | An `if` null or type check that exits right after a variable declaration and can fold into the initializer with `?:`. |
 | `IfThenToElvis` | An `if` that checks a value for `null` or a type and that the elvis operator `?:` can replace. |
 | `IfThenToSafeAccess` | An `if` that checks a value for `null` or a type, returns `null` otherwise, and that `?.` or `as?` can replace. |
-| `ImplicitThis` | A member access or callable reference that uses an implicit `this` receiver. Opposite of `ExplicitThis`; enable one of them. |
+| `ImplicitThis` | A member access or callable reference that uses an implicit `this` receiver. Opposite of `ExplicitThis`, which is active by default. Inactive by default. |
 | `IntroduceWhenSubject` | A `when` without a subject whose branches all check the same value, which can be the subject. |
 | `JavaMapForEach` | A call of the Java `Map.forEach` with a two-parameter lambda instead of the Kotlin `forEach` with a destructured entry. |
 | `JoinDeclarationAndAssignment` | A property without an initializer that can join its first assignment. |
@@ -347,13 +405,13 @@ migration hints are inactive. detekt uses this default config with `buildUponDef
 | `ReplaceSubstringWithSubstringBefore` | An `s.substring(0, s.indexOf(x))` call that `s.substringBefore(x)` can replace. |
 | `ReplaceSubstringWithTake` | An `s.substring(0, n)` call that `s.take(n)` can replace. |
 | `ReplaceToStringWithStringTemplate` | A `toString()` call on a reference that a string template can replace. |
-| `ReplaceToWithInfixForm` | A dot call of the infix `to` function that can use the infix form. Opposite of `InfixCallToOrdinary`; enable one of them. |
+| `ReplaceToWithInfixForm` | A dot call of the infix `to` function that can use the infix form. Opposite of `InfixCallToOrdinary`. |
 | `ReplaceUntilWithRangeUntil` | An infix `until` call from the standard library that the `..<` operator can replace. |
 | `ReplaceWithCallWithContextCall` | A `with` call whose receiver is only used as a context argument, so a `context` call fits. |
 | `ReplaceWithIgnoreCaseEquals` | An equality check of two identical case conversions that `equals(..., ignoreCase = true)` can replace. |
 | `ReplaceWithImportAlias` | A qualified name that an existing import alias can replace. |
 | `ReplaceWithOperatorAssignment` | An assignment such as `x = x + y` that an operator assignment such as `x += y` can replace. |
-| `RevertExplicitBackingFields` | A property with an explicit backing field that a private backing property can replace. Opposite of `ConvertToExplicitBackingFields`; enable one of them. |
+| `RevertExplicitBackingFields` | A property with an explicit backing field that a private backing property can replace. Opposite of `ConvertToExplicitBackingFields`, which is active by default. Inactive by default. |
 | `SafeCastWithReturn` | An `x as? T ?: return` statement that an `if (x !is T) return` check can replace. |
 | `SimplifiableCall` | A `flatMap`, `filter` or `mapNotNull` call with a trivial lambda that `flatten`, `filterNotNull` or `filterIsInstance` can replace. |
 | `SimplifiableCallChain` | A collection, sequence or text call chain that one call can replace. |

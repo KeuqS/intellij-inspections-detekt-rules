@@ -1,24 +1,36 @@
 [versions]
 assertj = "3.27.3"
+commons-logging = "1.3.5"
 detekt = "2.0.0-alpha.6"
 hamcrest = "3.0"
+jetbrains-annotations = "26.0.2"
 junit4 = "4.13.2"
 junit5 = "5.13.4"
 kotlin = "2.4.10"
+kotlinx-coroutines = "1.10.2"
 kover = "0.9.9"
+log4j = "1.2.17"
+log4j2 = "2.24.3"
 shadow = "9.6.1"
+slf4j = "2.0.17"
 testng = "7.11.0"
 
 [libraries]
 assertj-core = { module = "org.assertj:assertj-core", version.ref = "assertj" }
+commons-logging = { module = "commons-logging:commons-logging", version.ref = "commons-logging" }
 detekt-api = { module = "dev.detekt:detekt-api", version.ref = "detekt" }
 detekt-ktlint-wrapper = { module = "dev.detekt:detekt-rules-ktlint-wrapper", version.ref = "detekt" }
 detekt-test = { module = "dev.detekt:detekt-test", version.ref = "detekt" }
 hamcrest = { module = "org.hamcrest:hamcrest", version.ref = "hamcrest" }
+jetbrains-annotations = { module = "org.jetbrains:annotations", version.ref = "jetbrains-annotations" }
 junit4 = { module = "junit:junit", version.ref = "junit4" }
 junit5-api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junit5" }
 junit5-params = { module = "org.junit.jupiter:junit-jupiter-params", version.ref = "junit5" }
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
+kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
+log4j = { module = "log4j:log4j", version.ref = "log4j" }
+log4j2-api = { module = "org.apache.logging.log4j:log4j-api", version.ref = "log4j2" }
+slf4j-api = { module = "org.slf4j:slf4j-api", version.ref = "slf4j" }
 testng = { module = "org.testng:testng", version.ref = "testng" }
 
 [plugins]
