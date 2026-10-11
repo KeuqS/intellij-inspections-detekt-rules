@@ -74,15 +74,15 @@ The project must use detekt 2 (Gradle plugin `dev.detekt`).
 Every rule takes the standard detekt options (`active`, `excludes`, `includes`, ...). The rule
 names are the short names of the IntelliJ inspections.
 
-### `intellij-jvm-junit`
+Each rule set jar contains a default config (`config/config.yml`). The rules that IntelliJ IDEA
+disables by default are inactive. Of two opposite rules, only the one that is more idiomatic for
+Kotlin is active. detekt uses this default config with `buildUponDefaultConfig = true`.
 
-The JVM rule set jars contain a default config (`config/config.yml`) that activates the rules
-that find bugs. The rules that IntelliJ IDEA disables by default and that only give style or
-migration hints are inactive. detekt uses this default config with `buildUponDefaultConfig = true`.
+### `intellij-jvm-junit`
 
 | Rule | Finds |
 |---|---|
-| `AssertEqualsCalledOnArray` | An `assertEquals()` call on two arrays, which compares them by identity and not by content. |
+| `AssertEqualsCalledOnArray` | An `assertEquals()` call on two arrays, which compares them by identity and not by content. Inactive by default. |
 | `AssertEqualsMayBeAssertSame` | An `assertEquals()` call on two objects of a final class that does not override `equals()`, where `assertSame()` fits. Inactive by default. |
 | `IgnoredJUnitTest` | A test class or test method that `@Ignore` or `@Disabled` turns off. Option `isReasonAccepted` (default `true`) does not report the ones that give a reason. Inactive by default. |
 | `JUnit3StyleTestMethodInJUnit4Class` | A `test...` method without `@Test` in a JUnit 4 class, which JUnit 4 does not run. |
@@ -91,8 +91,8 @@ migration hints are inactive. detekt uses this default config with `buildUponDef
 | `JUnitMixedFramework` | A test class that uses annotations of a JUnit version other than the version of the class. |
 | `Junit4RunWithInspection` | A `@RunWith` on a test class whose superclass already has `@RunWith`. |
 | `MigrateAssertToMatcherAssert` | A JUnit assertion such as `assertEquals()` that a Hamcrest `assertThat()` can replace, when Hamcrest is on the classpath. Inactive by default. |
-| `ParameterizedParametersStaticCollection` | A JUnit 4 `Parameterized` test class with no `@Parameters` method, more than one, or one with a bad signature. |
-| `SuperTearDownInFinally` | A `super.tearDown()` call in a JUnit 3 `tearDown()` that is not in a `finally` block. |
+| `ParameterizedParametersStaticCollection` | A JUnit 4 `Parameterized` test class with no `@Parameters` method, more than one, or one with a bad signature. Inactive by default. |
+| `SuperTearDownInFinally` | A `super.tearDown()` call in a JUnit 3 `tearDown()` that is not in a `finally` block. Inactive by default. |
 | `UseOfObsoleteAssert` | A call of the JUnit 3 `junit.framework.Assert` or `TestCase` assertions, when JUnit 4 or later is on the classpath. Inactive by default. |
 
 ### `intellij-jvm-test-frameworks`
@@ -120,10 +120,10 @@ migration hints are inactive. detekt uses this default config with `buildUponDef
 
 | Rule | Finds |
 |---|---|
-| `CanConvertToMultiDollarString` | A string that escapes dollar characters and can use an interpolation prefix instead. Opposite of `ConvertFromMultiDollarToRegularString`; enable one of them. |
-| `ConvertFromMultiDollarToRegularString` | A string with an interpolation prefix that can be a regular string. Opposite of `CanConvertToMultiDollarString`; enable one of them. |
+| `CanConvertToMultiDollarString` | A string that escapes dollar characters and can use an interpolation prefix instead. Opposite of `ConvertFromMultiDollarToRegularString`. |
+| `ConvertFromMultiDollarToRegularString` | A string with an interpolation prefix that can be a regular string. Opposite of `CanConvertToMultiDollarString`, which is active by default. Inactive by default. |
 | `ConvertLongToDuration` | A kotlinx.coroutines call that uses the `Long` milliseconds overload instead of `Duration`. |
-| `InfixCallToOrdinary` | An infix call that can be an ordinary call. Opposite of `ConvertPairConstructorToToFunction` and `ReplaceToWithInfixForm`; enable one of them. |
+| `InfixCallToOrdinary` | An infix call that can be an ordinary call. Opposite of `ConvertPairConstructorToToFunction` and `ReplaceToWithInfixForm`, which are active by default. Inactive by default. |
 
 ### `intellij-kotlin-coroutines`
 
@@ -246,7 +246,7 @@ migration hints are inactive. detekt uses this default config with `buildUponDef
 | `CanBePrimaryConstructorProperty` | A property that is initialized from the constructor parameter of the same name and type. |
 | `CanUnescapeDollarLiteral` | An escaped dollar in a string literal that can be a plain `$`. |
 | `ConstantConditionIf` | An `if` whose condition is the constant `true` or `false`. |
-| `ExplicitThis` | An explicit `this` receiver that the code resolves the same without. Opposite of `ImplicitThis`; enable one of them. |
+| `ExplicitThis` | An explicit `this` receiver that the code resolves the same without. Opposite of `ImplicitThis`. |
 | `IfExpressionWithIdenticalBranches` | An `if` whose `then` and `else` branches are identical. |
 | `KotlinRedundantOverride` | An override that only calls the super implementation with the same arguments. |
 | `NullChecksToSafeCall` | Chained null checks on a receiver and on a call on it that one safe call check can replace. |
@@ -292,23 +292,23 @@ migration hints are inactive. detekt uses this default config with `buildUponDef
 | `BooleanLiteralArgument` | Adjacent `true` or `false` arguments without parameter names. |
 | `CascadeIf` | An `if`-`else if` chain on one subject that `when` can replace. |
 | `CollectionConcatenationToBuildCollection` | A chain of two or more `+` or `-` operations on a list or set that `buildList` or `buildSet` can replace. |
-| `ConvertPairConstructorToToFunction` | An explicit `Pair(a, b)` constructor call that can be the infix `a to b`. Opposite of `InfixCallToOrdinary`; enable one of them. |
-| `ConvertRangeCheckToTwoComparisons` | An `in` or `!in` check of simple values against a standard range that can be two comparisons. Opposite of `ConvertTwoComparisonsToRangeCheck`; enable one of them. |
+| `ConvertPairConstructorToToFunction` | An explicit `Pair(a, b)` constructor call that can be the infix `a to b`. Opposite of `InfixCallToOrdinary`. |
+| `ConvertRangeCheckToTwoComparisons` | An `in` or `!in` check of simple values against a standard range that can be two comparisons. Opposite of `ConvertTwoComparisonsToRangeCheck`, which is active by default. Inactive by default. |
 | `ConvertReferenceToLambda` | A callable reference that a lambda can replace. |
-| `ConvertSealedClassToSealedInterface` | A sealed class without state, constructor parameters or final members that can be a sealed interface. Opposite of `ConvertSealedInterfaceToSealedClass`; enable one of them. |
-| `ConvertSealedInterfaceToSealedClass` | A sealed interface whose inheritors are all plain classes or objects that can extend a sealed class. Opposite of `ConvertSealedClassToSealedInterface`; enable one of them. |
+| `ConvertSealedClassToSealedInterface` | A sealed class without state, constructor parameters or final members that can be a sealed interface. Opposite of `ConvertSealedInterfaceToSealedClass`. |
+| `ConvertSealedInterfaceToSealedClass` | A sealed interface whose inheritors are all plain classes or objects that can extend a sealed class. Opposite of `ConvertSealedClassToSealedInterface`, which is active by default. Inactive by default. |
 | `ConvertSecondaryConstructorToPrimary` | A secondary constructor that every other constructor delegates to and that can be the primary constructor. |
-| `ConvertToExplicitBackingFields` | A property whose getter only returns a private property of a narrower type, which an explicit backing field can replace. Opposite of `RevertExplicitBackingFields`; enable one of them. |
+| `ConvertToExplicitBackingFields` | A property whose getter only returns a private property of a narrower type, which an explicit backing field can replace. Opposite of `RevertExplicitBackingFields`. |
 | `ConvertToStringTemplate` | A `String` concatenation of literals and simple values that a string template can replace. |
 | `ConvertTryFinallyToUseCall` | A `try`-`finally` that only closes a `Closeable` in `finally`, which `use()` can replace. |
-| `ConvertTwoComparisonsToRangeCheck` | Two comparisons of one value with a lower and an upper bound that an `in` or `!in` range check can replace. Opposite of `ConvertRangeCheckToTwoComparisons`; enable one of them. |
+| `ConvertTwoComparisonsToRangeCheck` | Two comparisons of one value with a lower and an upper bound that an `in` or `!in` range check can replace. Opposite of `ConvertRangeCheckToTwoComparisons`. |
 | `CopyWithoutNamedArguments` | A data class `copy` call that passes arguments without names. |
 | `DestructuringDeclaration` | A local variable, loop variable or lambda parameter of a data class or `Map.Entry` type that is only used to read its components. |
 | `FilterIsInstanceCallWithClassLiteralArgument` | A `filterIsInstance(X::class.java)` call that `filterIsInstance<X>()` can replace. |
 | `FoldInitializerAndIfToElvis` | An `if` null or type check that exits right after a variable declaration and can fold into the initializer with `?:`. |
 | `IfThenToElvis` | An `if` that checks a value for `null` or a type and that the elvis operator `?:` can replace. |
 | `IfThenToSafeAccess` | An `if` that checks a value for `null` or a type, returns `null` otherwise, and that `?.` or `as?` can replace. |
-| `ImplicitThis` | A member access or callable reference that uses an implicit `this` receiver. Opposite of `ExplicitThis`; enable one of them. |
+| `ImplicitThis` | A member access or callable reference that uses an implicit `this` receiver. Opposite of `ExplicitThis`, which is active by default. Inactive by default. |
 | `IntroduceWhenSubject` | A `when` without a subject whose branches all check the same value, which can be the subject. |
 | `JavaMapForEach` | A call of the Java `Map.forEach` with a two-parameter lambda instead of the Kotlin `forEach` with a destructured entry. |
 | `JoinDeclarationAndAssignment` | A property without an initializer that can join its first assignment. |
@@ -347,13 +347,13 @@ migration hints are inactive. detekt uses this default config with `buildUponDef
 | `ReplaceSubstringWithSubstringBefore` | An `s.substring(0, s.indexOf(x))` call that `s.substringBefore(x)` can replace. |
 | `ReplaceSubstringWithTake` | An `s.substring(0, n)` call that `s.take(n)` can replace. |
 | `ReplaceToStringWithStringTemplate` | A `toString()` call on a reference that a string template can replace. |
-| `ReplaceToWithInfixForm` | A dot call of the infix `to` function that can use the infix form. Opposite of `InfixCallToOrdinary`; enable one of them. |
+| `ReplaceToWithInfixForm` | A dot call of the infix `to` function that can use the infix form. Opposite of `InfixCallToOrdinary`. |
 | `ReplaceUntilWithRangeUntil` | An infix `until` call from the standard library that the `..<` operator can replace. |
 | `ReplaceWithCallWithContextCall` | A `with` call whose receiver is only used as a context argument, so a `context` call fits. |
 | `ReplaceWithIgnoreCaseEquals` | An equality check of two identical case conversions that `equals(..., ignoreCase = true)` can replace. |
 | `ReplaceWithImportAlias` | A qualified name that an existing import alias can replace. |
 | `ReplaceWithOperatorAssignment` | An assignment such as `x = x + y` that an operator assignment such as `x += y` can replace. |
-| `RevertExplicitBackingFields` | A property with an explicit backing field that a private backing property can replace. Opposite of `ConvertToExplicitBackingFields`; enable one of them. |
+| `RevertExplicitBackingFields` | A property with an explicit backing field that a private backing property can replace. Opposite of `ConvertToExplicitBackingFields`, which is active by default. Inactive by default. |
 | `SafeCastWithReturn` | An `x as? T ?: return` statement that an `if (x !is T) return` check can replace. |
 | `SimplifiableCall` | A `flatMap`, `filter` or `mapNotNull` call with a trivial lambda that `flatten`, `filterNotNull` or `filterIsInstance` can replace. |
 | `SimplifiableCallChain` | A collection, sequence or text call chain that one call can replace. |

@@ -13,13 +13,13 @@ intellij-kotlin-style-issues:
   ConvertPairConstructorToToFunction:
     active: true
   ConvertRangeCheckToTwoComparisons:
-    active: true
+    active: false
   ConvertReferenceToLambda:
     active: true
   ConvertSealedClassToSealedInterface:
     active: true
   ConvertSealedInterfaceToSealedClass:
-    active: true
+    active: false
   ConvertSecondaryConstructorToPrimary:
     active: true
   ConvertToExplicitBackingFields:
@@ -43,7 +43,7 @@ intellij-kotlin-style-issues:
   IfThenToSafeAccess:
     active: true
   ImplicitThis:
-    active: true
+    active: false
   IntroduceWhenSubject:
     active: true
   JavaMapForEach:
@@ -133,7 +133,7 @@ intellij-kotlin-style-issues:
   ReplaceWithOperatorAssignment:
     active: true
   RevertExplicitBackingFields:
-    active: true
+    active: false
   SafeCastWithReturn:
     active: true
   SimplifiableCall:

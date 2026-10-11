@@ -1,7 +1,7 @@
 intellij-jvm-junit:
   active: true
   AssertEqualsCalledOnArray:
-    active: true
+    active: false
   AssertEqualsMayBeAssertSame:
     active: false
   IgnoredJUnitTest:
@@ -24,8 +24,8 @@ intellij-jvm-junit:
   MigrateAssertToMatcherAssert:
     active: false
   ParameterizedParametersStaticCollection:
-    active: true
+    active: false
   SuperTearDownInFinally:
-    active: true
+    active: false
   UseOfObsoleteAssert:
     active: false
