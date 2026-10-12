@@ -83,7 +83,15 @@ The project must use detekt 2 (Gradle plugin `dev.detekt`).
        active: true
    ```
 
-4. Run `./gradlew detekt`.
+4. Run the detekt tasks with type resolution:
+
+   ```shell
+   ./gradlew detektMain detektTest
+   ```
+
+   Most rules need type resolution. The plain `detekt` task does not have it, so it skips these
+   rules and does not report this. In a Kotlin Multiplatform project, run the task of each JVM
+   target, for example `detektMainJvm` and `detektTestJvm`.
 
 ## Rules
 
