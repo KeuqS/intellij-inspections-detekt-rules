@@ -79,7 +79,7 @@ internal class UnnecessaryOptInAnnotationCollector(private val session: KaSessio
         }
 
     private fun KtNamedDeclaration.declarationMarkers(): Set<ClassId> {
-        val declaration = takeIf { it is KtFunction || it is KtProperty || it is KtParameter }
+        val declaration = takeIf { it is KtFunction || it is KtProperty || it is KtParameter && !it.isFunctionTypeParameter }
         val isOverride = hasModifier(KtTokens.OVERRIDE_KEYWORD)
         return with(session) {
             val callable = declaration?.symbol as? KaCallableSymbol
