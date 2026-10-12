@@ -389,11 +389,11 @@ class UseExpressionBodyTest {
     fun `a single call of a Unit function passes by default`() {
         val sut = UseExpressionBody(Config.empty)
         val code = """
-                fun foo() {
-                    bar()
-                }
+            fun foo() {
+                bar()
+            }
 
-                fun bar() = Unit
+            fun bar() = Unit
         """.trimIndent()
 
         val findings = sut.lintWithContext(environment, code)
@@ -405,8 +405,8 @@ class UseExpressionBodyTest {
     fun `an empty function body passes by default`() {
         val sut = UseExpressionBody(Config.empty)
         val code = """
-                fun foo() {
-                }
+            fun foo() {
+            }
         """.trimIndent()
 
         val findings = sut.lintWithContext(environment, code)
@@ -418,11 +418,11 @@ class UseExpressionBodyTest {
     fun `an if with an else branch of type Unit passes by default`() {
         val sut = UseExpressionBody(Config.empty)
         val code = """
-                fun bar() = Unit
+            fun bar() = Unit
 
-                fun foo(f: Boolean) {
-                    if (f) bar() else bar()
-                }
+            fun foo(f: Boolean) {
+                if (f) bar() else bar()
+            }
         """.trimIndent()
 
         val findings = sut.lintWithContext(environment, code)
@@ -434,14 +434,14 @@ class UseExpressionBodyTest {
     fun `an exhaustive when of type Unit passes by default`() {
         val sut = UseExpressionBody(Config.empty)
         val code = """
-                enum class AccessMode { READ, WRITE }
+            enum class AccessMode { READ, WRITE }
 
-                fun whenExpr(access: AccessMode) {
-                    when (access) {
-                        AccessMode.READ -> println("read")
-                        AccessMode.WRITE -> println("write")
-                    }
+            fun whenExpr(access: AccessMode) {
+                when (access) {
+                    AccessMode.READ -> println("read")
+                    AccessMode.WRITE -> println("write")
                 }
+            }
         """.trimIndent()
 
         val findings = sut.lintWithContext(environment, code)
@@ -453,12 +453,12 @@ class UseExpressionBodyTest {
     fun `a setter with a single Unit call passes by default`() {
         val sut = UseExpressionBody(Config.empty)
         val code = """
-                fun log(value: String) = Unit
+            fun log(value: String) = Unit
 
-                var foo: String = ""
-                    set(value) {
-                        log(value)
-                    }
+            var foo: String = ""
+                set(value) {
+                    log(value)
+                }
         """.trimIndent()
 
         val findings = sut.lintWithContext(environment, code)
@@ -470,9 +470,9 @@ class UseExpressionBodyTest {
     fun `a single throw is reported by default`() {
         val sut = UseExpressionBody(Config.empty)
         val code = """
-                fun foo(): Nothing {
-                    throw UnsupportedOperationException()
-                }
+            fun foo(): Nothing {
+                throw UnsupportedOperationException()
+            }
         """.trimIndent()
 
         val findings = sut.lintWithContext(environment, code)
@@ -484,10 +484,10 @@ class UseExpressionBodyTest {
     fun `a getter with a single throw is reported by default`() {
         val sut = UseExpressionBody(Config.empty)
         val code = """
-                val foo: String
-                    get() {
-                        throw UnsupportedOperationException()
-                    }
+            val foo: String
+                get() {
+                    throw UnsupportedOperationException()
+                }
         """.trimIndent()
 
         val findings = sut.lintWithContext(environment, code)
@@ -499,9 +499,9 @@ class UseExpressionBodyTest {
     fun `a one-line return is reported by default`() {
         val sut = UseExpressionBody(Config.empty)
         val code = """
-                fun sqr(x: Int): Int {
-                    return x * x
-                }
+            fun sqr(x: Int): Int {
+                return x * x
+            }
         """.trimIndent()
 
         val findings = sut.lintWithContext(environment, code)
@@ -513,10 +513,10 @@ class UseExpressionBodyTest {
     fun `a getter with a return is reported by default`() {
         val sut = UseExpressionBody(Config.empty)
         val code = """
-                val foo: String
-                    get() {
-                        return "abc"
-                    }
+            val foo: String
+                get() {
+                    return "abc"
+                }
         """.trimIndent()
 
         val findings = sut.lintWithContext(environment, code)
