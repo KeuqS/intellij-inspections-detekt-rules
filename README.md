@@ -83,7 +83,15 @@ The project must use detekt 2 (Gradle plugin `dev.detekt`).
        active: true
    ```
 
-4. Run `./gradlew detekt`.
+4. Run the detekt tasks with type resolution:
+
+   ```shell
+   ./gradlew detektMain detektTest
+   ```
+
+   Most rules need type resolution. The plain `detekt` task does not have it, so it skips these
+   rules and does not report this. In a Kotlin Multiplatform project, run the task of each JVM
+   target, for example `detektMainJvm` and `detektTestJvm`.
 
 ## Rules
 
@@ -564,14 +572,10 @@ Refresh the catalog with:
 python3 scripts/inspection-catalog.py <intellij-community checkout> --ref master
 ```
 
-The script makes a sparse clone at the given path if it does not exist. Each rule names its
-inspection with `@IntellijInspection`, and each rule set names its inspection group with
-`@IntellijInspectionGroup`. The script reads these annotations.
-
 Every week the [Upstream sync](.github/workflows/upstream-sync.yml) workflow runs
 `scripts/inspection-sync.py`. The script compares the catalog with the `master` branch of
 intellij-community and lists the new inspections, the removed inspections and the changed rules in
-one issue with the `upstream-sync` label. Refresh the catalog to accept the changes.
+one issue with the `upstream-sync` label.
 
 ## License
 
