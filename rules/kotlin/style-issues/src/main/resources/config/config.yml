@@ -15,7 +15,7 @@ intellij-kotlin-style-issues:
   ConvertRangeCheckToTwoComparisons:
     active: false
   ConvertReferenceToLambda:
-    active: true
+    active: false
   ConvertSealedClassToSealedInterface:
     active: true
   ConvertSealedInterfaceToSealedClass:
