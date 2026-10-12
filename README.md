@@ -460,7 +460,7 @@ the script, because detekt does not have the Gradle model.
 
 | Rule | Finds |
 |---|---|
-| `AddOperatorModifier` | A function that matches an operator convention but has no `operator` modifier. |
+| `AddOperatorModifier` | A function that matches an operator convention but has no `operator` modifier. Option `areSuspendFunctionsSkipped` (default `true`) does not report `suspend` functions. |
 | `AddVarianceModifier` | A class type parameter that is used only in input or only in output positions and can be `in` or `out`. |
 | `BooleanLiteralArgument` | Adjacent `true` or `false` arguments without parameter names. |
 | `CascadeIf` | An `if`-`else if` chain on one subject that `when` can replace. |

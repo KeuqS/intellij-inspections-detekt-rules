@@ -1,6 +1,7 @@
 package by.overpas.detekt.intellij.kotlin.styleissues.addoperatormodifier
 
 import dev.detekt.api.Config
+import dev.detekt.test.TestConfig
 import dev.detekt.test.lintWithContext
 import dev.detekt.test.utils.createEnvironment
 import kotlin.test.Test
@@ -135,5 +136,60 @@ class AddOperatorModifierTest {
         val findings = sut.lintWithContext(environment, code)
 
         assertEquals(0, findings.size)
+    }
+
+    @Test
+    fun `a suspend get function passes by default`() {
+        val code = """
+            interface NotesDb {
+                suspend fun get(id: Long): String?
+            }
+        """.trimIndent()
+
+        val findings = sut.lintWithContext(environment, code)
+
+        assertEquals(0, findings.size)
+    }
+
+    @Test
+    fun `a suspend get function passes when suspend functions are skipped`() {
+        val sut = AddOperatorModifier(TestConfig("areSuspendFunctionsSkipped" to true))
+        val code = """
+            interface NotesDb {
+                suspend fun get(id: Long): String?
+            }
+        """.trimIndent()
+
+        val findings = sut.lintWithContext(environment, code)
+
+        assertEquals(0, findings.size)
+    }
+
+    @Test
+    fun `a suspend get function is reported when suspend functions are not skipped`() {
+        val sut = AddOperatorModifier(TestConfig("areSuspendFunctionsSkipped" to false))
+        val code = """
+            interface NotesDb {
+                suspend fun get(id: Long): String?
+            }
+        """.trimIndent()
+
+        val findings = sut.lintWithContext(environment, code)
+
+        assertEquals(1, findings.size)
+    }
+
+    @Test
+    fun `a non-suspend get function is reported when suspend functions are skipped`() {
+        val sut = AddOperatorModifier(TestConfig("areSuspendFunctionsSkipped" to true))
+        val code = """
+            interface NotesDb {
+                fun get(id: Long): String?
+            }
+        """.trimIndent()
+
+        val findings = sut.lintWithContext(environment, code)
+
+        assertEquals(1, findings.size)
     }
 }

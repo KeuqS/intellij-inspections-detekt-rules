@@ -2,10 +2,12 @@ package by.overpas.detekt.intellij.kotlin.styleissues.addoperatormodifier
 
 import by.overpas.detekt.intellij.IntellijInspection
 import dev.detekt.api.Config
+import dev.detekt.api.Configuration
 import dev.detekt.api.Entity
 import dev.detekt.api.Finding
 import dev.detekt.api.RequiresAnalysisApi
 import dev.detekt.api.Rule
+import dev.detekt.api.config
 import org.jetbrains.kotlin.analysis.api.KaExperimentalApi
 import org.jetbrains.kotlin.analysis.api.analyze
 import org.jetbrains.kotlin.analysis.api.components.canBeOperator
@@ -21,10 +23,14 @@ class AddOperatorModifier(config: Config) :
     ),
     RequiresAnalysisApi {
 
+    @Configuration("Do not report `suspend` functions.")
+    private val areSuspendFunctionsSkipped: Boolean by config(true)
+
     @OptIn(KaExperimentalApi::class)
     override fun visitNamedFunction(function: KtNamedFunction) {
         super.visitNamedFunction(function)
         if (function.nameIdentifier == null || function.hasModifier(KtTokens.OPERATOR_KEYWORD)) return
+        if (areSuspendFunctionsSkipped && function.hasModifier(KtTokens.SUSPEND_KEYWORD)) return
         val isOperatorCandidate = analyze(function) {
             (function.symbol as? KaNamedFunctionSymbol)?.run { canBeOperator && !isOperator } == true
         }
