@@ -2,10 +2,12 @@ package by.overpas.detekt.intellij.kotlin.styleissues.useexpressionbody
 
 import by.overpas.detekt.intellij.IntellijInspection
 import dev.detekt.api.Config
+import dev.detekt.api.Configuration
 import dev.detekt.api.Entity
 import dev.detekt.api.Finding
 import dev.detekt.api.RequiresAnalysisApi
 import dev.detekt.api.Rule
+import dev.detekt.api.config
 import org.jetbrains.kotlin.analysis.api.analyze
 import org.jetbrains.kotlin.psi.KtDeclarationWithBody
 import org.jetbrains.kotlin.psi.KtNamedFunction
@@ -20,6 +22,9 @@ class UseExpressionBody(config: Config) :
     ),
     RequiresAnalysisApi {
 
+    @Configuration("Do not report empty block bodies and block bodies with a single expression of type `Unit`.")
+    private val areUnitExpressionsSkipped: Boolean by config(true)
+
     override fun visitNamedFunction(function: KtNamedFunction) {
         super.visitNamedFunction(function)
         function.reportIfConvertible()
@@ -31,7 +36,7 @@ class UseExpressionBody(config: Config) :
     }
 
     private fun KtDeclarationWithBody.reportIfConvertible() {
-        val body = UseExpressionBodyBlock(bodyBlockExpression ?: return)
+        val body = UseExpressionBodyBlock(bodyBlockExpression ?: return, areUnitExpressionsSkipped)
         val subject = body.takeIf { it.isConvertible() }?.let { analyze(this) { it.subject() } } ?: return
         report(Finding(Entity.from(body.highlighted()), "Use expression body instead of $subject"))
     }

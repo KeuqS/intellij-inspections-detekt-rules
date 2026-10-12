@@ -2,6 +2,7 @@ intellij-kotlin-style-issues:
   active: true
   AddOperatorModifier:
     active: true
+    areSuspendFunctionsSkipped: true
   AddVarianceModifier:
     active: true
   BooleanLiteralArgument:
@@ -34,6 +35,7 @@ intellij-kotlin-style-issues:
     active: true
   DestructuringDeclaration:
     active: true
+    areNonParameterCasesReported: false
   FilterIsInstanceCallWithClassLiteralArgument:
     active: true
   FoldInitializerAndIfToElvis:
@@ -156,6 +158,7 @@ intellij-kotlin-style-issues:
     active: true
   UseExpressionBody:
     active: true
+    areUnitExpressionsSkipped: true
   UsePropertyAccessSyntax:
     active: true
   VerboseNullabilityAndEmptiness:

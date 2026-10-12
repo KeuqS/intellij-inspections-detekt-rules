@@ -364,6 +364,23 @@ class UnnecessaryOptInAnnotationTest {
     }
 
     @Test
+    fun `an opt-in on a function with function type parameters is reported`() {
+        val code = """
+            @RequiresOptIn
+            annotation class Marker
+
+            @OptIn(Marker::class)
+            fun screen(onChange: (String) -> Unit, toText: (value: Int) -> String = { it.toString() }) {
+                onChange(toText(1))
+            }
+        """.trimIndent()
+
+        val findings = sut.lintWithContext(environment, code)
+
+        assertEquals(1, findings.size)
+    }
+
+    @Test
     fun `an opt-in without arguments passes`() {
         val code = """
             @OptIn
