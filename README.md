@@ -505,7 +505,7 @@ the script, because detekt does not have the Gradle model.
 | `RemoveEmptyParenthesesFromAnnotationEntry` | Empty parentheses after an annotation that needs no arguments. |
 | `ReplaceAddAllWithMapTo` | An `addAll` or `+=` of a `map` or `filter` result that `mapTo` or `filterTo` can replace. |
 | `ReplaceAssertBooleanWithAssertEquality` | An `assertTrue` or `assertFalse` call with an `==` or `===` check that an equality assertion can replace. |
-| `ReplaceAssociateFunction` | An `associate` or `associateTo` call that `associateBy` or `associateWith` can replace. |
+| `ReplaceAssociateFunction` | An `associate` or `associateTo` call that `associateBy` or `associateWith` can replace. Inactive by default. |
 | `ReplaceCallWithBinaryOperator` | An explicit call of `equals`, `compareTo` or an arithmetic or range operator function that a binary operator can replace. |
 | `ReplaceCollectionCountWithSize` | A `count()` call without a predicate on a collection, array or map that `size` can replace. Inactive by default. |
 | `ReplaceContains` | A call of an operator `contains` function that the `in` operator can replace. |
