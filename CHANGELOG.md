@@ -1,5 +1,23 @@
 # Changelog
 
+## 0.0.2
+
+### Changed options and defaults
+
+- `intellij-kotlin-style-issues`: `AddOperatorModifier`: new option `areSuspendFunctionsSkipped` (default `true`) does not report `suspend` functions. To keep the old behavior, set it to `false`.
+- `intellij-kotlin-style-issues`: `ConvertReferenceToLambda`: inactive by default, because IntelliJ IDEA reports it only at INFORMATION level. To keep the old behavior, set `active: true`.
+- `intellij-kotlin-style-issues`: `DestructuringDeclaration`: reports only loop variables by default. New option `areNonParameterCasesReported` (default `false`) also reports local variables and lambda parameters. To keep the old behavior, set it to `true`.
+- `intellij-kotlin-style-issues`: `ReplaceToStringWithStringTemplate`: inactive by default, because IntelliJ IDEA reports it only at INFORMATION level. To keep the old behavior, set `active: true`.
+- `intellij-kotlin-style-issues`: `UseExpressionBody`: new option `areUnitExpressionsSkipped` (default `true`) does not report empty block bodies and block bodies with one `Unit` expression. To keep the old behavior, set it to `false`.
+
+### Changed detection
+
+- `intellij-kotlin-redundant-constructs`: `UnnecessaryOptInAnnotation`: now reports an unnecessary `@OptIn` on a function that has parameters of a function type, such as `(value: Int) -> String`. Before, the parameters of the function type hid the finding. To keep the old behavior, suppress the new findings.
+
+### Distribution
+
+- The README setup now tells to run the detekt tasks with type resolution, such as `detektMain` and `detektTest`. Most rules need type resolution, and the plain `detekt` task skips them without a report. In a Kotlin Multiplatform project, run the task of each JVM target, for example `detektMainJvm`.
+
 ## 0.0.1
 
 ### Added rules
