@@ -77,7 +77,7 @@ intellij-kotlin-style-issues:
   ReplaceAssertBooleanWithAssertEquality:
     active: true
   ReplaceAssociateFunction:
-    active: true
+    active: false
   ReplaceCallWithBinaryOperator:
     active: true
   ReplaceCollectionCountWithSize:
