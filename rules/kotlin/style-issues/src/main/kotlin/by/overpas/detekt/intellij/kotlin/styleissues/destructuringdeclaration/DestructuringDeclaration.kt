@@ -2,10 +2,12 @@ package by.overpas.detekt.intellij.kotlin.styleissues.destructuringdeclaration
 
 import by.overpas.detekt.intellij.IntellijInspection
 import dev.detekt.api.Config
+import dev.detekt.api.Configuration
 import dev.detekt.api.Entity
 import dev.detekt.api.Finding
 import dev.detekt.api.RequiresAnalysisApi
 import dev.detekt.api.Rule
+import dev.detekt.api.config
 import org.jetbrains.kotlin.analysis.api.analyze
 import org.jetbrains.kotlin.psi.KtDeclaration
 import org.jetbrains.kotlin.psi.KtLambdaExpression
@@ -16,10 +18,13 @@ import org.jetbrains.kotlin.psi.KtProperty
 class DestructuringDeclaration(config: Config) :
     Rule(
         config,
-        "A local variable, loop variable or lambda parameter of a data class or `Map.Entry` type is used only " +
-            "to read its components. Use a destructuring declaration instead.",
+        "A loop variable of a data class or `Map.Entry` type is used only to read its components. " +
+            "Use a destructuring declaration instead.",
     ),
     RequiresAnalysisApi {
+
+    @Configuration("Also report local variables and lambda parameters, not only loop variables.")
+    private val areNonParameterCasesReported: Boolean by config(false)
 
     override fun visitParameter(parameter: KtParameter) {
         super.visitParameter(parameter)
@@ -38,7 +43,7 @@ class DestructuringDeclaration(config: Config) :
 
     private fun KtDeclaration.reportIfDestructurable() {
         val candidate = DestructuringDeclarationCandidate(this)
-        val highlight = candidate.highlight
+        val highlight = candidate.highlight?.takeIf { areNonParameterCasesReported || candidate.isLoopVariable }
         if (highlight != null && analyze(this) { candidate.isDestructurable() }) {
             report(Finding(Entity.from(highlight), "Use destructuring declaration"))
         }

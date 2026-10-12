@@ -476,7 +476,7 @@ the script, because detekt does not have the Gradle model.
 | `ConvertTryFinallyToUseCall` | A `try`-`finally` that only closes a `Closeable` in `finally`, which `use()` can replace. |
 | `ConvertTwoComparisonsToRangeCheck` | Two comparisons of one value with a lower and an upper bound that an `in` or `!in` range check can replace. Opposite of `ConvertRangeCheckToTwoComparisons`. |
 | `CopyWithoutNamedArguments` | A data class `copy` call that passes arguments without names. |
-| `DestructuringDeclaration` | A local variable, loop variable or lambda parameter of a data class or `Map.Entry` type that is only used to read its components. |
+| `DestructuringDeclaration` | A loop variable of a data class or `Map.Entry` type that is only used to read its components. Set `areNonParameterCasesReported` to also report local variables and lambda parameters. |
 | `FilterIsInstanceCallWithClassLiteralArgument` | A `filterIsInstance(X::class.java)` call that `filterIsInstance<X>()` can replace. |
 | `FoldInitializerAndIfToElvis` | An `if` null or type check that exits right after a variable declaration and can fold into the initializer with `?:`. |
 | `IfThenToElvis` | An `if` that checks a value for `null` or a type and that the elvis operator `?:` can replace. |

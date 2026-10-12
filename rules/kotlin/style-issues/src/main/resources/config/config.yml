@@ -34,6 +34,7 @@ intellij-kotlin-style-issues:
     active: true
   DestructuringDeclaration:
     active: true
+    areNonParameterCasesReported: false
   FilterIsInstanceCallWithClassLiteralArgument:
     active: true
   FoldInitializerAndIfToElvis:

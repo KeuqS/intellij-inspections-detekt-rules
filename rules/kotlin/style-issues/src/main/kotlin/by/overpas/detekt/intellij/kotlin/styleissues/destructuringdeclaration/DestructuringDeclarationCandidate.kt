@@ -35,6 +35,8 @@ internal class DestructuringDeclarationCandidate(private val declaration: KtDecl
         else -> null
     }
 
+    val isLoopVariable = declaration.parent is KtForExpression
+
     context(session: KaSession)
     fun isDestructurable(): Boolean =
         with(session) {
