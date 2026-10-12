@@ -1,6 +1,7 @@
 rule,reason
 ConvertFromMultiDollarToRegularString,IntelliJ IDEA reports it only at INFORMATION level
 ConvertRangeCheckToTwoComparisons,IntelliJ IDEA reports it only at INFORMATION level
+ConvertReferenceToLambda,IntelliJ IDEA reports it only at INFORMATION level
 ConvertSealedInterfaceToSealedClass,IntelliJ IDEA reports it only at INFORMATION level
 ImplicitThis,IntelliJ IDEA reports it only at INFORMATION level
 InfixCallToOrdinary,IntelliJ IDEA reports it only at INFORMATION level
