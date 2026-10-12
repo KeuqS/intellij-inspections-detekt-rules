@@ -4,4 +4,5 @@ ConvertRangeCheckToTwoComparisons,IntelliJ IDEA reports it only at INFORMATION l
 ConvertSealedInterfaceToSealedClass,IntelliJ IDEA reports it only at INFORMATION level
 ImplicitThis,IntelliJ IDEA reports it only at INFORMATION level
 InfixCallToOrdinary,IntelliJ IDEA reports it only at INFORMATION level
+ReplaceToStringWithStringTemplate,IntelliJ IDEA reports it only at INFORMATION level
 RevertExplicitBackingFields,IntelliJ IDEA reports it only at INFORMATION level
