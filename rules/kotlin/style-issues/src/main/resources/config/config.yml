@@ -119,7 +119,7 @@ intellij-kotlin-style-issues:
   ReplaceSubstringWithTake:
     active: true
   ReplaceToStringWithStringTemplate:
-    active: true
+    active: false
   ReplaceToWithInfixForm:
     active: true
   ReplaceUntilWithRangeUntil:
