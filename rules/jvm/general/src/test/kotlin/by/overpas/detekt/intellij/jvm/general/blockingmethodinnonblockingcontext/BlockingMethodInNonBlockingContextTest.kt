@@ -320,6 +320,68 @@ class BlockingMethodInNonBlockingContextTest {
     }
 
     @Test
+    fun `an injected dispatcher passes`() {
+        val code = """
+            import kotlinx.coroutines.CoroutineDispatcher
+            import kotlinx.coroutines.withContext
+
+            class DriverFactory(
+                private val ioDispatcher: CoroutineDispatcher,
+                private val fallbackDispatcher: CoroutineDispatcher?,
+            ) {
+
+                suspend fun create(dispatcher: CoroutineDispatcher, isFallback: Boolean) {
+                    val localDispatcher = ioDispatcher
+                    withContext(ioDispatcher) { Thread.sleep(1) }
+                    withContext(dispatcher) { Thread.sleep(2) }
+                    withContext(localDispatcher) { Thread.sleep(3) }
+                    withContext(this.ioDispatcher) { Thread.sleep(4) }
+                    withContext((ioDispatcher)) { Thread.sleep(5) }
+                    withContext(fallbackDispatcher!!) { Thread.sleep(6) }
+                    withContext(fallbackDispatcher ?: ioDispatcher) { Thread.sleep(7) }
+                    withContext(if (isFallback) fallbackDispatcher!! else ioDispatcher) { Thread.sleep(8) }
+                }
+            }
+        """.trimIndent()
+
+        val findings = sut.lintWithContext(environment, code)
+
+        assertEquals(0, findings.size)
+    }
+
+    @Test
+    fun `an injected dispatcher is reported when unknown contexts are not blocking`() {
+        val code = """
+            import kotlinx.coroutines.CoroutineDispatcher
+            import kotlinx.coroutines.withContext
+
+            class DriverFactory(
+                private val ioDispatcher: CoroutineDispatcher,
+                private val fallbackDispatcher: CoroutineDispatcher?,
+            ) {
+
+                suspend fun create(dispatcher: CoroutineDispatcher, isFallback: Boolean) {
+                    val localDispatcher = ioDispatcher
+                    withContext(ioDispatcher) { Thread.sleep(1) }
+                    withContext(dispatcher) { Thread.sleep(2) }
+                    withContext(localDispatcher) { Thread.sleep(3) }
+                    withContext(this.ioDispatcher) { Thread.sleep(4) }
+                    withContext((ioDispatcher)) { Thread.sleep(5) }
+                    withContext(fallbackDispatcher!!) { Thread.sleep(6) }
+                    withContext(fallbackDispatcher ?: ioDispatcher) { Thread.sleep(7) }
+                    withContext(if (isFallback) fallbackDispatcher!! else ioDispatcher) { Thread.sleep(8) }
+                }
+            }
+        """.trimIndent()
+        val sut = BlockingMethodInNonBlockingContext(TestConfig("isUnknownContextBlocking" to false))
+        val expected = listOf(11, 12, 13, 14, 15, 16, 17, 18)
+
+        val lines = sut.lintWithContext(environment, code).map { it.entity.location.source.line }
+
+        assertEquals(expected, lines)
+    }
+
+    @Test
     fun `executor annotations on the context decide the context`() {
         val code = """
             import kotlinx.coroutines.withContext

@@ -8,10 +8,9 @@ import org.jetbrains.kotlin.name.CallableId
 import org.jetbrains.kotlin.name.ClassId
 import org.jetbrains.kotlin.name.Name
 
-private val COROUTINE_CONTEXT_PLUS = CallableId(
-    ClassId.fromString("kotlin/coroutines/CoroutineContext"),
-    Name.identifier("plus"),
-)
+private val COROUTINE_CONTEXT = ClassId.fromString("kotlin/coroutines/CoroutineContext")
+
+private val COROUTINE_CONTEXT_PLUS = CallableId(COROUTINE_CONTEXT, Name.identifier("plus"))
 
 internal class BlockingMethodInNonBlockingContextArgument(private val call: KaFunctionCall<*>) {
 
@@ -21,9 +20,16 @@ internal class BlockingMethodInNonBlockingContextArgument(private val call: KaFu
         val argument = call.valueArgumentMapping.entries.firstOrNull { it.value.symbol == firstParameter }?.key
         val symbols = BlockingMethodInNonBlockingContextSymbols()
         val symbol = argument?.let { symbols.resolve(it) }
-            ?: return BlockingMethodInNonBlockingContextDispatcher.NO_INFORMATION
-        val dispatcher = symbols.dispatcherOf(symbol)
+        val isContext = argument != null &&
+            with(session) { firstParameter?.run { returnType.isSubtypeOf(COROUTINE_CONTEXT) } == true }
+        val unresolved = if (isContext) {
+            BlockingMethodInNonBlockingContextDispatcher.UNKNOWN
+        } else {
+            BlockingMethodInNonBlockingContextDispatcher.NO_INFORMATION
+        }
+        val dispatcher = symbol?.let { symbols.dispatcherOf(it) } ?: unresolved
         return when {
+            argument == null || symbol == null -> dispatcher
             dispatcher != BlockingMethodInNonBlockingContextDispatcher.UNKNOWN -> dispatcher
             isCoroutineContextPlus(symbol) -> BlockingMethodInNonBlockingContextNested(argument).dispatcher()
             else -> BlockingMethodInNonBlockingContextDispatcher.UNKNOWN
