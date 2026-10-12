@@ -83,7 +83,15 @@ The project must use detekt 2 (Gradle plugin `dev.detekt`).
        active: true
    ```
 
-4. Run `./gradlew detekt`.
+4. Run the detekt tasks with type resolution:
+
+   ```shell
+   ./gradlew detektMain detektTest
+   ```
+
+   Most rules need type resolution. The plain `detekt` task does not have it, so it skips these
+   rules and does not report this. In a Kotlin Multiplatform project, run the task of each JVM
+   target, for example `detektMainJvm` and `detektTestJvm`.
 
 ## Rules
 
@@ -460,14 +468,14 @@ the script, because detekt does not have the Gradle model.
 
 | Rule | Finds |
 |---|---|
-| `AddOperatorModifier` | A function that matches an operator convention but has no `operator` modifier. |
+| `AddOperatorModifier` | A function that matches an operator convention but has no `operator` modifier. Option `areSuspendFunctionsSkipped` (default `true`) does not report `suspend` functions. |
 | `AddVarianceModifier` | A class type parameter that is used only in input or only in output positions and can be `in` or `out`. |
 | `BooleanLiteralArgument` | Adjacent `true` or `false` arguments without parameter names. |
 | `CascadeIf` | An `if`-`else if` chain on one subject that `when` can replace. |
 | `CollectionConcatenationToBuildCollection` | A chain of two or more `+` or `-` operations on a list or set that `buildList` or `buildSet` can replace. |
 | `ConvertPairConstructorToToFunction` | An explicit `Pair(a, b)` constructor call that can be the infix `a to b`. Opposite of `InfixCallToOrdinary`. |
 | `ConvertRangeCheckToTwoComparisons` | An `in` or `!in` check of simple values against a standard range that can be two comparisons. Opposite of `ConvertTwoComparisonsToRangeCheck`, which is active by default. Inactive by default. |
-| `ConvertReferenceToLambda` | A callable reference that a lambda can replace. |
+| `ConvertReferenceToLambda` | A callable reference that a lambda can replace. Inactive by default. |
 | `ConvertSealedClassToSealedInterface` | A sealed class without state, constructor parameters or final members that can be a sealed interface. Opposite of `ConvertSealedInterfaceToSealedClass`. |
 | `ConvertSealedInterfaceToSealedClass` | A sealed interface whose inheritors are all plain classes or objects that can extend a sealed class. Opposite of `ConvertSealedClassToSealedInterface`, which is active by default. Inactive by default. |
 | `ConvertSecondaryConstructorToPrimary` | A secondary constructor that every other constructor delegates to and that can be the primary constructor. |
@@ -476,7 +484,7 @@ the script, because detekt does not have the Gradle model.
 | `ConvertTryFinallyToUseCall` | A `try`-`finally` that only closes a `Closeable` in `finally`, which `use()` can replace. |
 | `ConvertTwoComparisonsToRangeCheck` | Two comparisons of one value with a lower and an upper bound that an `in` or `!in` range check can replace. Opposite of `ConvertRangeCheckToTwoComparisons`. |
 | `CopyWithoutNamedArguments` | A data class `copy` call that passes arguments without names. |
-| `DestructuringDeclaration` | A local variable, loop variable or lambda parameter of a data class or `Map.Entry` type that is only used to read its components. |
+| `DestructuringDeclaration` | A loop variable of a data class or `Map.Entry` type that is only used to read its components. Set `areNonParameterCasesReported` to also report local variables and lambda parameters. |
 | `FilterIsInstanceCallWithClassLiteralArgument` | A `filterIsInstance(X::class.java)` call that `filterIsInstance<X>()` can replace. |
 | `FoldInitializerAndIfToElvis` | An `if` null or type check that exits right after a variable declaration and can fold into the initializer with `?:`. |
 | `IfThenToElvis` | An `if` that checks a value for `null` or a type and that the elvis operator `?:` can replace. |
@@ -519,7 +527,7 @@ the script, because detekt does not have the Gradle model.
 | `ReplaceSubstringWithSubstringAfter` | An `s.substring(s.indexOf(x))` call that `s.substringAfter(x)` can replace. |
 | `ReplaceSubstringWithSubstringBefore` | An `s.substring(0, s.indexOf(x))` call that `s.substringBefore(x)` can replace. |
 | `ReplaceSubstringWithTake` | An `s.substring(0, n)` call that `s.take(n)` can replace. |
-| `ReplaceToStringWithStringTemplate` | A `toString()` call on a reference that a string template can replace. |
+| `ReplaceToStringWithStringTemplate` | A `toString()` call on a reference that a string template can replace. Inactive by default. |
 | `ReplaceToWithInfixForm` | A dot call of the infix `to` function that can use the infix form. Opposite of `InfixCallToOrdinary`. |
 | `ReplaceUntilWithRangeUntil` | An infix `until` call from the standard library that the `..<` operator can replace. |
 | `ReplaceWithCallWithContextCall` | A `with` call whose receiver is only used as a context argument, so a `context` call fits. |
@@ -537,7 +545,7 @@ the script, because detekt does not have the Gradle model.
 | `UnclearPrecedenceOfBinaryExpression` | An expression that mixes `?:` with equality, comparison, `in`, `is`, arithmetic or infix calls, or `||` in a `when` guard, without parentheses. |
 | `UnlabeledReturnInsideLambda` | An unlabeled `return` inside an inline lambda that returns from the enclosing function. |
 | `UnsafeCastWithReturn` | An unsafe cast followed by `?: return` that should be the safe cast `as?`. |
-| `UseExpressionBody` | A function or property accessor whose block body holds only a `return` or one `Unit` or `Nothing` expression. |
+| `UseExpressionBody` | A function or property accessor whose block body holds only a `return` or one `Unit` or `Nothing` expression. Option `areUnitExpressionsSkipped` (default `true`) does not report empty bodies and bodies with one `Unit` expression. |
 | `UsePropertyAccessSyntax` | A call of a Java getter or setter that Kotlin property access syntax can replace. |
 | `VerboseNullabilityAndEmptiness` | A null check followed by an emptiness or blankness check that `isNullOrEmpty()` or `isNullOrBlank()` can replace. |
 

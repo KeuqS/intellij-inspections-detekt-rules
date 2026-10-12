@@ -1,6 +1,7 @@
 package by.overpas.detekt.intellij.kotlin.styleissues.useexpressionbody
 
 import dev.detekt.api.Config
+import dev.detekt.test.TestConfig
 import dev.detekt.test.lintWithContext
 import dev.detekt.test.utils.createEnvironment
 import kotlin.test.Test
@@ -10,7 +11,7 @@ class UseExpressionBodyTest {
 
     private val environment = createEnvironment()
 
-    private val sut = UseExpressionBody(Config.empty)
+    private val sut = UseExpressionBody(TestConfig("areUnitExpressionsSkipped" to false))
 
     @Test
     fun `a one-line return is reported`() {
@@ -125,6 +126,22 @@ class UseExpressionBodyTest {
             }
 
             fun bar() = Unit
+        """.trimIndent()
+
+        val findings = sut.lintWithContext(environment, code)
+
+        assertEquals(1, findings.size)
+    }
+
+    @Test
+    fun `a setter with a single Unit call is reported`() {
+        val code = """
+            fun log(value: String) = Unit
+
+            var foo: String = ""
+                set(value) {
+                    log(value)
+                }
         """.trimIndent()
 
         val findings = sut.lintWithContext(environment, code)
@@ -366,5 +383,144 @@ class UseExpressionBodyTest {
         val findings = sut.lintWithContext(environment, code)
 
         assertEquals(0, findings.size)
+    }
+
+    @Test
+    fun `a single call of a Unit function passes by default`() {
+        val sut = UseExpressionBody(Config.empty)
+        val code = """
+            fun foo() {
+                bar()
+            }
+
+            fun bar() = Unit
+        """.trimIndent()
+
+        val findings = sut.lintWithContext(environment, code)
+
+        assertEquals(0, findings.size)
+    }
+
+    @Test
+    fun `an empty function body passes by default`() {
+        val sut = UseExpressionBody(Config.empty)
+        val code = """
+            fun foo() {
+            }
+        """.trimIndent()
+
+        val findings = sut.lintWithContext(environment, code)
+
+        assertEquals(0, findings.size)
+    }
+
+    @Test
+    fun `an if with an else branch of type Unit passes by default`() {
+        val sut = UseExpressionBody(Config.empty)
+        val code = """
+            fun bar() = Unit
+
+            fun foo(f: Boolean) {
+                if (f) bar() else bar()
+            }
+        """.trimIndent()
+
+        val findings = sut.lintWithContext(environment, code)
+
+        assertEquals(0, findings.size)
+    }
+
+    @Test
+    fun `an exhaustive when of type Unit passes by default`() {
+        val sut = UseExpressionBody(Config.empty)
+        val code = """
+            enum class AccessMode { READ, WRITE }
+
+            fun whenExpr(access: AccessMode) {
+                when (access) {
+                    AccessMode.READ -> println("read")
+                    AccessMode.WRITE -> println("write")
+                }
+            }
+        """.trimIndent()
+
+        val findings = sut.lintWithContext(environment, code)
+
+        assertEquals(0, findings.size)
+    }
+
+    @Test
+    fun `a setter with a single Unit call passes by default`() {
+        val sut = UseExpressionBody(Config.empty)
+        val code = """
+            fun log(value: String) = Unit
+
+            var foo: String = ""
+                set(value) {
+                    log(value)
+                }
+        """.trimIndent()
+
+        val findings = sut.lintWithContext(environment, code)
+
+        assertEquals(0, findings.size)
+    }
+
+    @Test
+    fun `a single throw is reported by default`() {
+        val sut = UseExpressionBody(Config.empty)
+        val code = """
+            fun foo(): Nothing {
+                throw UnsupportedOperationException()
+            }
+        """.trimIndent()
+
+        val findings = sut.lintWithContext(environment, code)
+
+        assertEquals(1, findings.size)
+    }
+
+    @Test
+    fun `a getter with a single throw is reported by default`() {
+        val sut = UseExpressionBody(Config.empty)
+        val code = """
+            val foo: String
+                get() {
+                    throw UnsupportedOperationException()
+                }
+        """.trimIndent()
+
+        val findings = sut.lintWithContext(environment, code)
+
+        assertEquals(1, findings.size)
+    }
+
+    @Test
+    fun `a one-line return is reported by default`() {
+        val sut = UseExpressionBody(Config.empty)
+        val code = """
+            fun sqr(x: Int): Int {
+                return x * x
+            }
+        """.trimIndent()
+
+        val findings = sut.lintWithContext(environment, code)
+
+        assertEquals(1, findings.size)
+    }
+
+    @Test
+    fun `a getter with a return is reported by default`() {
+        val sut = UseExpressionBody(Config.empty)
+        val code = """
+            val foo: String
+                get() {
+                    return "abc"
+                }
+        """.trimIndent()
+
+        val findings = sut.lintWithContext(environment, code)
+
+        assertEquals(1, findings.size)
     }
 }
