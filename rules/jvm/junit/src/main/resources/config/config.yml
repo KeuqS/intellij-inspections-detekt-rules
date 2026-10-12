@@ -1,0 +1,31 @@
+intellij-jvm-junit:
+  active: true
+  AssertEqualsCalledOnArray:
+    active: false
+  AssertEqualsMayBeAssertSame:
+    active: false
+  IgnoredJUnitTest:
+    active: false
+    isReasonAccepted: true
+  JUnit3StyleTestMethodInJUnit4Class:
+    active: true
+  JUnit5AssertionsConverter:
+    active: true
+  JUnitMalformedDeclaration:
+    active: true
+    ignorableAnnotations:
+      - 'mockit.Mocked'
+      - 'org.junit.jupiter.api.io.TempDir'
+    areSuspendFunctionsAllowed: false
+  JUnitMixedFramework:
+    active: true
+  Junit4RunWithInspection:
+    active: true
+  MigrateAssertToMatcherAssert:
+    active: false
+  ParameterizedParametersStaticCollection:
+    active: false
+  SuperTearDownInFinally:
+    active: false
+  UseOfObsoleteAssert:
+    active: false

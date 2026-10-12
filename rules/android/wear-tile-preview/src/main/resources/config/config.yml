@@ -1,0 +1,12 @@
+intellij-android-wear-tile-preview:
+  active: true
+  WearTilePreviewComposableAnnotationIsNotSupported:
+    active: true
+  WearTilePreviewContextComesFromParameter:
+    active: true
+  WearTilePreviewHasValidMethodSignature:
+    active: true
+  WearTilePreviewMethodIsAnnotatedWithTilePreviewAnnotation:
+    active: true
+  WearTilePreviewShouldBeTopLevelFunction:
+    active: true

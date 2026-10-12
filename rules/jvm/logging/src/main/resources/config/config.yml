@@ -1,0 +1,16 @@
+intellij-jvm-logging:
+  active: true
+  LogStatementNotGuardedByLogCondition:
+    active: false
+    limitLevelType: 'DEBUG_AND_LOWER'
+    isUnguardedConstantFlagged: false
+  LoggingConditionDisagreesWithLogLevelStatement:
+    active: false
+  LoggingPlaceholderCountMatchesArgumentCount:
+    active: true
+    slf4jToLog4J2Type: 'AUTO'
+  LoggingStringTemplateAsArgument:
+    active: true
+    limitLevelType: 'DEBUG_AND_LOWER'
+    arePrimitivesSkipped: true
+    isOnlyExceptionSkipped: false

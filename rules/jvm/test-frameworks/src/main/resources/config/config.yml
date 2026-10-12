@@ -1,0 +1,31 @@
+intellij-jvm-test-frameworks:
+  active: true
+  AssertBetweenInconvertibleTypes:
+    active: true
+  TestCaseWithConstructor:
+    active: false
+  TestCaseWithNoTestMethods:
+    active: false
+    isSupersIgnored: true
+  TestMethodWithoutAssertion:
+    active: false
+    assertionMethods:
+      - 'org.junit.Assert#assert.*|fail.*'
+      - 'junit.framework.Assert#assert.*|fail.*'
+      - 'org.junit.jupiter.api.Assertions#assert.*|fail.*'
+      - 'org.junit.jupiter.api#assert.*|fail.*'
+      - 'org.assertj.core.api.Assertions#assertThat.*'
+      - 'org.assertj.core.api.WithAssertions#assertThat'
+      - 'com.google.common.truth.Truth#assert.*'
+      - 'com.google.common.truth.Truth8#assert.*'
+      - 'org.mockito.Mockito#verify.*'
+      - 'org.mockito.InOrder#verify'
+      - 'org.junit.rules.ExpectedException#expect.*'
+      - 'io.mockk#verify.*'
+      - 'org.hamcrest.MatcherAssert#assertThat'
+      - 'mockit.Verifications#Verifications'
+      - 'kotlin.test#assert.*|fail.*|expect'
+      - 'org.testng.Assert#assert.*|fail.*|expect.*'
+      - 'org.testng.AssertJUnit#assert.*|fail.*'
+    isAssertKeywordAssertion: true
+    isThrowingIgnored: false

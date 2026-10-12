@@ -1,0 +1,28 @@
+intellij-kotlin-coroutines:
+  active: true
+  CoroutineContextWithJob:
+    active: true
+  DeferredResultUnused:
+    active: true
+  ForEachJoinOnCollectionOfJob:
+    active: true
+  MapAwaitOnCollectionOfDeferred:
+    active: true
+  PreferCurrentCoroutineContextToCoroutineContext:
+    active: true
+  RunBlockingInSuspendFunction:
+    active: true
+  SimplifiableFlowCall:
+    active: true
+  SimplifiableFlowCallChain:
+    active: true
+  SuspendCoroutineLacksCancellationGuarantees:
+    active: true
+  SuspiciousImplicitCoroutineScopeReceiverAccess:
+    active: true
+  SuspiciousMutableCollectionInStateFlow:
+    active: true
+  UnusedFlow:
+    active: true
+  UselessCallOnFlow:
+    active: true

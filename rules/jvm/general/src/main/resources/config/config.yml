@@ -1,0 +1,65 @@
+intellij-jvm-general:
+  active: true
+  BlockingMethodInNonBlockingContext:
+    active: true
+    isUnknownContextBlocking: true
+    isSuspendContextNonBlocking: true
+    blockingAnnotations:
+      - 'org.jetbrains.annotations.Blocking'
+      - 'io.micronaut.core.annotation.Blocking'
+      - 'io.smallrye.common.annotation.Blocking'
+    nonBlockingAnnotations:
+      - 'org.jetbrains.annotations.NonBlocking'
+      - 'io.micronaut.core.annotation.NonBlocking'
+      - 'io.smallrye.common.annotation.NonBlocking'
+  MissingDeprecatedAnnotationOnScheduledForRemovalApi:
+    active: true
+  MustAlreadyBeRemovedApi:
+    active: true
+    currentVersion: ''
+  NonExtendableApiUsage:
+    active: true
+  OverrideOnly:
+    active: true
+  SerializableHasSerialVersionUIDField:
+    active: false
+    isAnonymousClassIgnored: false
+    ignoredSuperClasses:
+      - 'java.awt.Component'
+  SuppressionAnnotation:
+    active: false
+    allowedSuppressions: []
+  SystemGetProperty:
+    active: true
+  ThreadRun:
+    active: true
+  UnstableApiUsage:
+    active: true
+    unstableApiAnnotations:
+      - 'org.jetbrains.annotations.ApiStatus.ScheduledForRemoval'
+      - 'org.jetbrains.annotations.ApiStatus.Experimental'
+      - 'org.jetbrains.annotations.ApiStatus.Internal'
+      - 'com.google.common.annotations.Beta'
+      - 'io.reactivex.annotations.Beta'
+      - 'io.reactivex.annotations.Experimental'
+      - 'rx.annotations.Experimental'
+      - 'rx.annotations.Beta'
+      - 'org.apache.http.annotation.Beta'
+      - 'org.gradle.api.Incubating'
+    isInsideImportsIgnored: true
+    isApiDeclaredInThisProjectIgnored: true
+  UnstableTypeUsedInSignature:
+    active: false
+    unstableApiAnnotations:
+      - 'org.jetbrains.annotations.ApiStatus.ScheduledForRemoval'
+      - 'org.jetbrains.annotations.ApiStatus.Experimental'
+      - 'org.jetbrains.annotations.ApiStatus.Internal'
+      - 'com.google.common.annotations.Beta'
+      - 'io.reactivex.annotations.Beta'
+      - 'io.reactivex.annotations.Experimental'
+      - 'rx.annotations.Experimental'
+      - 'rx.annotations.Beta'
+      - 'org.apache.http.annotation.Beta'
+      - 'org.gradle.api.Incubating'
+  UrlHashCode:
+    active: true

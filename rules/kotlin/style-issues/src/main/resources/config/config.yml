@@ -1,0 +1,162 @@
+intellij-kotlin-style-issues:
+  active: true
+  AddOperatorModifier:
+    active: true
+  AddVarianceModifier:
+    active: true
+  BooleanLiteralArgument:
+    active: true
+  CascadeIf:
+    active: true
+  CollectionConcatenationToBuildCollection:
+    active: true
+  ConvertPairConstructorToToFunction:
+    active: true
+  ConvertRangeCheckToTwoComparisons:
+    active: false
+  ConvertReferenceToLambda:
+    active: true
+  ConvertSealedClassToSealedInterface:
+    active: true
+  ConvertSealedInterfaceToSealedClass:
+    active: false
+  ConvertSecondaryConstructorToPrimary:
+    active: true
+  ConvertToExplicitBackingFields:
+    active: true
+  ConvertToStringTemplate:
+    active: true
+  ConvertTryFinallyToUseCall:
+    active: true
+  ConvertTwoComparisonsToRangeCheck:
+    active: true
+  CopyWithoutNamedArguments:
+    active: true
+  DestructuringDeclaration:
+    active: true
+  FilterIsInstanceCallWithClassLiteralArgument:
+    active: true
+  FoldInitializerAndIfToElvis:
+    active: true
+  IfThenToElvis:
+    active: true
+  IfThenToSafeAccess:
+    active: true
+  ImplicitThis:
+    active: false
+  IntroduceWhenSubject:
+    active: true
+  JavaMapForEach:
+    active: true
+  JoinDeclarationAndAssignment:
+    active: true
+  LiftReturnOrAssignment:
+    active: true
+  MapToForEach:
+    active: true
+  MoveLambdaOutsideParentheses:
+    active: true
+  MoveVariableDeclarationIntoWhen:
+    active: true
+  NullableHashCode:
+    active: true
+  RedundantAsSequence:
+    active: true
+  RedundantElseInIf:
+    active: true
+  RedundantObjectTypeCheck:
+    active: true
+  RedundantRunCatching:
+    active: true
+  RemoveEmptyParenthesesFromAnnotationEntry:
+    active: true
+  ReplaceAddAllWithMapTo:
+    active: true
+  ReplaceAssertBooleanWithAssertEquality:
+    active: true
+  ReplaceAssociateFunction:
+    active: true
+  ReplaceCallWithBinaryOperator:
+    active: true
+  ReplaceCollectionCountWithSize:
+    active: false
+  ReplaceContains:
+    active: true
+  ReplaceIfExpressionWithFirstOrNull:
+    active: true
+  ReplaceJavaStaticMethodWithKotlinAnalog:
+    active: true
+  ReplaceManualRangeWithIndicesCalls:
+    active: true
+  ReplaceMapGetOrDefault:
+    active: true
+  ReplaceMapIndexedWithListGenerator:
+    active: true
+  ReplaceMapKeysCallChainWithKeys:
+    active: true
+  ReplaceNegatedIsEmptyWithIsNotEmpty:
+    active: true
+  ReplaceNotNullAssertionWithElvisReturn:
+    active: false
+  ReplaceRangeStartEndInclusiveWithFirstLast:
+    active: true
+  ReplaceReadLineWithReadln:
+    active: true
+  ReplaceSizeCheckWithIsNotEmpty:
+    active: true
+  ReplaceSizeZeroCheckWithIsEmpty:
+    active: true
+  ReplaceStringFormatWithLiteral:
+    active: true
+  ReplaceSubstringWithDropLast:
+    active: true
+  ReplaceSubstringWithIndexingOperation:
+    active: true
+  ReplaceSubstringWithSubstringAfter:
+    active: true
+  ReplaceSubstringWithSubstringBefore:
+    active: true
+  ReplaceSubstringWithTake:
+    active: true
+  ReplaceToStringWithStringTemplate:
+    active: true
+  ReplaceToWithInfixForm:
+    active: true
+  ReplaceUntilWithRangeUntil:
+    active: true
+  ReplaceWithCallWithContextCall:
+    active: true
+  ReplaceWithIgnoreCaseEquals:
+    active: true
+  ReplaceWithImportAlias:
+    active: true
+  ReplaceWithOperatorAssignment:
+    active: true
+  RevertExplicitBackingFields:
+    active: false
+  SafeCastWithReturn:
+    active: true
+  SimplifiableCall:
+    active: true
+  SimplifiableCallChain:
+    active: true
+  SimplifyAssertNotNull:
+    active: true
+  SimplifyBooleanWithConstants:
+    active: true
+  SimplifyNegatedBinaryExpression:
+    active: true
+  SimplifyNestedEachInScopeFunction:
+    active: true
+  UnclearPrecedenceOfBinaryExpression:
+    active: true
+  UnlabeledReturnInsideLambda:
+    active: true
+  UnsafeCastWithReturn:
+    active: true
+  UseExpressionBody:
+    active: true
+  UsePropertyAccessSyntax:
+    active: true
+  VerboseNullabilityAndEmptiness:
+    active: true

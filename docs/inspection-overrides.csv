@@ -1,0 +1,102 @@
+shortName,verdict,reason,status
+AddExplicitTargetToParameterAnnotation,not-portable,never reports at the default language version; it is only useful with an older language version,
+CanBeParameter,types,searches references inside the class,
+CanBeVal,,,covered: detekt `style:VarCouldBeVal`
+ClassName,psi,checks names with regular expressions,covered: detekt `naming:ClassNaming`
+CollapseCollectionLiteralChainCall,not-portable,needs the experimental language feature CollectionLiterals,
+ComplexRedundantLet,,,covered: detekt `style:UnnecessaryLet`
+ConstPropertyName,psi,checks names with regular expressions,covered: ktlint `PropertyName`
+ConstantConditionIf,types,evaluates constant conditions,
+ControlFlowWithEmptyBody,,,"covered: detekt `empty-blocks:EmptyIfBlock`, `EmptyElseBlock`, `EmptyForBlock`, `EmptyWhileBlock`, `EmptyDoWhileBlock`, `EmptyWhenBlock`"
+ConvertCallChainIntoSequence,,,covered: detekt `performance:CouldBeSequence`
+ConvertCollectionLiteralToFunctionCall,not-portable,needs the experimental language feature CollectionLiterals,
+ConvertCollectionLiteralToTypeOfExpression,not-portable,needs the experimental language feature CollectionLiterals,
+ConvertDataClassToValueClass,not-portable,needs the experimental language feature FullValueClasses,
+ConvertExplicitContextArgumentToImplicit,not-portable,needs the experimental language feature ExplicitContextArguments,
+ConvertImplicitContextArgumentToExplicit,not-portable,needs the experimental language feature ExplicitContextArguments,
+ConvertNameBasedDestructuringShortFormToFull,not-portable,needs the experimental language feature NameBasedDestructuring,
+ConvertToCollectionLiterals,not-portable,needs the experimental language feature CollectionLiterals,
+ConvertTypeOfToCollectionLiteral,not-portable,needs the experimental language feature CollectionLiterals,
+CustomComponentDestructuringMigration,not-portable,needs the experimental language feature NameBasedDestructuring,
+DestructingShortFormNameMismatch,not-portable,needs the experimental language feature NameBasedDestructuring,
+DoubleBang,,,covered: detekt `potential-bugs:UnsafeCallOnNullableType`
+EnumEntryName,psi,checks names with regular expressions,covered: ktlint `EnumEntryNameCase`
+EqualsOrHashCode,,,covered: detekt `potential-bugs:EqualsWithHashCodeExist`
+EscapingCapturedVariable,not-portable,needs the compiler flag ReportEscapingCapturedVariable,
+FunctionName,psi,checks names with regular expressions; skips tests through detekt excludes,covered: detekt `naming:FunctionNaming`
+HasPlatformType,,,covered: detekt `potential-bugs:HasPlatformType`
+KDocMissingDocumentation,psi,skips tests through detekt excludes,"covered: detekt `comments:UndocumentedPublicClass`, `UndocumentedPublicFunction`, `UndocumentedPublicProperty`"
+KDocUnresolvedReference,not-portable,the KDoc resolver of the Analysis API fails in detekt 2.0.0-alpha.6 (NoSuchMethodError in RegistryValue),
+KotlinAmbiguousActuals,not-portable,reads the multiplatform module structure,
+KotlinConstantConditions,not-portable,needs the data flow analysis engine of IntelliJ,
+KotlinCovariantEquals,,,covered: detekt `potential-bugs:WrongEqualsTypeParameter`
+KotlinDoubleNegation,,,covered: detekt `style:DoubleNegativeExpression`
+KotlinNoActualForExpect,not-portable,searches actual declarations across the multiplatform modules,
+KotlinThrowableNotThrown,types,searches references of a local property only,
+KotlinUnreachableCode,,,covered: detekt `potential-bugs:UnreachableCode`
+KotlinUnusedImport,types,resolves the references of the file,"covered: detekt `style:UnusedImport`, ktlint `NoUnusedImports`"
+LocalVariableName,psi,checks names with regular expressions,
+MainKtsAnnotationUsageInPlainKts,not-portable,needs the IDE script definitions to tell .main.kts from .kts files,
+MapGetWithNotNullAssertionOperator,,,covered: detekt `potential-bugs:MapGetWithNotNullAssertionOperator`
+MayBeConstant,,,covered: detekt `style:MayBeConstant`
+MoveLambdaOutsideParentheses,types,resolves the call to check overloads,
+NestedLambdaShadowedImplicitParameter,,,covered: detekt `naming:NoNameShadowing`
+NonNullableBooleanPropertyInExternalInterface,not-portable,applies only to Kotlin/JS; the detekt session is JVM,
+NonVarPropertyInExternalInterface,not-portable,applies only to Kotlin/JS; the detekt session is JVM,
+NullableBooleanElvis,,,covered: detekt `style:NullableBooleanCheck`
+ObjectLiteralToLambda,,,covered: detekt `style:ObjectLiteralToLambda`
+ObjectPrivatePropertyName,psi,checks names with regular expressions,covered: detekt `naming:ObjectPropertyNaming`
+ObjectPropertyName,psi,checks names with regular expressions,"covered: detekt `naming:ObjectPropertyNaming`, `TopLevelPropertyNaming`"
+PackageDirectoryMismatch,,,covered: detekt `naming:InvalidPackageDeclaration`
+PackageName,psi,checks names with regular expressions,"covered: detekt `naming:PackageNaming`, ktlint `PackageName`"
+PrivatePropertyName,psi,checks names with regular expressions,"covered: detekt `naming:VariableNaming`, `ConstructorParameterNaming`"
+PropertyName,psi,checks names with regular expressions,"covered: detekt `naming:VariableNaming`, `ConstructorParameterNaming`"
+ProtectedInFinal,,,covered: detekt `style:ProtectedMemberInFinalClass`
+PublicApiImplicitType,,,covered: detekt `libraries:LibraryCodeMustSpecifyReturnType` (detekt-rules-libraries)
+RedundantConstructorKeyword,,,covered: detekt `style:RedundantConstructorKeyword`
+RedundantContextSensitiveResolutionQualifier,not-portable,"needs the language feature ContextSensitiveResolutionUsingExpectedType, which is off by default",
+RedundantDestructuringRename,not-portable,needs the experimental language feature NameBasedDestructuring,
+RedundantDestructuringUnderscore,not-portable,needs the experimental language feature NameBasedDestructuring,
+RedundantEmptyInitializerBlock,,,covered: detekt `empty-blocks:EmptyInitBlock`
+RedundantExplicitType,,,covered: detekt `style:RedundantExplicitType`
+RedundantRequireNotNullCall,,,covered: detekt `potential-bugs:UnnecessaryNotNullCheck`
+RedundantSemicolon,,,covered: ktlint `NoSemicolons`
+RedundantSetter,types,reads the overridden property,
+RedundantSuspendModifier,,,covered: detekt `coroutines:RedundantSuspendModifier`
+RedundantUnitExpression,types,reads the expected type of the expression,covered: detekt `style:OptionalUnit`
+RedundantUnitReturnType,,,"covered: detekt `style:OptionalUnit`, ktlint `NoUnitReturn`"
+RedundantVisibilityModifier,,,covered: detekt `style:RedundantVisibilityModifier`
+RemoveCurlyBracesFromTemplate,,,covered: ktlint `StringTemplate`
+RemoveEmptyClassBody,,,"covered: detekt `empty-blocks:EmptyClassBlock`, ktlint `NoEmptyClassBody`"
+RemoveEmptyParenthesesFromLambdaCall,,,covered: ktlint `UnnecessaryParenthesesBeforeTrailingLambda`
+RemoveEmptyPrimaryConstructor,,,covered: detekt `empty-blocks:EmptyDefaultConstructor`
+RemoveEmptySecondaryConstructorBody,,,covered: detekt `empty-blocks:EmptySecondaryConstructor`
+RemoveRedundantBackticks,,,covered: detekt `style:UnnecessaryBackticks`
+RemoveToStringInStringTemplate,,,covered: ktlint `StringTemplate`
+RemoveUnnecessaryParentheses,,,covered: detekt `style:UnnecessaryParentheses`
+ReplaceArrayOfWithLiteral,,,covered: detekt `style:UseArrayLiteralsInAnnotations`
+ReplaceGetOrSet,,,covered: detekt `style:ExplicitCollectionElementAccessMethod`
+ReplaceGuardClauseWithFunctionCall,,,"covered: detekt `style:UseRequire`, `UseCheckOrError`"
+ReplaceIsEmptyWithIfEmpty,,,covered: detekt `style:UseIfEmptyOrIfBlank`
+ReplaceManualRangeWithIndicesCalls,types,searches references of a loop parameter only,
+ReplaceNegatedIsEmptyWithIsNotEmpty,types,matches resolved callables,
+ReplacePrintlnWithLogging,,,covered: detekt `style:ForbiddenMethodCall`
+ReplacePutWithAssignment,,,covered: detekt `style:ExplicitCollectionElementAccessMethod`
+ReplaceRangeToWithRangeUntil,,,covered: detekt `style:RangeUntilInsteadOfRangeTo`
+ReplaceRangeToWithUntil,,,covered: detekt `style:RangeUntilInsteadOfRangeTo`
+ReplaceToStringWithStringTemplate,types,resolves the toString call,
+ScopeFunctionConversion,not-portable,an IDE intention; each scope function call converts to another one and back,
+ScriptShebangExecPermission,not-portable,reads file system permissions,
+SimpleRedundantLet,,,covered: detekt `style:UnnecessaryLet`
+SimplifyBooleanWithConstants,types,evaluates constants and reads Boolean types,
+SimplifyNegatedBinaryExpression,types,reads operand types to keep floating-point semantics,
+SortModifiers,,,"covered: detekt `style:ModifierOrder`, ktlint `ModifierOrdering`"
+StringReferentialEquality,,,covered: detekt `potential-bugs:AvoidReferentialEquality`
+SuppressedCancellationException,,,covered: detekt `coroutines:SuspendFunSwallowedCancellation`
+SuspiciousAsDynamic,not-portable,applies only to Kotlin/JS; the detekt session is JVM,
+TestFunctionName,psi,checks names with regular expressions; detects tests through detekt excludes,covered: ktlint `FunctionName`
+TrailingComma,,,"covered: ktlint `TrailingCommaOnCallSite`, `TrailingCommaOnDeclarationSite`"
+UnusedSymbol,not-portable,"searches references in the whole project; detekt `UnusedPrivateClass`, `UnusedPrivateFunction`, `UnusedPrivateProperty` cover private declarations",
+UnusedUnaryOperator,,,covered: detekt `potential-bugs:UnusedUnaryOperator`
+UnusedVariable,,,covered: detekt `style:UnusedVariable`
+UselessCallOnNotNull,,,covered: detekt `style:UselessCallOnNotNull`

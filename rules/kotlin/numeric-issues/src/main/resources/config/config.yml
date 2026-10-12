@@ -1,0 +1,4 @@
+intellij-kotlin-numeric-issues:
+  active: true
+  KotlinBigDecimalEquals:
+    active: false
