@@ -308,6 +308,45 @@ class UsePropertyAccessSyntaxTest {
     }
 
     @Test
+    fun `a setter with a non-null parameter for a nullable getter passes`() {
+        val code = """
+            fun main() {
+                Clipboard().setClip("text")
+            }
+        """.trimIndent()
+
+        val findings = sut.lintWithContext(environment, code)
+
+        assertEquals(0, findings.size)
+    }
+
+    @Test
+    fun `a setter whose parameter is a subtype of the getter type passes`() {
+        val code = """
+            fun main() {
+                Narrowed().setValue(1)
+            }
+        """.trimIndent()
+
+        val findings = sut.lintWithContext(environment, code)
+
+        assertEquals(0, findings.size)
+    }
+
+    @Test
+    fun `a setter whose parameter is a supertype of the getter type passes`() {
+        val code = """
+            fun main() {
+                Widened().setValue(1)
+            }
+        """.trimIndent()
+
+        val findings = sut.lintWithContext(environment, code)
+
+        assertEquals(0, findings.size)
+    }
+
+    @Test
     fun `a getter called on super passes`() {
         val code = """
             open class Base : JavaName {

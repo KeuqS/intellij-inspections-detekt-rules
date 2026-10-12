@@ -50,7 +50,8 @@ internal class UsePropertyAccessSyntaxAccessor(
                     propertyType.semanticallyEquals(returnType)
             } else {
                 val isBody = (qualified.parent as? KtDeclarationWithBody)?.bodyExpression === qualified
-                (if (isBody) returnType.isUnitType else !qualified.isUsedAsExpression) &&
+                !property.isVal &&
+                    (if (isBody) returnType.isUnitType else !qualified.isUsedAsExpression) &&
                     argument.expressionType?.isSubtypeOf(propertyType) == true
             }
         }
