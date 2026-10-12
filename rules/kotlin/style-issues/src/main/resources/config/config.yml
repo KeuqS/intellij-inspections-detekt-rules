@@ -2,6 +2,7 @@ intellij-kotlin-style-issues:
   active: true
   AddOperatorModifier:
     active: true
+    areSuspendFunctionsSkipped: true
   AddVarianceModifier:
     active: true
   BooleanLiteralArgument:
