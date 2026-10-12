@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.0.3
+
+### Changed options and defaults
+
+- `intellij-kotlin-style-issues`: `ReplaceAssociateFunction`: inactive by default. To keep the old behavior, set `active: true`.
+
+### Changed detection
+
+- `intellij-jvm-general`: `BlockingMethodInNonBlockingContext`: a coroutine context argument that the rule cannot resolve to a known dispatcher, such as an injected `CoroutineDispatcher` property or parameter in `withContext(ioDispatcher)`, is now an unknown context. With the default `isUnknownContextBlocking: true`, blocking calls in it are not reported. Before, the rule reported them. To keep the old behavior, set `isUnknownContextBlocking` to `false`. This also reports blocking calls in all other unknown contexts.
+- `intellij-kotlin-style-issues`: `UsePropertyAccessSyntax`: does not report a call of a Java setter when the synthetic property is read-only, for example when the setter parameter type is different from the getter type. A property assignment does not compile in this case, so no option keeps the old findings.
+
 ## 0.0.2
 
 ### Changed options and defaults
