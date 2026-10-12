@@ -1,6 +1,7 @@
 package by.overpas.detekt.intellij.kotlin.styleissues.destructuringdeclaration
 
 import dev.detekt.api.Config
+import dev.detekt.test.TestConfig
 import dev.detekt.test.lintWithContext
 import dev.detekt.test.utils.createEnvironment
 import kotlin.test.Test
@@ -13,7 +14,8 @@ class DestructuringDeclarationTest {
     private val sut = DestructuringDeclaration(Config.empty)
 
     @Test
-    fun `a lambda parameter with two used components is reported`() {
+    fun `a lambda parameter with two used components is reported with non-parameter cases`() {
+        val sut = DestructuringDeclaration(TestConfig("areNonParameterCasesReported" to true))
         val code = """
             data class XY(val x: String, val y: String)
 
@@ -26,7 +28,8 @@ class DestructuringDeclarationTest {
     }
 
     @Test
-    fun `an implicit it parameter with two used components is reported`() {
+    fun `an implicit it parameter with two used components is reported with non-parameter cases`() {
+        val sut = DestructuringDeclaration(TestConfig("areNonParameterCasesReported" to true))
         val code = """
             data class XY(val x: String, val y: String)
 
@@ -41,7 +44,8 @@ class DestructuringDeclarationTest {
     }
 
     @Test
-    fun `components read into local variables are reported`() {
+    fun `components read into local variables are reported with non-parameter cases`() {
+        val sut = DestructuringDeclaration(TestConfig("areNonParameterCasesReported" to true))
         val code = """
             data class XY(val x: Int, val y: Int)
 
@@ -61,7 +65,8 @@ class DestructuringDeclarationTest {
     }
 
     @Test
-    fun `an it parameter destructured inside the lambda is reported`() {
+    fun `an it parameter destructured inside the lambda is reported with non-parameter cases`() {
+        val sut = DestructuringDeclaration(TestConfig("areNonParameterCasesReported" to true))
         val code = """
             data class XY(val x: String, val y: String)
 
@@ -79,7 +84,8 @@ class DestructuringDeclarationTest {
     }
 
     @Test
-    fun `a second lambda parameter is reported`() {
+    fun `a second lambda parameter is reported with non-parameter cases`() {
+        val sut = DestructuringDeclaration(TestConfig("areNonParameterCasesReported" to true))
         val code = """
             data class XY(val x: String, val y: String)
 
@@ -92,7 +98,8 @@ class DestructuringDeclarationTest {
     }
 
     @Test
-    fun `a map entry lambda parameter is reported`() {
+    fun `a map entry lambda parameter is reported with non-parameter cases`() {
+        val sut = DestructuringDeclaration(TestConfig("areNonParameterCasesReported" to true))
         val code = """
             fun foo(f: (Map.Entry<Int, Int>) -> Int) = f
 
@@ -122,7 +129,26 @@ class DestructuringDeclarationTest {
     }
 
     @Test
-    fun `a local variable with two used components is reported`() {
+    fun `a local variable with two used components is reported with non-parameter cases`() {
+        val sut = DestructuringDeclaration(TestConfig("areNonParameterCasesReported" to true))
+        val code = """
+            data class XY(val x: Int, val y: Int)
+
+            fun create() = XY(1, 2)
+
+            fun use(): Int {
+                val xy = create()
+                return xy.x + xy.y
+            }
+        """.trimIndent()
+
+        val findings = sut.lintWithContext(environment, code)
+
+        assertEquals(1, findings.size)
+    }
+
+    @Test
+    fun `a local variable with two used components passes`() {
         val code = """
             data class XY(val x: Int, val y: Int)
 
@@ -136,11 +162,12 @@ class DestructuringDeclarationTest {
 
         val findings = sut.lintWithContext(environment, code)
 
-        assertEquals(1, findings.size)
+        assertEquals(0, findings.size)
     }
 
     @Test
-    fun `a pair local variable is reported`() {
+    fun `a pair local variable is reported with non-parameter cases`() {
+        val sut = DestructuringDeclaration(TestConfig("areNonParameterCasesReported" to true))
         val code = """
             fun foo() = 0 to 10
 
@@ -156,7 +183,8 @@ class DestructuringDeclarationTest {
     }
 
     @Test
-    fun `a reference to a function with the same name is reported`() {
+    fun `a reference to a function with the same name is reported with non-parameter cases`() {
+        val sut = DestructuringDeclaration(TestConfig("areNonParameterCasesReported" to true))
         val code = """
             data class D(val v1: Int, val v2: Int)
 
@@ -178,7 +206,8 @@ class DestructuringDeclarationTest {
     }
 
     @Test
-    fun `the last two of three components are reported`() {
+    fun `the last two of three components are reported with non-parameter cases`() {
+        val sut = DestructuringDeclaration(TestConfig("areNonParameterCasesReported" to true))
         val code = """
             data class My(val first: String, val second: Int, val third: Boolean)
 
@@ -196,7 +225,8 @@ class DestructuringDeclarationTest {
     }
 
     @Test
-    fun `a single used component passes`() {
+    fun `a single used component passes with non-parameter cases`() {
+        val sut = DestructuringDeclaration(TestConfig("areNonParameterCasesReported" to true))
         val code = """
             data class My(val first: String, val second: Int)
 
@@ -213,7 +243,8 @@ class DestructuringDeclarationTest {
     }
 
     @Test
-    fun `a nullable lambda parameter passes`() {
+    fun `a nullable lambda parameter passes with non-parameter cases`() {
+        val sut = DestructuringDeclaration(TestConfig("areNonParameterCasesReported" to true))
         val code = """
             data class XY(val x: String, val y: String)
 
@@ -230,7 +261,8 @@ class DestructuringDeclarationTest {
     }
 
     @Test
-    fun `a reassigned local variable passes`() {
+    fun `a reassigned local variable passes with non-parameter cases`() {
+        val sut = DestructuringDeclaration(TestConfig("areNonParameterCasesReported" to true))
         val code = """
             data class XY(val x: Int, val y: Int)
 
@@ -249,7 +281,8 @@ class DestructuringDeclarationTest {
     }
 
     @Test
-    fun `a class property passes`() {
+    fun `a class property passes with non-parameter cases`() {
+        val sut = DestructuringDeclaration(TestConfig("areNonParameterCasesReported" to true))
         val code = """
             data class XY(val x: Int, val y: Int)
 
@@ -265,7 +298,8 @@ class DestructuringDeclarationTest {
     }
 
     @Test
-    fun `a variable passed as an argument passes`() {
+    fun `a variable passed as an argument passes with non-parameter cases`() {
+        val sut = DestructuringDeclaration(TestConfig("areNonParameterCasesReported" to true))
         val code = """
             data class XY(val x: Int, val y: Int)
 
@@ -285,7 +319,8 @@ class DestructuringDeclarationTest {
     }
 
     @Test
-    fun `a modified component passes`() {
+    fun `a modified component passes with non-parameter cases`() {
+        val sut = DestructuringDeclaration(TestConfig("areNonParameterCasesReported" to true))
         val code = """
             data class XY(var x: Int, val y: Int)
 
@@ -302,7 +337,8 @@ class DestructuringDeclarationTest {
     }
 
     @Test
-    fun `too many unused components pass`() {
+    fun `too many unused components pass with non-parameter cases`() {
+        val sut = DestructuringDeclaration(TestConfig("areNonParameterCasesReported" to true))
         val code = """
             data class Five(val a: Int, val b: Int, val c: Int, val d: Int, val e: Int)
 
@@ -315,11 +351,121 @@ class DestructuringDeclarationTest {
     }
 
     @Test
-    fun `a regular class passes`() {
+    fun `a regular class passes with non-parameter cases`() {
+        val sut = DestructuringDeclaration(TestConfig("areNonParameterCasesReported" to true))
         val code = """
             class XY(val x: Int, val y: Int)
 
             fun foo(list: List<XY>) = list.map { it.x + it.y }
+        """.trimIndent()
+
+        val findings = sut.lintWithContext(environment, code)
+
+        assertEquals(0, findings.size)
+    }
+
+    @Test
+    fun `a data class loop variable with two used components is reported`() {
+        val code = """
+            data class XY(val x: Int, val y: Int)
+
+            fun foo(list: List<XY>) {
+                for (xy in list) {
+                    println(xy.x + xy.y)
+                }
+            }
+        """.trimIndent()
+
+        val findings = sut.lintWithContext(environment, code)
+
+        assertEquals(1, findings.size)
+    }
+
+    @Test
+    fun `a loop variable with a single used component passes`() {
+        val code = """
+            data class XY(val x: Int, val y: Int)
+
+            fun foo(list: List<XY>) {
+                for (xy in list) {
+                    println(xy.x)
+                }
+            }
+        """.trimIndent()
+
+        val findings = sut.lintWithContext(environment, code)
+
+        assertEquals(0, findings.size)
+    }
+
+    @Test
+    fun `a lambda parameter with two used components passes`() {
+        val code = """
+            data class XY(val x: String, val y: String)
+
+            fun foo(list: List<XY>) = list.map { xy -> xy.x + xy.y }
+        """.trimIndent()
+
+        val findings = sut.lintWithContext(environment, code)
+
+        assertEquals(0, findings.size)
+    }
+
+    @Test
+    fun `an implicit it parameter with two used components passes`() {
+        val code = """
+            data class XY(val x: String, val y: String)
+
+            fun foo(list: List<XY>) = list.map { it.x + it.y }
+        """.trimIndent()
+
+        val findings = sut.lintWithContext(environment, code)
+
+        assertEquals(0, findings.size)
+    }
+
+    @Test
+    fun `a local variable that reads some components of a large data class passes`() {
+        val code = """
+            data class Motion(
+                val durationQuick: Int,
+                val durationBase: Int,
+                val durationSlow: Int,
+                val easeStandard: String,
+                val easeExit: String,
+                val isReduced: Boolean,
+            )
+
+            fun motion() = Motion(1, 2, 3, "standard", "exit", false)
+
+            fun tween(duration: Int, easing: String) = easing.repeat(duration)
+
+            fun callout(isVisible: Boolean) {
+                val motion = motion()
+                println(isVisible)
+                println(tween(motion.durationBase, easing = motion.easeStandard))
+                println(if (motion.isReduced) "none" else "expand")
+                println(tween(motion.durationBase, easing = motion.easeExit))
+            }
+        """.trimIndent()
+
+        val findings = sut.lintWithContext(environment, code)
+
+        assertEquals(0, findings.size)
+    }
+
+    @Test
+    fun `a local result object passes`() {
+        val code = """
+            data class ExecResult(val status: Int, val output: String)
+
+            fun String.exec() = ExecResult(0, this)
+
+            fun String.execOrThrow(): String {
+                val result = exec()
+                if (result.status != 0) error(result.output.ifEmpty { result.status.toString() })
+                return result.output
+            }
         """.trimIndent()
 
         val findings = sut.lintWithContext(environment, code)

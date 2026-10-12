@@ -83,7 +83,15 @@ The project must use detekt 2 (Gradle plugin `dev.detekt`).
        active: true
    ```
 
-4. Run `./gradlew detekt`.
+4. Run the detekt tasks with type resolution:
+
+   ```shell
+   ./gradlew detektMain detektTest
+   ```
+
+   Most rules need type resolution. The plain `detekt` task does not have it, so it skips these
+   rules and does not report this. In a Kotlin Multiplatform project, run the task of each JVM
+   target, for example `detektMainJvm` and `detektTestJvm`.
 
 ## Rules
 
@@ -460,7 +468,7 @@ the script, because detekt does not have the Gradle model.
 
 | Rule | Finds |
 |---|---|
-| `AddOperatorModifier` | A function that matches an operator convention but has no `operator` modifier. |
+| `AddOperatorModifier` | A function that matches an operator convention but has no `operator` modifier. Option `areSuspendFunctionsSkipped` (default `true`) does not report `suspend` functions. |
 | `AddVarianceModifier` | A class type parameter that is used only in input or only in output positions and can be `in` or `out`. |
 | `BooleanLiteralArgument` | Adjacent `true` or `false` arguments without parameter names. |
 | `CascadeIf` | An `if`-`else if` chain on one subject that `when` can replace. |
@@ -476,7 +484,7 @@ the script, because detekt does not have the Gradle model.
 | `ConvertTryFinallyToUseCall` | A `try`-`finally` that only closes a `Closeable` in `finally`, which `use()` can replace. |
 | `ConvertTwoComparisonsToRangeCheck` | Two comparisons of one value with a lower and an upper bound that an `in` or `!in` range check can replace. Opposite of `ConvertRangeCheckToTwoComparisons`. |
 | `CopyWithoutNamedArguments` | A data class `copy` call that passes arguments without names. |
-| `DestructuringDeclaration` | A local variable, loop variable or lambda parameter of a data class or `Map.Entry` type that is only used to read its components. |
+| `DestructuringDeclaration` | A loop variable of a data class or `Map.Entry` type that is only used to read its components. Set `areNonParameterCasesReported` to also report local variables and lambda parameters. |
 | `FilterIsInstanceCallWithClassLiteralArgument` | A `filterIsInstance(X::class.java)` call that `filterIsInstance<X>()` can replace. |
 | `FoldInitializerAndIfToElvis` | An `if` null or type check that exits right after a variable declaration and can fold into the initializer with `?:`. |
 | `IfThenToElvis` | An `if` that checks a value for `null` or a type and that the elvis operator `?:` can replace. |
@@ -537,7 +545,7 @@ the script, because detekt does not have the Gradle model.
 | `UnclearPrecedenceOfBinaryExpression` | An expression that mixes `?:` with equality, comparison, `in`, `is`, arithmetic or infix calls, or `||` in a `when` guard, without parentheses. |
 | `UnlabeledReturnInsideLambda` | An unlabeled `return` inside an inline lambda that returns from the enclosing function. |
 | `UnsafeCastWithReturn` | An unsafe cast followed by `?: return` that should be the safe cast `as?`. |
-| `UseExpressionBody` | A function or property accessor whose block body holds only a `return` or one `Unit` or `Nothing` expression. |
+| `UseExpressionBody` | A function or property accessor whose block body holds only a `return` or one `Unit` or `Nothing` expression. Option `areUnitExpressionsSkipped` (default `true`) does not report empty bodies and bodies with one `Unit` expression. |
 | `UsePropertyAccessSyntax` | A call of a Java getter or setter that Kotlin property access syntax can replace. |
 | `VerboseNullabilityAndEmptiness` | A null check followed by an emptiness or blankness check that `isNullOrEmpty()` or `isNullOrBlank()` can replace. |
 
@@ -564,14 +572,10 @@ Refresh the catalog with:
 python3 scripts/inspection-catalog.py <intellij-community checkout> --ref master
 ```
 
-The script makes a sparse clone at the given path if it does not exist. Each rule names its
-inspection with `@IntellijInspection`, and each rule set names its inspection group with
-`@IntellijInspectionGroup`. The script reads these annotations.
-
 Every week the [Upstream sync](.github/workflows/upstream-sync.yml) workflow runs
 `scripts/inspection-sync.py`. The script compares the catalog with the `master` branch of
 intellij-community and lists the new inspections, the removed inspections and the changed rules in
-one issue with the `upstream-sync` label. Refresh the catalog to accept the changes.
+one issue with the `upstream-sync` label.
 
 ## License
 
