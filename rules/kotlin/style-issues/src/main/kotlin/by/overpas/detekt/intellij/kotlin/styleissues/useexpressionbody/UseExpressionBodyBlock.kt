@@ -18,7 +18,10 @@ import org.jetbrains.kotlin.psi.KtReturnExpression
 import org.jetbrains.kotlin.psi.KtWhenExpression
 import org.jetbrains.kotlin.psi.psiUtil.anyDescendantOfType
 
-internal class UseExpressionBodyBlock(private val block: KtBlockExpression) {
+internal class UseExpressionBodyBlock(
+    private val block: KtBlockExpression,
+    private val areUnitExpressionsSkipped: Boolean,
+) {
 
     private val statement: KtExpression? = block.statements.singleOrNull()
 
@@ -43,7 +46,7 @@ internal class UseExpressionBodyBlock(private val block: KtBlockExpression) {
     context(session: KaSession)
     fun subject(): String? =
         when (val statement = statement) {
-            null -> "block body"
+            null -> "block body".takeUnless { areUnitExpressionsSkipped }
 
             is KtReturnExpression -> when {
                 statement.returnedExpression is KtWhenExpression -> "'return when'"
@@ -51,20 +54,18 @@ internal class UseExpressionBodyBlock(private val block: KtBlockExpression) {
                 else -> "return"
             }
 
-            else -> "block body".takeIf { statement.hasUnitOrNothingValue() }
+            else -> "block body".takeIf { statement.hasReportedValue() }
         }
 
-    private companion object {
-
-        context(session: KaSession)
-        fun KtExpression.hasUnitOrNothingValue(): Boolean {
-            val isAssignment = this is KtBinaryExpression && operationToken in KtTokens.ALL_ASSIGNMENTS
-            val type = with(session) { expressionType }
-            return when {
-                this is KtDeclaration || this is KtLoopExpression || isAssignment || type == null -> false
-                with(session) { type.isNothingType } -> true
-                else -> with(session) { type.isUnitType } && UseExpressionBodyBranches(this).areExhaustive()
-            }
+    context(session: KaSession)
+    private fun KtExpression.hasReportedValue(): Boolean {
+        val isAssignment = this is KtBinaryExpression && operationToken in KtTokens.ALL_ASSIGNMENTS
+        val type = with(session) { expressionType }
+        return when {
+            this is KtDeclaration || this is KtLoopExpression || isAssignment || type == null -> false
+            with(session) { type.isNothingType } -> true
+            areUnitExpressionsSkipped -> false
+            else -> with(session) { type.isUnitType } && UseExpressionBodyBranches(this).areExhaustive()
         }
     }
 }
