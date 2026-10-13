@@ -106,8 +106,10 @@ class KotlinMisorderedAssertEqualsArgumentsTest {
         val code = """
             import junit.framework.TestCase
 
-            object AnonymizerUtil {
-                fun anonymizeUtf8(value: String): String = value
+            class AnonymizerUtil {
+                companion object {
+                    fun anonymizeUtf8(value: String): String = value
+                }
             }
 
             class DeviceInfoTest : TestCase() {
@@ -278,6 +280,109 @@ class KotlinMisorderedAssertEqualsArgumentsTest {
         val findings = sut.lintWithContext(environment, code, testCase)
 
         assertEquals(0, findings.size)
+    }
+
+    @Test
+    fun `a conversion of an object passed as the actual argument passes`() {
+        val code = """
+            import junit.framework.TestCase
+
+            sealed interface Err {
+                data object Past : Err
+            }
+
+            fun Err.toUi(): String = "past"
+
+            fun uiText(id: Int) = "t" + id
+
+            class MapperTest : TestCase() {
+                fun testMaps() {
+                    assertEquals(uiText(1), Err.Past.toUi())
+                }
+            }
+        """.trimIndent()
+
+        val findings = sut.lintWithContext(environment, code, testCase)
+
+        assertEquals(0, findings.size)
+    }
+
+    @Test
+    fun `a member call on an object passed as the actual argument passes`() {
+        val code = """
+            import junit.framework.TestCase
+
+            object Mapper {
+                fun map(value: String): String = value
+            }
+
+            class MapperTest : TestCase() {
+                fun testMaps(expected: String) {
+                    assertEquals(expected.trim(), Mapper.map("value"))
+                }
+            }
+        """.trimIndent()
+
+        val findings = sut.lintWithContext(environment, code, testCase)
+
+        assertEquals(0, findings.size)
+    }
+
+    @Test
+    fun `a conversion of a local variable with a literal initializer passed as the actual argument passes`() {
+        val code = """
+            import junit.framework.TestCase
+
+            fun String?.toNames(): List<String> = emptyList()
+
+            class MapperTest : TestCase() {
+                fun testEmpty(names: List<String>) {
+                    val input: String? = null
+                    assertEquals(names, input.toNames())
+                }
+            }
+        """.trimIndent()
+
+        val findings = sut.lintWithContext(environment, code, testCase)
+
+        assertEquals(0, findings.size)
+    }
+
+    @Test
+    fun `an empty list passed as the expected argument passes`() {
+        val code = """
+            import junit.framework.TestCase
+
+            fun String?.toNames(): List<String> = emptyList()
+
+            class MapperTest : TestCase() {
+                fun testEmpty() {
+                    val input: String? = null
+                    assertEquals(emptyList<String>(), input.toNames())
+                }
+            }
+        """.trimIndent()
+
+        val findings = sut.lintWithContext(environment, code, testCase)
+
+        assertEquals(0, findings.size)
+    }
+
+    @Test
+    fun `an empty list passed as the actual argument is reported`() {
+        val code = """
+            import junit.framework.TestCase
+
+            class MapperTest : TestCase() {
+                fun testEmpty(names: List<String>) {
+                    assertEquals(names, emptyList<String>())
+                }
+            }
+        """.trimIndent()
+
+        val findings = sut.lintWithContext(environment, code, testCase)
+
+        assertEquals(1, findings.size)
     }
 
     @Test

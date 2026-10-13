@@ -96,7 +96,7 @@ intellij-android-glance-preview:
 intellij-android-kotlin:
   IllegalIdentifier:
     active: true
-    excludes: ['**/test/**', '**/testDebug/**', '**/testRelease/**', '**/commonTest/**', '**/jvmTest/**', '**/androidUnitTest/**', '**/androidHostTest/**']
+    excludes: ['**/test/**', '**/src/test*/**', '**/commonTest/**', '**/jvmTest/**', '**/androidUnitTest/**', '**/androidHostTest/**']
 
 intellij-android-wear-tile-preview:
   WearTilePreviewComposableAnnotationIsNotSupported:
@@ -259,10 +259,6 @@ intellij-kotlin-java-interop:
 intellij-kotlin-logging:
   KotlinLoggerInitializedWithForeignClass:
     active: false
-
-intellij-kotlin-migration:
-  KotlinDeprecation:
-    active: true
 
 intellij-kotlin-naming-conventions:
   InconsistentCommentForJavaParameter:

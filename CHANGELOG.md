@@ -1,5 +1,38 @@
 # Changelog
 
+## 0.0.4
+
+### Removed rules
+
+- `intellij-kotlin-migration`: `KotlinDeprecation`: removed with its rule set, because the Kotlin compiler and detekt already report the same problems. To keep these findings, use the compiler warnings and the detekt rules `Deprecation`, `UnnecessarySafeCall`, `UnnecessaryNotNullOperator` and `UnreachableCode`. Remove the `intellij-kotlin-migration` section from your config.
+
+### Changed options and defaults
+
+- `intellij-android-kotlin`: `IllegalIdentifier`: the default `excludes` now match all unit test source sets with `**/src/test*/**`, for example `src/testStaging`. Before, only `test`, `testDebug` and `testRelease` were excluded. To keep the old behavior, set `excludes` to `['**/test/**', '**/testDebug/**', '**/testRelease/**', '**/commonTest/**', '**/jvmTest/**', '**/androidUnitTest/**', '**/androidHostTest/**']`.
+- `intellij-kotlin-style-issues`: `DestructuringDeclaration`: new option `maxDestructuringEntries` (default `3`, as in detekt's `DestructuringDeclarationWithTooManyEntries`) does not report a variable when the suggested declaration has more entries. To keep the old behavior, set it to a large value, such as `100`.
+
+### Changed detection
+
+- `intellij-android-kotlin`: `IllegalIdentifier`: does not report identifiers in KDoc. KDoc is not compiled to Dalvik bytecode, so no option keeps the old findings.
+- `intellij-kotlin-coroutines`: `UnusedFlow`: does not report a `Flow` call inside a MockK verification block, such as `verify {}`, `coVerify {}`, `verifyOrder {}` or `excludeRecords {}`. These calls only record the expected call. No option keeps the old findings.
+- `intellij-kotlin-probable-bugs`: `CanSealedSubClassBeObject`: does not report a subclass when a superclass in its chain is a library class other than `Any`, such as `Exception`. The rule cannot prove that such a class has no state, so no option keeps the old findings.
+- `intellij-kotlin-probable-bugs`: `KotlinMisorderedAssertEqualsArguments`: a `to*` or `from*` conversion counts as an expected value only on a literal or constant receiver, and an object receiver no longer counts as a factory qualifier. The empty and mutable collection factories, such as `emptyList()` and `mutableListOf()`, now count as expected values. The old findings were false positives, so no option keeps them.
+- `intellij-kotlin-probable-bugs`: `SuspiciousCallOnCollectionToAddOrRemovePath`: does not report ranges and progressions. The rule reports an element-type argument only when that type is iterable over itself, as `java.nio.file.Path` is. No option keeps the old findings.
+- `intellij-kotlin-redundant-constructs`: `ExplicitThis`: reports `this.` only when the name without it resolves to the same symbol with the same receivers. Before, the rule reported a `this.` that a Java getter property or another declaration shadows, and the code without `this.` had a different meaning. No option keeps the old findings.
+- `intellij-kotlin-redundant-constructs`: `RedundantModalityModifier`: does not report `abstract` in an interface, because detekt's `OptionalAbstractKeyword` reports it. To keep these findings, activate `OptionalAbstractKeyword`.
+- `intellij-kotlin-redundant-constructs`: `RemoveRedundantQualifierName`: does not check qualifiers in KDoc. Before, a KDoc link could stop the detekt task with a `NoSuchMethodError`. No option keeps the old behavior.
+- `intellij-kotlin-style-issues`: `AddVarianceModifier`: takes the declared variance of nested type parameters, type projections and supertype type arguments into account. It does not suggest a variance that does not compile. No option keeps the old findings.
+- `intellij-kotlin-style-issues`: `ConvertSealedClassToSealedInterface`: does not report a sealed class with `internal` or `protected` functions or properties, because an interface cannot have them. No option keeps the old findings.
+- `intellij-kotlin-style-issues`: `ReplaceCallWithBinaryOperator`: reports only `equals` and `compareTo` calls, as IntelliJ IDEA highlights them. It does not report calls of arithmetic and range operator functions, `equals` with a floating-point operand, or `equals` on a receiver of a Java type with unknown nullability. No option keeps the old findings.
+
+### Changed messages
+
+- `intellij-kotlin-style-issues`: `ReplaceCallWithBinaryOperator`: the description now names only `equals` and `compareTo`.
+
+### Distribution
+
+- The `intellij-inspections-kotlin-migration-<version>.jar` is no longer attached to the release, and the bundle jars no longer contain the `intellij-kotlin-migration` rule set. Remove the dependency on this jar from your build.
+
 ## 0.0.3
 
 ### Changed options and defaults

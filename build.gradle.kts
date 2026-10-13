@@ -21,7 +21,6 @@ val ruleSets = listOf(
     "kotlin:coroutines",
     "kotlin:java-interop",
     "kotlin:logging",
-    "kotlin:migration",
     "kotlin:naming-conventions",
     "kotlin:numeric-issues",
     "kotlin:other-problems",

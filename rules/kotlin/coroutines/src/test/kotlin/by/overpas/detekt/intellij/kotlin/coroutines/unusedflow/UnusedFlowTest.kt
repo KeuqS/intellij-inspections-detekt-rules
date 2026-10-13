@@ -599,4 +599,114 @@ class UnusedFlowTest {
 
         assertEquals(0, findings.size)
     }
+
+    @Test
+    fun `a flow call in a MockK verify block passes`() {
+        val code = """
+            import io.mockk.verify
+            import kotlinx.coroutines.flow.Flow
+
+            interface Repo {
+                fun observe(): Flow<Int>
+            }
+
+            fun test(repo: Repo) {
+                verify { repo.observe() }
+            }
+        """.trimIndent()
+        val coroutines = """
+            package kotlinx.coroutines.flow
+
+            interface FlowCollector<in T> {
+                suspend fun emit(value: T)
+            }
+
+            interface Flow<out T> {
+                suspend fun collect(collector: FlowCollector<T>)
+            }
+        """.trimIndent()
+        val mockk = """
+            package io.mockk
+
+            fun verify(exactly: Int = -1, verifyBlock: MockKVerificationScope.() -> Unit): Unit = TODO()
+
+            class MockKVerificationScope
+        """.trimIndent()
+
+        val findings = sut.lintWithContext(environment, code, coroutines, mockk)
+
+        assertEquals(0, findings.size)
+    }
+
+    @Test
+    fun `a flow call in a MockK coVerify block with arguments passes`() {
+        val code = """
+            import io.mockk.coVerify
+            import kotlinx.coroutines.flow.Flow
+
+            interface Repo {
+                fun observe(id: Int): Flow<Int>
+            }
+
+            fun test(repo: Repo) {
+                coVerify(exactly = 1) {
+                    repo.observe(1)
+                }
+            }
+        """.trimIndent()
+        val coroutines = """
+            package kotlinx.coroutines.flow
+
+            interface FlowCollector<in T> {
+                suspend fun emit(value: T)
+            }
+
+            interface Flow<out T> {
+                suspend fun collect(collector: FlowCollector<T>)
+            }
+        """.trimIndent()
+        val mockk = """
+            package io.mockk
+
+            fun coVerify(exactly: Int = -1, verifyBlock: suspend MockKVerificationScope.() -> Unit): Unit = TODO()
+
+            class MockKVerificationScope
+        """.trimIndent()
+
+        val findings = sut.lintWithContext(environment, code, coroutines, mockk)
+
+        assertEquals(0, findings.size)
+    }
+
+    @Test
+    fun `a flow call in a lambda of a non-MockK verify function is reported`() {
+        val code = """
+            import kotlinx.coroutines.flow.Flow
+
+            interface Repo {
+                fun observe(): Flow<Int>
+            }
+
+            fun verify(block: () -> Unit) = block()
+
+            fun test(repo: Repo) {
+                verify { repo.observe() }
+            }
+        """.trimIndent()
+        val coroutines = """
+            package kotlinx.coroutines.flow
+
+            interface FlowCollector<in T> {
+                suspend fun emit(value: T)
+            }
+
+            interface Flow<out T> {
+                suspend fun collect(collector: FlowCollector<T>)
+            }
+        """.trimIndent()
+
+        val findings = sut.lintWithContext(environment, code, coroutines)
+
+        assertEquals(1, findings.size)
+    }
 }

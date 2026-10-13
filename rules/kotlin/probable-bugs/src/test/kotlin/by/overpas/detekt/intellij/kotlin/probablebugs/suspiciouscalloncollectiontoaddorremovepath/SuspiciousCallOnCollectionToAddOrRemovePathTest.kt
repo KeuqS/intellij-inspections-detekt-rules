@@ -208,6 +208,28 @@ class SuspiciousCallOnCollectionToAddOrRemovePathTest {
     }
 
     @Test
+    fun `a range added to a range passes`() {
+        val code = """
+            fun test() = ('a'..'z') + ('A'..'Z')
+        """.trimIndent()
+
+        val findings = sut.lintWithContext(environment, code)
+
+        assertEquals(0, findings.size)
+    }
+
+    @Test
+    fun `a range added to a list passes`() {
+        val code = """
+            fun test() = listOf(0) + (1..3)
+        """.trimIndent()
+
+        val findings = sut.lintWithContext(environment, code)
+
+        assertEquals(0, findings.size)
+    }
+
+    @Test
     fun `a list of lists added to a list of lists passes`() {
         val code = """
             fun test(first: List<List<String>>, second: List<List<String>>) = first + second

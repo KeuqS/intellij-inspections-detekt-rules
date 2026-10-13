@@ -19,7 +19,10 @@ internal fun KtClass.hasSealedInterfaceShape(): Boolean {
     val hasBodyState = body?.let { body ->
         body.anonymousInitializers.isNotEmpty() ||
             body.properties.any { it.hasSealedClassState() } ||
-            body.functions.any { it.hasModifier(KtTokens.FINAL_KEYWORD) }
+            body.functions.any { it.hasModifier(KtTokens.FINAL_KEYWORD) } ||
+            (body.functions + body.properties).any {
+                it.hasModifier(KtTokens.INTERNAL_KEYWORD) || it.hasModifier(KtTokens.PROTECTED_KEYWORD)
+            }
     } == true
     return !hasConstructorState && secondaryConstructors.isEmpty() && !hasSuperTypeState && !hasBodyState
 }

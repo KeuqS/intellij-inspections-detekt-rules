@@ -4,6 +4,7 @@ import org.jetbrains.kotlin.KtNodeTypes
 import org.jetbrains.kotlin.analysis.api.KaSession
 import org.jetbrains.kotlin.analysis.api.symbols.KaFunctionSymbol
 import org.jetbrains.kotlin.analysis.api.symbols.KaNamedFunctionSymbol
+import org.jetbrains.kotlin.analysis.api.types.KaFlexibleType
 import org.jetbrains.kotlin.lexer.KtTokens
 import org.jetbrains.kotlin.name.CallableId
 import org.jetbrains.kotlin.name.Name
@@ -13,8 +14,6 @@ import org.jetbrains.kotlin.psi.KtCallExpression
 import org.jetbrains.kotlin.psi.KtConstantExpression
 import org.jetbrains.kotlin.psi.KtDotQualifiedExpression
 import org.jetbrains.kotlin.psi.KtExpression
-import org.jetbrains.kotlin.psi.KtParenthesizedExpression
-import org.jetbrains.kotlin.psi.KtPrefixExpression
 
 private val replaceCallWithBinaryOperatorAnyEquals = CallableId(StandardClassIds.Any, Name.identifier("equals"))
 
@@ -42,13 +41,12 @@ internal class ReplaceCallWithBinaryOperatorCandidate(
         val isRelated = receiverType != null &&
             argumentType != null &&
             (receiverType.isSubtypeOf(argumentType) || argumentType.isSubtypeOf(receiverType))
-        val wrapper = generateSequence(expression.parent) { it.parent }
-            .dropWhile { it is KtParenthesizedExpression }
-            .firstOrNull() as? KtPrefixExpression
-        val isNegated = wrapper?.operationToken == KtTokens.EXCL
         val overridden = sequenceOf(symbol) + symbol.allOverriddenSymbols
         val isAnyEquals = overridden.any { it.callableId == replaceCallWithBinaryOperatorAnyEquals }
-        isRelated && isAnyEquals && (isNegated || floatingPointOperands != 1)
+        val flexibleReceiver = receiverType as? KaFlexibleType
+        val isFlexiblyNullable = flexibleReceiver != null &&
+            flexibleReceiver.lowerBound.isMarkedNullable != flexibleReceiver.upperBound.isMarkedNullable
+        isRelated && isAnyEquals && floatingPointOperands == 0 && !isFlexiblyNullable
     }
 
     private val isReplaceableCompareTo = (expression.parent as? KtBinaryExpression)?.let { comparison ->
@@ -62,6 +60,6 @@ internal class ReplaceCallWithBinaryOperatorCandidate(
     val isReplaceable = when ((expression.selectorExpression as? KtCallExpression)?.calleeExpression?.text) {
         "equals" -> isReplaceableEquals
         "compareTo" -> isReplaceableCompareTo
-        else -> isOperator
+        else -> false
     }
 }

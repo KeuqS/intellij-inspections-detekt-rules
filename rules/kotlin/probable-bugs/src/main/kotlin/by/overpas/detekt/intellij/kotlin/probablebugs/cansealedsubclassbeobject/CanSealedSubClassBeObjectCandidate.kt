@@ -2,9 +2,12 @@ package by.overpas.detekt.intellij.kotlin.probablebugs.cansealedsubclassbeobject
 
 import org.jetbrains.kotlin.analysis.api.KaSession
 import org.jetbrains.kotlin.analysis.api.analyze
+import org.jetbrains.kotlin.analysis.api.symbols.KaClassKind
+import org.jetbrains.kotlin.analysis.api.symbols.KaClassSymbol
 import org.jetbrains.kotlin.analysis.api.symbols.KaNamedClassSymbol
 import org.jetbrains.kotlin.analysis.api.symbols.KaSymbolModality
 import org.jetbrains.kotlin.lexer.KtTokens
+import org.jetbrains.kotlin.name.StandardClassIds
 import org.jetbrains.kotlin.psi.KtClass
 import org.jetbrains.kotlin.psi.KtNamedFunction
 import org.jetbrains.kotlin.psi.KtProperty
@@ -24,16 +27,23 @@ internal class CanSealedSubClassBeObjectCandidate(private val klass: KtClass) {
         analyze(klass) {
             (klass.symbol as? KaNamedClassSymbol)?.modality == KaSymbolModality.FINAL &&
                 klass.superClasses().any { sealed ->
-                    sealed.isSealed() &&
-                        generateSequence(sealed) { it.superClasses().firstOrNull() }.all { it.hasNoStateOrEquals() }
+                    (sealed.psi as? KtClass)?.isSealed() == true &&
+                        generateSequence(sealed) { (it.psi as? KtClass)?.run { superClasses().firstOrNull() } }
+                            .all { ancestor ->
+                                (ancestor.psi as? KtClass)?.hasNoStateOrEquals()
+                                    ?: (
+                                        ancestor.classKind == KaClassKind.INTERFACE ||
+                                            ancestor.classId == StandardClassIds.Any
+                                        )
+                            }
                 }
         }
 
     context(session: KaSession)
-    private fun KtClass.superClasses(): List<KtClass> =
-        superTypeListEntries.mapNotNull { entry ->
-            with(session) { entry.typeReference?.type?.expandedSymbol?.psi } as? KtClass
-        }
+    private fun KtClass.superClasses(): List<KaClassSymbol> =
+        superTypeListEntries
+            .mapNotNull { entry -> with(session) { entry.typeReference?.run { type.expandedSymbol } } }
+            .sortedBy { it.classKind != KaClassKind.CLASS }
 
     private fun KtClass.hasNoStateOrEquals(): Boolean =
         primaryConstructorParameters.isEmpty() &&

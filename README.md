@@ -29,7 +29,6 @@ Editor | Inspections | Compose Multiplatform Preview).
 | `rules:kotlin:coroutines` | `intellij-kotlin-coroutines` | `intellij-inspections-kotlin-coroutines-<version>.jar` |
 | `rules:kotlin:java-interop` | `intellij-kotlin-java-interop` | `intellij-inspections-kotlin-java-interop-<version>.jar` |
 | `rules:kotlin:logging` | `intellij-kotlin-logging` | `intellij-inspections-kotlin-logging-<version>.jar` |
-| `rules:kotlin:migration` | `intellij-kotlin-migration` | `intellij-inspections-kotlin-migration-<version>.jar` |
 | `rules:kotlin:naming-conventions` | `intellij-kotlin-naming-conventions` | `intellij-inspections-kotlin-naming-conventions-<version>.jar` |
 | `rules:kotlin:numeric-issues` | `intellij-kotlin-numeric-issues` | `intellij-inspections-kotlin-numeric-issues-<version>.jar` |
 | `rules:kotlin:other-problems` | `intellij-kotlin-other-problems` | `intellij-inspections-kotlin-other-problems-<version>.jar` |
@@ -321,7 +320,7 @@ the script, because detekt does not have the Gradle model.
 | `SuspendCoroutineLacksCancellationGuarantees` | A `suspendCoroutine` call that ignores cancellation when `suspendCancellableCoroutine` is available. |
 | `SuspiciousImplicitCoroutineScopeReceiverAccess` | An implicit access to an outer `CoroutineScope` receiver from inside a suspending lambda or function. |
 | `SuspiciousMutableCollectionInStateFlow` | A `MutableStateFlow` that holds a mutable collection, which emits no new value when it changes in place. |
-| `UnusedFlow` | A `Flow` that is created but never collected, returned or passed on. |
+| `UnusedFlow` | A `Flow` that is created but never collected, returned or passed on, except inside MockK verification blocks such as `verify {}`. Overlaps detekt's `IgnoredReturnValue`, which is active by default. |
 | `UselessCallOnFlow` | A `filterNotNull`, `filterIsInstance` or `mapNotNull` call on a `Flow` that does nothing or can be simpler. |
 
 ### `intellij-kotlin-java-interop`
@@ -337,12 +336,6 @@ the script, because detekt does not have the Gradle model.
 | Rule | Finds |
 |---|---|
 | `KotlinLoggerInitializedWithForeignClass` | A logger that is created with the class literal of another class. Inactive by default. |
-
-### `intellij-kotlin-migration`
-
-| Rule | Finds |
-|---|---|
-| `KotlinDeprecation` | A deprecated symbol with a replacement, an import of such a symbol, deprecated syntax, or a useless cast, elvis, safe call or `!!`. |
 
 ### `intellij-kotlin-naming-conventions`
 
@@ -440,7 +433,7 @@ the script, because detekt does not have the Gradle model.
 | `RedundantLabeledReturnOnLastExpressionInLambda` | A `return@label` on the last expression of the lambda with that label. |
 | `RedundantLambdaArrow` | A lambda arrow with no parameters or with only an explicit `it` parameter. |
 | `RedundantLambdaOrAnonymousFunction` | A lambda or an anonymous function that is called at once. |
-| `RedundantModalityModifier` | A modality modifier that equals the default modality of the declaration. |
+| `RedundantModalityModifier` | A modality modifier that equals the default modality of the declaration. Skips `abstract` in an interface, which detekt `OptionalAbstractKeyword` reports. |
 | `RedundantNullableReturnType` | A nullable return type of a function or a read-only property that never returns null. |
 | `RedundantReturnKeyword` | A `return` in a branch of an `if`, `when` or elvis expression that is already returned. |
 | `RedundantReturnLabel` | A label on a `return` that targets the enclosing function, not a lambda. |
@@ -476,7 +469,7 @@ the script, because detekt does not have the Gradle model.
 | `ConvertPairConstructorToToFunction` | An explicit `Pair(a, b)` constructor call that can be the infix `a to b`. Opposite of `InfixCallToOrdinary`. |
 | `ConvertRangeCheckToTwoComparisons` | An `in` or `!in` check of simple values against a standard range that can be two comparisons. Opposite of `ConvertTwoComparisonsToRangeCheck`, which is active by default. Inactive by default. |
 | `ConvertReferenceToLambda` | A callable reference that a lambda can replace. Inactive by default. |
-| `ConvertSealedClassToSealedInterface` | A sealed class without state, constructor parameters or final members that can be a sealed interface. Opposite of `ConvertSealedInterfaceToSealedClass`. |
+| `ConvertSealedClassToSealedInterface` | A sealed class without state, constructor parameters, final, `internal` or `protected` members that can be a sealed interface. Opposite of `ConvertSealedInterfaceToSealedClass`. Overlaps detekt's `AbstractClassCanBeInterface` when its `ignoreSealedClasses` is `false`. |
 | `ConvertSealedInterfaceToSealedClass` | A sealed interface whose inheritors are all plain classes or objects that can extend a sealed class. Opposite of `ConvertSealedClassToSealedInterface`, which is active by default. Inactive by default. |
 | `ConvertSecondaryConstructorToPrimary` | A secondary constructor that every other constructor delegates to and that can be the primary constructor. |
 | `ConvertToExplicitBackingFields` | A property whose getter only returns a private property of a narrower type, which an explicit backing field can replace. Opposite of `RevertExplicitBackingFields`. |
@@ -484,7 +477,7 @@ the script, because detekt does not have the Gradle model.
 | `ConvertTryFinallyToUseCall` | A `try`-`finally` that only closes a `Closeable` in `finally`, which `use()` can replace. |
 | `ConvertTwoComparisonsToRangeCheck` | Two comparisons of one value with a lower and an upper bound that an `in` or `!in` range check can replace. Opposite of `ConvertRangeCheckToTwoComparisons`. |
 | `CopyWithoutNamedArguments` | A data class `copy` call that passes arguments without names. |
-| `DestructuringDeclaration` | A loop variable of a data class or `Map.Entry` type that is only used to read its components. Set `areNonParameterCasesReported` to also report local variables and lambda parameters. |
+| `DestructuringDeclaration` | A loop variable of a data class or `Map.Entry` type that is only used to read its components. Set `areNonParameterCasesReported` to also report local variables and lambda parameters. `maxDestructuringEntries` (default `3`, as in detekt's `DestructuringDeclarationWithTooManyEntries`) limits the entries of the suggested declaration. |
 | `FilterIsInstanceCallWithClassLiteralArgument` | A `filterIsInstance(X::class.java)` call that `filterIsInstance<X>()` can replace. |
 | `FoldInitializerAndIfToElvis` | An `if` null or type check that exits right after a variable declaration and can fold into the initializer with `?:`. |
 | `IfThenToElvis` | An `if` that checks a value for `null` or a type and that the elvis operator `?:` can replace. |
@@ -506,7 +499,7 @@ the script, because detekt does not have the Gradle model.
 | `ReplaceAddAllWithMapTo` | An `addAll` or `+=` of a `map` or `filter` result that `mapTo` or `filterTo` can replace. |
 | `ReplaceAssertBooleanWithAssertEquality` | An `assertTrue` or `assertFalse` call with an `==` or `===` check that an equality assertion can replace. |
 | `ReplaceAssociateFunction` | An `associate` or `associateTo` call that `associateBy` or `associateWith` can replace. Inactive by default. |
-| `ReplaceCallWithBinaryOperator` | An explicit call of `equals`, `compareTo` or an arithmetic or range operator function that a binary operator can replace. |
+| `ReplaceCallWithBinaryOperator` | An explicit call of `equals` or `compareTo` that a binary operator can replace. |
 | `ReplaceCollectionCountWithSize` | A `count()` call without a predicate on a collection, array or map that `size` can replace. Inactive by default. |
 | `ReplaceContains` | A call of an operator `contains` function that the `in` operator can replace. |
 | `ReplaceIfExpressionWithFirstOrNull` | An `if` that returns the first element of a non-empty collection, string or array, else `null`, which `firstOrNull()` can replace. |

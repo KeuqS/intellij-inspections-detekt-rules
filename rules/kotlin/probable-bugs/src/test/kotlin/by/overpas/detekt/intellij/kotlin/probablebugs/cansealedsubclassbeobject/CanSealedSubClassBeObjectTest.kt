@@ -309,4 +309,47 @@ class CanSealedSubClassBeObjectTest {
 
         assertEquals(0, findings.size)
     }
+
+    @Test
+    fun `a subclass of a sealed exception passes`() {
+        val code = """
+            sealed class SealedException : Exception() {
+                class SubSealed : SealedException()
+            }
+        """.trimIndent()
+
+        val findings = sut.lintWithContext(environment, code)
+
+        assertEquals(0, findings.size)
+    }
+
+    @Test
+    fun `a subclass of a sealed class whose base extends a library class passes`() {
+        val code = """
+            abstract class Base : Throwable()
+
+            sealed class Sealed : Base()
+
+            class SubSealed : Sealed()
+        """.trimIndent()
+
+        val findings = sut.lintWithContext(environment, code)
+
+        assertEquals(0, findings.size)
+    }
+
+    @Test
+    fun `a stateless subclass of a sealed class that implements a library interface is reported`() {
+        val code = """
+            sealed class Sealed : Comparable<Sealed> {
+                override fun compareTo(other: Sealed): Int = 0
+            }
+
+            class SubSealed : Sealed()
+        """.trimIndent()
+
+        val findings = sut.lintWithContext(environment, code)
+
+        assertEquals(1, findings.size)
+    }
 }

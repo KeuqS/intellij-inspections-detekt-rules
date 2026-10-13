@@ -23,12 +23,13 @@ internal class ExplicitThisCandidate(private val expression: KtThisExpression) {
     @OptIn(KaIdeApi::class)
     private fun KtDotQualifiedExpression.canDropReceiver(): Boolean {
         val qualified = this
-        return analyze(qualified) {
+        val isShortenable = expression.getLabelName() == null || analyze(qualified) {
             collectPossibleReferenceShortenings(
                 file = qualified.containingKtFile,
                 selection = qualified.textRange,
                 shortenOptions = ShortenOptions(removeThis = true, removeThisLabels = true),
             ).listOfQualifierToShortenInfo.any { it.qualifierToShorten.element == qualified }
         }
+        return isShortenable && ExplicitThisUnqualified(qualified).keepsTarget()
     }
 }

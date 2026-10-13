@@ -32,7 +32,6 @@ dependencies {
     detektPlugins(project(":rules:kotlin:coroutines"))
     detektPlugins(project(":rules:kotlin:java-interop"))
     detektPlugins(project(":rules:kotlin:logging"))
-    detektPlugins(project(":rules:kotlin:migration"))
     detektPlugins(project(":rules:kotlin:naming-conventions"))
     detektPlugins(project(":rules:kotlin:numeric-issues"))
     detektPlugins(project(":rules:kotlin:other-problems"))

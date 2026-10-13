@@ -57,7 +57,7 @@ class ReplaceCallWithBinaryOperatorTest {
     }
 
     @Test
-    fun `a plus operator call is reported`() {
+    fun `a plus operator call passes`() {
         val code = """
             fun test() {
                 class Test {
@@ -70,11 +70,11 @@ class ReplaceCallWithBinaryOperatorTest {
 
         val findings = sut.lintWithContext(environment, code)
 
-        assertEquals(1, findings.size)
+        assertEquals(0, findings.size)
     }
 
     @Test
-    fun `a rangeUntil operator call is reported`() {
+    fun `a rangeUntil operator call passes`() {
         val code = """
             fun test() {
                 class Test {
@@ -87,51 +87,51 @@ class ReplaceCallWithBinaryOperatorTest {
 
         val findings = sut.lintWithContext(environment, code)
 
-        assertEquals(1, findings.size)
+        assertEquals(0, findings.size)
     }
 
     @Test
-    fun `a plus call on doubles is reported`() {
+    fun `a plus call on doubles passes`() {
         val code = """
             fun test(a: Double, b: Double) = a.plus(b)
         """.trimIndent()
 
         val findings = sut.lintWithContext(environment, code)
 
-        assertEquals(1, findings.size)
+        assertEquals(0, findings.size)
     }
 
     @Test
-    fun `an equals call on doubles is reported`() {
+    fun `an equals call on doubles passes`() {
         val code = """
             fun test(a: Double, b: Double) = a.equals(b)
         """.trimIndent()
 
         val findings = sut.lintWithContext(environment, code)
 
-        assertEquals(1, findings.size)
+        assertEquals(0, findings.size)
     }
 
     @Test
-    fun `an equals call on smart cast doubles is reported`() {
+    fun `an equals call on smart cast doubles passes`() {
         val code = """
             fun test(a: Any, b: Any) = a is Double && b is Double && a.equals(b)
         """.trimIndent()
 
         val findings = sut.lintWithContext(environment, code)
 
-        assertEquals(1, findings.size)
+        assertEquals(0, findings.size)
     }
 
     @Test
-    fun `a plus call of a Java method is reported`() {
+    fun `a plus call of a Java method passes`() {
         val code = """
             fun test(date: java.time.LocalDate) = date.plus(java.time.Period.ofDays(1))
         """.trimIndent()
 
         val findings = sut.lintWithContext(environment, code)
 
-        assertEquals(1, findings.size)
+        assertEquals(0, findings.size)
     }
 
     @Test
@@ -146,14 +146,14 @@ class ReplaceCallWithBinaryOperatorTest {
     }
 
     @Test
-    fun `an equals call on a platform type is reported`() {
+    fun `an equals call on a platform type passes`() {
         val code = """
             fun test() = System.getProperty("a").equals(System.getProperty("b"))
         """.trimIndent()
 
         val findings = sut.lintWithContext(environment, code)
 
-        assertEquals(1, findings.size)
+        assertEquals(0, findings.size)
     }
 
     @Test

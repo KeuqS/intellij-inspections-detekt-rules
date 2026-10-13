@@ -15,11 +15,11 @@ internal val KaType.suspiciousPathClassId: ClassId?
     get() = ((this as? KaFlexibleType)?.upperBound ?: this).let { it as? KaClassType }?.classId
 
 context(session: KaSession)
-internal fun KaType.suspiciousPathElementClassId(): ClassId? {
+internal fun KaType.suspiciousPathElementType(): KaType? {
     val types = listOf(this) + with(session) { allSupertypes }
     val iterable = types.firstOrNull { type -> type.suspiciousPathClassId in suspiciousPathIterableClassIds }
     val iterableType = (iterable as? KaFlexibleType)?.upperBound ?: iterable
-    return (iterableType as? KaClassType)?.typeArguments?.firstOrNull()?.type?.suspiciousPathClassId
+    return (iterableType as? KaClassType)?.typeArguments?.firstOrNull()?.type
 }
 
 context(session: KaSession)
