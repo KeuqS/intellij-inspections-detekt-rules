@@ -440,7 +440,7 @@ the script, because detekt does not have the Gradle model.
 | `RedundantLabeledReturnOnLastExpressionInLambda` | A `return@label` on the last expression of the lambda with that label. |
 | `RedundantLambdaArrow` | A lambda arrow with no parameters or with only an explicit `it` parameter. |
 | `RedundantLambdaOrAnonymousFunction` | A lambda or an anonymous function that is called at once. |
-| `RedundantModalityModifier` | A modality modifier that equals the default modality of the declaration. |
+| `RedundantModalityModifier` | A modality modifier that equals the default modality of the declaration. Skips `abstract` in an interface, which detekt `OptionalAbstractKeyword` reports. |
 | `RedundantNullableReturnType` | A nullable return type of a function or a read-only property that never returns null. |
 | `RedundantReturnKeyword` | A `return` in a branch of an `if`, `when` or elvis expression that is already returned. |
 | `RedundantReturnLabel` | A label on a `return` that targets the enclosing function, not a lambda. |
