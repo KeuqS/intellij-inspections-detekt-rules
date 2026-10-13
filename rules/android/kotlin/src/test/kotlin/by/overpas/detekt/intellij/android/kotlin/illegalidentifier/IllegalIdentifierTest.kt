@@ -96,6 +96,20 @@ class IllegalIdentifierTest {
     }
 
     @Test
+    fun `a backticked name inside kdoc passes`() {
+        val code = """
+            /**
+             * @sample `foo bar`
+             */
+            fun f() {}
+        """.trimIndent()
+
+        val findings = sut.lint(code)
+
+        assertEquals(0, findings.size)
+    }
+
+    @Test
     fun `a kotlin script passes`() {
         val code = """
             fun `load the data`() {}
