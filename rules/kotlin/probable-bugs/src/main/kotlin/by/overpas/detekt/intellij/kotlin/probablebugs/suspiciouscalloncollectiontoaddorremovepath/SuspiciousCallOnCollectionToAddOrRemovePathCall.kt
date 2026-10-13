@@ -45,7 +45,8 @@ internal class SuspiciousCallOnCollectionToAddOrRemovePathCall(private val call:
                 val argumentClassId = argumentType?.suspiciousPathClassId
                 val elementType = argumentType?.suspiciousPathElementType()
                 val elementClassId = elementType?.suspiciousPathClassId
-                val receiverElementClassId = receiver?.expressionType?.suspiciousPathElementType()?.suspiciousPathClassId
+                val receiverType = receiver?.expressionType
+                val receiverElementClassId = receiverType?.suspiciousPathElementType()?.suspiciousPathClassId
                 val nestedElementClassId = elementType?.suspiciousPathElementType()?.suspiciousPathClassId
                 val callableId = call.resolveToCall()?.successfulFunctionCallOrNull()?.run { symbol.callableId }
                 argumentClassId != null &&
@@ -53,7 +54,7 @@ internal class SuspiciousCallOnCollectionToAddOrRemovePathCall(private val call:
                     !argumentType.isSuspiciousPathContainer() &&
                     (
                         elementClassId == argumentClassId ||
-                            elementClassId == receiverElementClassId && elementClassId == nestedElementClassId
+                            (elementClassId == receiverElementClassId && elementClassId == nestedElementClassId)
                         ) &&
                     callableId in suspiciousCallableIds
             }
