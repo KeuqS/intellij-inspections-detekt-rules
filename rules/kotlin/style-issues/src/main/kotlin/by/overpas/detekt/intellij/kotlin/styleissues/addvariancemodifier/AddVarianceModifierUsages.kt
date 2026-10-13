@@ -6,9 +6,6 @@ import org.jetbrains.kotlin.analysis.api.symbols.KaNamedClassSymbol
 import org.jetbrains.kotlin.analysis.api.symbols.KaPropertySymbol
 import org.jetbrains.kotlin.analysis.api.symbols.KaSymbolVisibility
 import org.jetbrains.kotlin.analysis.api.symbols.KaTypeParameterSymbol
-import org.jetbrains.kotlin.analysis.api.types.KaClassType
-import org.jetbrains.kotlin.analysis.api.types.KaType
-import org.jetbrains.kotlin.analysis.api.types.KaTypeParameterType
 import org.jetbrains.kotlin.types.Variance
 
 internal class AddVarianceModifierUsages(
@@ -18,33 +15,30 @@ internal class AddVarianceModifierUsages(
 
     fun suggestedVariance(): Variance? =
         with(session) {
+            val positions = AddVarianceModifierPositions(typeParameter)
             val owner = typeParameter.containingSymbol as? KaNamedClassSymbol
             val scope = owner?.declaredMemberScope
             val members = scope?.callables.orEmpty()
                 .filter { it.visibility == KaSymbolVisibility.PUBLIC || it.visibility == KaSymbolVisibility.INTERNAL }
                 .toList()
-            val properties = members.filterIsInstance<KaPropertySymbol>().filter {
-                it.returnType.mentionsTypeParameter()
-            }
+            val properties = members.filterIsInstance<KaPropertySymbol>()
             val functions = members.filterIsInstance<KaFunctionSymbol>()
             val parameters = scope?.constructors?.firstOrNull { it.isPrimary }?.valueParameters.orEmpty() +
                 functions.flatMap { it.valueParameters }
-            val isContravariant = parameters.any { it.returnType.mentionsTypeParameter() } ||
-                properties.any { it.setter != null }
-            val isCovariant = properties.isNotEmpty() || functions.any { it.returnType.mentionsTypeParameter() }
+            val readOnly = properties.filter { it.setter == null }
+            val mutable = properties.filter { it.setter != null }
+            val uses = buildList {
+                owner?.superTypes.orEmpty().forEach { addAll(positions.inType(it, Variance.OUT_VARIANCE)) }
+                readOnly.forEach { addAll(positions.inType(it.returnType, Variance.OUT_VARIANCE)) }
+                mutable.forEach { addAll(positions.inType(it.returnType, Variance.INVARIANT)) }
+                functions.forEach { addAll(positions.inType(it.returnType, Variance.OUT_VARIANCE)) }
+                parameters.forEach { addAll(positions.inType(it.returnType, Variance.IN_VARIANCE)) }
+            }
+            val isBounded = typeParameter.upperBounds.any { positions.inType(it, Variance.OUT_VARIANCE).isNotEmpty() }
             when {
-                owner == null || typeParameter.upperBounds.any { it.mentionsTypeParameter() } -> null
-                isContravariant == isCovariant -> null
-                isContravariant -> Variance.IN_VARIANCE
-                else -> Variance.OUT_VARIANCE
+                owner == null || isBounded -> null
+                uses.distinct().size != 1 || uses.first() == Variance.INVARIANT -> null
+                else -> uses.first()
             }
         }
-
-    private fun KaType.mentionsTypeParameter(): Boolean =
-        generateSequence(listOf(this)) { types ->
-            types.flatMap { type -> (type as? KaClassType)?.run { typeArguments.mapNotNull { it.type } }.orEmpty() }
-                .takeIf { it.isNotEmpty() }
-        }
-            .flatten()
-            .any { it is KaTypeParameterType && it.symbol == typeParameter }
 }

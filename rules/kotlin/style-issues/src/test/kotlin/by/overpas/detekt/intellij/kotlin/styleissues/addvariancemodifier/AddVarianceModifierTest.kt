@@ -162,4 +162,65 @@ class AddVarianceModifierTest {
 
         assertEquals(0, findings.size)
     }
+
+    @Test
+    fun `a type parameter used in an invariant type argument of a parameter type passes`() {
+        val code = """
+            class Box<T>
+
+            class Holder<T> {
+                fun put(box: Box<T>) {}
+            }
+        """.trimIndent()
+
+        val findings = sut.lintWithContext(environment, code)
+
+        assertEquals(0, findings.size)
+    }
+
+    @Test
+    fun `a type parameter used in a parameter of a function type parameter is reported`() {
+        val code = """
+            class Consumer<T> {
+                fun consume(block: (T) -> Unit) {}
+            }
+        """.trimIndent()
+
+        val findings = sut.lintWithContext(environment, code)
+
+        assertEquals(1, findings.size)
+    }
+
+    @Test
+    fun `a type parameter used in an invariant supertype passes`() {
+        val code = """
+            abstract class Base<T> {
+                abstract fun get(): T
+                abstract fun set(value: T)
+            }
+
+            abstract class Impl<T> : Base<T>() {
+                fun read(): T = get()
+            }
+        """.trimIndent()
+
+        val findings = sut.lintWithContext(environment, code)
+
+        assertEquals(0, findings.size)
+    }
+
+    @Test
+    fun `a type parameter used in an in-projected type argument of a return type is reported`() {
+        val code = """
+            class Box<T>
+
+            interface Factory<T> {
+                fun create(): Box<in T>
+            }
+        """.trimIndent()
+
+        val findings = sut.lintWithContext(environment, code)
+
+        assertEquals(1, findings.size)
+    }
 }
