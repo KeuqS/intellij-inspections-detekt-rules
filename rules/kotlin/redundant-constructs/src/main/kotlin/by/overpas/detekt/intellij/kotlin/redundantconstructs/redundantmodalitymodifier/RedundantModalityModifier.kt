@@ -10,7 +10,11 @@ import org.jetbrains.kotlin.analysis.api.analyze
 import org.jetbrains.kotlin.analysis.api.components.KaDiagnosticCheckerFilter
 import org.jetbrains.kotlin.analysis.api.fir.diagnostics.KaFirDiagnostic
 import org.jetbrains.kotlin.lexer.KtTokens
+import org.jetbrains.kotlin.psi.KtClass
+import org.jetbrains.kotlin.psi.KtDeclaration
 import org.jetbrains.kotlin.psi.KtFile
+import org.jetbrains.kotlin.psi.KtModifierListOwner
+import org.jetbrains.kotlin.psi.psiUtil.containingClassOrObject
 
 @IntellijInspection("RedundantModalityModifier")
 class RedundantModalityModifier(config: Config) :
@@ -27,7 +31,14 @@ class RedundantModalityModifier(config: Config) :
                 .filterIsInstance<KaFirDiagnostic.RedundantModalityModifier>()
                 .map { it.psi }
         }
-        owners.mapNotNull { it.modifierList?.getModifier(KtTokens.MODALITY_MODIFIERS) }
+        owners.filterNot { it.hasModifier(KtTokens.ABSTRACT_KEYWORD) && it.isInInterface() }
+            .mapNotNull { it.modifierList?.getModifier(KtTokens.MODALITY_MODIFIERS) }
             .forEach { report(Finding(Entity.from(it), "Redundant '${it.text}' modifier")) }
+    }
+
+    private fun KtModifierListOwner.isInInterface(): Boolean {
+        val owner = this as? KtDeclaration
+        val klass = owner as? KtClass ?: owner?.containingClassOrObject as? KtClass
+        return klass?.isInterface() == true
     }
 }

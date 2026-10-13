@@ -35,14 +35,14 @@ class RedundantModalityModifierTest {
     }
 
     @Test
-    fun `an abstract interface is reported`() {
+    fun `an abstract interface passes`() {
         val code = """
             abstract interface AbstractInterface
         """.trimIndent()
 
         val findings = sut.lintWithContext(environment, code)
 
-        assertEquals(1, findings.size)
+        assertEquals(0, findings.size)
     }
 
     @Test
@@ -57,10 +57,36 @@ class RedundantModalityModifierTest {
     }
 
     @Test
-    fun `an abstract function in an interface is reported`() {
+    fun `an abstract function in an interface passes`() {
         val code = """
             interface Interface {
                 abstract fun foo()
+            }
+        """.trimIndent()
+
+        val findings = sut.lintWithContext(environment, code)
+
+        assertEquals(0, findings.size)
+    }
+
+    @Test
+    fun `an abstract property in an interface passes`() {
+        val code = """
+            interface Interface {
+                abstract val gav: Int
+            }
+        """.trimIndent()
+
+        val findings = sut.lintWithContext(environment, code)
+
+        assertEquals(0, findings.size)
+    }
+
+    @Test
+    fun `an open function with a body in an interface is reported`() {
+        val code = """
+            interface Interface {
+                open fun foo() {}
             }
         """.trimIndent()
 
