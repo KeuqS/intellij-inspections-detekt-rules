@@ -26,15 +26,14 @@ already finds the same problem.
 | `:rules:kotlin:coroutines` | 0 | 14 | 1 | 15 | 13 | 1 |
 | `:rules:kotlin:java-interop` | 1 | 4 | 3 | 8 | 3 | 2 |
 | `:rules:kotlin:logging` | 0 | 1 | 0 | 1 | 1 | 0 |
-| `:rules:kotlin:migration` | 0 | 1 | 0 | 1 | 1 | 0 |
 | `:rules:kotlin:naming-conventions` | 11 | 1 | 0 | 12 | 2 | 10 |
 | `:rules:kotlin:numeric-issues` | 0 | 1 | 0 | 1 | 1 | 0 |
 | `:rules:kotlin:other-problems` | 1 | 10 | 5 | 16 | 8 | 3 |
 | `:rules:kotlin:probable-bugs` | 4 | 46 | 14 | 64 | 44 | 6 |
 | `:rules:kotlin:redundant-constructs` | 15 | 47 | 5 | 67 | 40 | 22 |
 | `:rules:kotlin:style-issues` | 7 | 92 | 11 | 110 | 80 | 19 |
-| Out of scope | 0 | 0 | 11 | 11 | 0 | 0 |
-| **All** | 40 | 220 | 51 | 311 | 197 | 63 |
+| Out of scope | 0 | 0 | 12 | 12 | 0 | 1 |
+| **All** | 40 | 219 | 52 | 311 | 196 | 64 |
 
 ## `:rules:kotlin:code-migration`
 
@@ -84,12 +83,6 @@ already finds the same problem.
 | Inspection | Level | Verdict | Reason | Status | Implementation | Test data |
 |---|---|---|---|---|---|---|
 | `KotlinLoggerInitializedWithForeignClass`<br>Logger initialized with foreign class | WARNING | `types` | resolves calls | ported: `KotlinLoggerInitializedWithForeignClass` | [KotlinLoggerInitializedWithForeignClassInspection.kt](https://github.com/JetBrains/intellij-community/blob/875cd4034bbb9e2faeef67cbc88c59ca293d8497/plugins/kotlin/code-insight/inspections-k2/src/org/jetbrains/kotlin/idea/codeInsight/inspections/KotlinLoggerInitializedWithForeignClassInspection.kt) | [idea/tests/testData/inspectionsLocal/logging/loggerInitializedWithForeignClass](https://github.com/JetBrains/intellij-community/blob/875cd4034bbb9e2faeef67cbc88c59ca293d8497/plugins/kotlin/idea/tests/testData/inspectionsLocal/logging/loggerInitializedWithForeignClass) |
-
-## `:rules:kotlin:migration`
-
-| Inspection | Level | Verdict | Reason | Status | Implementation | Test data |
-|---|---|---|---|---|---|---|
-| `KotlinDeprecation`<br>Usage of redundant or deprecated syntax or deprecated symbols | WARNING | `types` | reads compiler diagnostics | ported: `KotlinDeprecation` | [KotlinCleanupInspection.kt](https://github.com/JetBrains/intellij-community/blob/875cd4034bbb9e2faeef67cbc88c59ca293d8497/plugins/kotlin/code-insight/inspections-k2/src/org/jetbrains/kotlin/idea/codeInsight/inspections/KotlinCleanupInspection.kt) |  |
 
 ## `:rules:kotlin:naming-conventions`
 
@@ -400,6 +393,7 @@ already finds the same problem.
 | `DifferentMavenStdlibVersion`<br>Library and maven plugin versions are different | WARNING | `not-portable` | out: build file; inspects XML files |  | [DifferentMavenStdlibVersionInspection.kt](https://github.com/JetBrains/intellij-community/blob/875cd4034bbb9e2faeef67cbc88c59ca293d8497/plugins/kotlin/maven/src/org/jetbrains/kotlin/idea/maven/inspections/DifferentMavenStdlibVersionInspection.kt) |  |
 | `DifferentStdlibGradleVersion`<br>Kotlin library and Gradle plugin versions are different | WARNING | `not-portable` | out: build file; inspects Groovy files |  | [DifferentStdlibGradleVersionInspection.kt](https://github.com/JetBrains/intellij-community/blob/875cd4034bbb9e2faeef67cbc88c59ca293d8497/plugins/kotlin/gradle/code-insight-groovy/src/org/jetbrains/kotlin/idea/groovy/inspections/DifferentStdlibGradleVersionInspection.kt) |  |
 | `KaptKotlinCompilerPlugin`<br>Add Kotlin kapt compiler plugin to module build | WARNING | `not-portable` | out: no matching group; reads the module structure |  | [KaptKotlinCompilerPluginInspection.kt](https://github.com/JetBrains/intellij-community/blob/875cd4034bbb9e2faeef67cbc88c59ca293d8497/plugins/kotlin/project-configuration/src/org/jetbrains/kotlin/idea/configuration/inspections/KaptKotlinCompilerPluginInspection.kt) |  |
+| `KotlinDeprecation`<br>Usage of redundant or deprecated syntax or deprecated symbols | WARNING | `not-portable` | out: no matching group; reads compiler diagnostics | covered: kotlinc warnings, detekt `potential-bugs:Deprecation`, `UnnecessarySafeCall`, `UnnecessaryNotNullOperator`, `UnreachableCode` | [KotlinCleanupInspection.kt](https://github.com/JetBrains/intellij-community/blob/875cd4034bbb9e2faeef67cbc88c59ca293d8497/plugins/kotlin/code-insight/inspections-k2/src/org/jetbrains/kotlin/idea/codeInsight/inspections/KotlinCleanupInspection.kt) |  |
 | `KotlinInvalidBundleOrProperty`<br>Invalid property key | ERROR | `not-portable` | out: no matching group; reads declaration symbols |  | [KotlinInvalidBundleOrPropertyInspection.kt](https://github.com/JetBrains/intellij-community/blob/875cd4034bbb9e2faeef67cbc88c59ca293d8497/plugins/kotlin/i18n/src/org/jetbrains/kotlin/idea/i18n/KotlinInvalidBundleOrPropertyInspection.kt) |  |
 | `KotlinMavenPluginPhase`<br>Kotlin Maven Plugin misconfigured | WARNING | `not-portable` | out: build file; inspects XML files |  | [KotlinMavenPluginPhaseInspection.kt](https://github.com/JetBrains/intellij-community/blob/875cd4034bbb9e2faeef67cbc88c59ca293d8497/plugins/kotlin/maven/src/org/jetbrains/kotlin/idea/maven/inspections/KotlinMavenPluginPhaseInspection.kt) |  |
 | `KotlinOptionsToCompilerOptions`<br>Use of deprecated 'kotlinOptions' DSL | WARNING | `not-portable` | out: build file; resolves calls |  | [KotlinOptionsToCompilerOptionsInspection.kt](https://github.com/JetBrains/intellij-community/blob/875cd4034bbb9e2faeef67cbc88c59ca293d8497/plugins/kotlin/gradle/scripting/src/org/jetbrains/kotlin/gradle/scripting/inspections/KotlinOptionsToCompilerOptionsInspection.kt) |  |

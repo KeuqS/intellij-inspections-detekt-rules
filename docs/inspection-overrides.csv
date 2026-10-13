@@ -30,6 +30,7 @@ KDocUnresolvedReference,not-portable,the KDoc resolver of the Analysis API fails
 KotlinAmbiguousActuals,not-portable,reads the multiplatform module structure,
 KotlinConstantConditions,not-portable,needs the data flow analysis engine of IntelliJ,
 KotlinCovariantEquals,,,covered: detekt `potential-bugs:WrongEqualsTypeParameter`
+KotlinDeprecation,,,"covered: kotlinc warnings, detekt `potential-bugs:Deprecation`, `UnnecessarySafeCall`, `UnnecessaryNotNullOperator`, `UnreachableCode`"
 KotlinDoubleNegation,,,covered: detekt `style:DoubleNegativeExpression`
 KotlinNoActualForExpect,not-portable,searches actual declarations across the multiplatform modules,
 KotlinThrowableNotThrown,types,searches references of a local property only,

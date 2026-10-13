@@ -29,7 +29,6 @@ Editor | Inspections | Compose Multiplatform Preview).
 | `rules:kotlin:coroutines` | `intellij-kotlin-coroutines` | `intellij-inspections-kotlin-coroutines-<version>.jar` |
 | `rules:kotlin:java-interop` | `intellij-kotlin-java-interop` | `intellij-inspections-kotlin-java-interop-<version>.jar` |
 | `rules:kotlin:logging` | `intellij-kotlin-logging` | `intellij-inspections-kotlin-logging-<version>.jar` |
-| `rules:kotlin:migration` | `intellij-kotlin-migration` | `intellij-inspections-kotlin-migration-<version>.jar` |
 | `rules:kotlin:naming-conventions` | `intellij-kotlin-naming-conventions` | `intellij-inspections-kotlin-naming-conventions-<version>.jar` |
 | `rules:kotlin:numeric-issues` | `intellij-kotlin-numeric-issues` | `intellij-inspections-kotlin-numeric-issues-<version>.jar` |
 | `rules:kotlin:other-problems` | `intellij-kotlin-other-problems` | `intellij-inspections-kotlin-other-problems-<version>.jar` |
@@ -337,12 +336,6 @@ the script, because detekt does not have the Gradle model.
 | Rule | Finds |
 |---|---|
 | `KotlinLoggerInitializedWithForeignClass` | A logger that is created with the class literal of another class. Inactive by default. |
-
-### `intellij-kotlin-migration`
-
-| Rule | Finds |
-|---|---|
-| `KotlinDeprecation` | A deprecated symbol with a replacement, an import of such a symbol, deprecated syntax, or a useless cast. It does not report a useless elvis, safe call or `!!`, because the detekt rules `UnreachableCode`, `UnnecessarySafeCall` and `UnnecessaryNotNullOperator` report them. The deprecated symbol part overlaps the detekt rule `Deprecation`. |
 
 ### `intellij-kotlin-naming-conventions`
 

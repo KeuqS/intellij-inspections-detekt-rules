@@ -260,10 +260,6 @@ intellij-kotlin-logging:
   KotlinLoggerInitializedWithForeignClass:
     active: false
 
-intellij-kotlin-migration:
-  KotlinDeprecation:
-    active: true
-
 intellij-kotlin-naming-conventions:
   InconsistentCommentForJavaParameter:
     active: true
