@@ -321,7 +321,7 @@ the script, because detekt does not have the Gradle model.
 | `SuspendCoroutineLacksCancellationGuarantees` | A `suspendCoroutine` call that ignores cancellation when `suspendCancellableCoroutine` is available. |
 | `SuspiciousImplicitCoroutineScopeReceiverAccess` | An implicit access to an outer `CoroutineScope` receiver from inside a suspending lambda or function. |
 | `SuspiciousMutableCollectionInStateFlow` | A `MutableStateFlow` that holds a mutable collection, which emits no new value when it changes in place. |
-| `UnusedFlow` | A `Flow` that is created but never collected, returned or passed on. |
+| `UnusedFlow` | A `Flow` that is created but never collected, returned or passed on, except inside MockK verification blocks such as `verify {}`. Overlaps detekt's `IgnoredReturnValue`, which is active by default. |
 | `UselessCallOnFlow` | A `filterNotNull`, `filterIsInstance` or `mapNotNull` call on a `Flow` that does nothing or can be simpler. |
 
 ### `intellij-kotlin-java-interop`
