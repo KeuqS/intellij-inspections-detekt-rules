@@ -2,4 +2,4 @@ intellij-android-kotlin:
   active: true
   IllegalIdentifier:
     active: true
-    excludes: ['**/test/**', '**/testDebug/**', '**/testRelease/**', '**/commonTest/**', '**/jvmTest/**', '**/androidUnitTest/**', '**/androidHostTest/**']
+    excludes: ['**/test/**', '**/src/test*/**', '**/commonTest/**', '**/jvmTest/**', '**/androidUnitTest/**', '**/androidHostTest/**']
