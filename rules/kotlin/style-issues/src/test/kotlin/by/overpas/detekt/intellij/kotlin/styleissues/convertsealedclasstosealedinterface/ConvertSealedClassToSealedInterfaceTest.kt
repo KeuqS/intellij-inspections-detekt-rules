@@ -308,4 +308,30 @@ class ConvertSealedClassToSealedInterfaceTest {
 
         assertEquals(0, findings.size)
     }
+
+    @Test
+    fun `a sealed class with an internal abstract property passes`() {
+        val code = """
+            sealed class S {
+                internal abstract val x: Int
+            }
+        """.trimIndent()
+
+        val findings = sut.lintWithContext(environment, code)
+
+        assertEquals(0, findings.size)
+    }
+
+    @Test
+    fun `a sealed class with a protected abstract method passes`() {
+        val code = """
+            sealed class S {
+                protected abstract fun process()
+            }
+        """.trimIndent()
+
+        val findings = sut.lintWithContext(environment, code)
+
+        assertEquals(0, findings.size)
+    }
 }
