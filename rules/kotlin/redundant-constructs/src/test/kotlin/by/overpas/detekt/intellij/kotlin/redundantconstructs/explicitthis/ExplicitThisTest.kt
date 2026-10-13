@@ -149,6 +149,17 @@ class ExplicitThisTest {
     }
 
     @Test
+    fun `this before a Java getter property in an extension function is reported`() {
+        val code = """
+            fun Thread.g() = this.name
+        """.trimIndent()
+
+        val findings = sut.lintWithContext(environment, code)
+
+        assertEquals(1, findings.size)
+    }
+
+    @Test
     fun `this before a property shadowed by a local variable passes`() {
         val code = """
             class Foo {
@@ -288,6 +299,21 @@ class ExplicitThisTest {
                     val s = 1
                     this::s
                 }
+            }
+        """.trimIndent()
+
+        val findings = sut.lintWithContext(environment, code)
+
+        assertEquals(0, findings.size)
+    }
+
+    @Test
+    fun `a labeled this to an outer receiver shadowed by a Java getter property passes`() {
+        val code = """
+            class Foo {
+                val name = "foo"
+
+                fun f() = Thread().run { this@Foo.name }
             }
         """.trimIndent()
 
