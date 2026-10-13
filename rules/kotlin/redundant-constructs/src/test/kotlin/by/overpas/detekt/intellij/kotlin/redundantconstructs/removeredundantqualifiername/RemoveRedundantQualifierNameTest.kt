@@ -276,4 +276,34 @@ class RemoveRedundantQualifierNameTest {
 
         assertEquals(0, findings.size)
     }
+
+    @Test
+    fun `a qualified name in a KDoc link passes`() {
+        val code = """
+            /** See [kotlin.collections.List]. */
+            fun f() {}
+        """.trimIndent()
+
+        val findings = sut.lintWithContext(environment, code)
+
+        assertEquals(0, findings.size)
+    }
+
+    @Test
+    fun `a package qualifier in a declaration with KDoc is reported`() {
+        val code = """
+            package my.simple.name
+
+            class Foo
+
+            class Bar {
+                /** See [my.simple.name.Foo]. */
+                fun foo(a: my.simple.name.Foo) {}
+            }
+        """.trimIndent()
+
+        val findings = sut.lintWithContext(environment, code)
+
+        assertEquals(1, findings.size)
+    }
 }
