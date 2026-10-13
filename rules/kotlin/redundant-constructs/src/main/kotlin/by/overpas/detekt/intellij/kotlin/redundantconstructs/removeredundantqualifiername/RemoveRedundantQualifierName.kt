@@ -23,15 +23,17 @@ class RemoveRedundantQualifierName(config: Config) :
     override fun visitKtFile(file: KtFile) {
         super.visitKtFile(file)
         val elements = analyze(file) {
-            val shortenings = collectPossibleReferenceShorteningsInElement(
-                element = file,
-                shortenOptions = SHORTEN_OPTIONS,
-                classShortenStrategy = { qualifierClassStrategy(it) },
-                callableShortenStrategy = { qualifierCallableStrategy(it) },
-            )
-            val qualifiers = shortenings.listOfQualifierToShortenInfo.mapNotNull { it.qualifierToShorten.element }
-            val types = shortenings.listOfTypeToShortenInfo.mapNotNull { it.typeToShorten.element }
-            (qualifiers + types).filter { keepsResolveUnqualified(it) }
+            file.kDocFreeElements().flatMap { element ->
+                val shortenings = collectPossibleReferenceShorteningsInElement(
+                    element = element,
+                    shortenOptions = SHORTEN_OPTIONS,
+                    classShortenStrategy = { qualifierClassStrategy(it) },
+                    callableShortenStrategy = { qualifierCallableStrategy(it) },
+                )
+                val qualifiers = shortenings.listOfQualifierToShortenInfo.mapNotNull { it.qualifierToShorten.element }
+                val types = shortenings.listOfTypeToShortenInfo.mapNotNull { it.typeToShorten.element }
+                qualifiers + types
+            }.filter { keepsResolveUnqualified(it) }
         }
         elements.forEach { report(Finding(Entity.from(it), "Redundant qualifier name")) }
     }
