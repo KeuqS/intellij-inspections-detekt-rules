@@ -3,6 +3,7 @@ package by.overpas.detekt.intellij.kotlin.probablebugs.kotlinmisorderedassertequ
 import org.jetbrains.kotlin.analysis.api.KaSession
 import org.jetbrains.kotlin.analysis.api.resolution.successfulFunctionCallOrNull
 import org.jetbrains.kotlin.analysis.api.resolution.symbol
+import org.jetbrains.kotlin.analysis.api.symbols.KaClassKind
 import org.jetbrains.kotlin.analysis.api.symbols.KaClassSymbol
 import org.jetbrains.kotlin.analysis.api.symbols.KaNamedFunctionSymbol
 import org.jetbrains.kotlin.idea.references.KtReference
@@ -27,7 +28,7 @@ internal fun KtCallExpression.isExpectedLikeAssertCall(
     val isConversion = name != null &&
         EXPECTED_LIKE_CONVERSION.containsMatchIn(name) &&
         symbol.valueParameters.isEmpty() &&
-        receiver?.isExpectedLikeAssertArgument(isActual) == true
+        receiver?.isConstantAssertArgument() == true
     val isExpectedLike = symbol?.isExpectedLikeFactory() == true ||
         isConversion ||
         receiver?.isClassLikeAssertQualifier() == true
@@ -40,7 +41,8 @@ private fun KtExpression.isClassLikeAssertQualifier(): Boolean =
         is KtNameReferenceExpression ->
             expression.references
                 .filterIsInstance<KtReference>()
-                .any { with(session) { it.resolveToSymbol() } is KaClassSymbol }
+                .map { with(session) { it.resolveToSymbol() } }
+                .any { it is KaClassSymbol && it.classKind != KaClassKind.OBJECT }
 
         is KtDotQualifiedExpression -> expression.selectorExpression?.isClassLikeAssertQualifier() == true
 

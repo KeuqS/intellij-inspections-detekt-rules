@@ -11,10 +11,16 @@ import org.jetbrains.kotlin.psi.KtPsiUtil
 import org.jetbrains.kotlin.psi.KtStringTemplateExpression
 
 context(session: KaSession)
-internal fun KtExpression.isExpectedLikeAssertArgument(isActual: Boolean): Boolean {
+internal fun KtExpression.isExpectedLikeAssertArgument(isActual: Boolean): Boolean =
+    isConstantAssertArgument() || KtPsiUtil.safeDeparenthesize(this).isExpectedLikeByKind(isActual)
+
+context(session: KaSession)
+internal fun KtExpression.isConstantAssertArgument(): Boolean {
     val expression = KtPsiUtil.safeDeparenthesize(this)
     val constant = with(session) { expression.evaluate() }
-    return (constant != null && constant !is KaConstantValue.ErrorValue) || expression.isExpectedLikeByKind(isActual)
+    return (constant != null && constant !is KaConstantValue.ErrorValue) ||
+        expression is KtConstantExpression ||
+        (expression is KtStringTemplateExpression && !expression.hasInterpolation())
 }
 
 context(session: KaSession)
@@ -22,8 +28,6 @@ private fun KtExpression.isExpectedLikeByKind(isActual: Boolean): Boolean {
     val qualified = this as? KtDotQualifiedExpression
     val selector = qualified?.selectorExpression
     return when {
-        this is KtConstantExpression -> true
-        this is KtStringTemplateExpression -> !hasInterpolation()
         this is KtNameReferenceExpression -> isExpectedLikeAssertReference(isActual)
         this is KtCallExpression -> isExpectedLikeAssertCall(receiver = null, isActual = isActual)
         selector is KtNameReferenceExpression -> selector.isExpectedLikeAssertReference(isActual)
