@@ -1,4 +1,0 @@
-intellij-kotlin-migration:
-  active: true
-  KotlinDeprecation:
-    active: true
