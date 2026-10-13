@@ -438,7 +438,7 @@ the script, because detekt does not have the Gradle model.
 | `RedundantIf` | An `if` that only chooses between `true` and `false`, or a constant and a boolean expression. |
 | `RedundantInterpolationPrefix` | A multi-dollar interpolation prefix on a string that does not need it. |
 | `RedundantLabeledReturnOnLastExpressionInLambda` | A `return@label` on the last expression of the lambda with that label. |
-| `RedundantLambdaArrow` | A lambda arrow with no parameters or with only an explicit `it` parameter. |
+| `RedundantLambdaArrow` | A lambda arrow with no parameters. It does not report an explicit `it` parameter, because detekt's `ExplicitItLambdaParameter` reports it. |
 | `RedundantLambdaOrAnonymousFunction` | A lambda or an anonymous function that is called at once. |
 | `RedundantModalityModifier` | A modality modifier that equals the default modality of the declaration. |
 | `RedundantNullableReturnType` | A nullable return type of a function or a read-only property that never returns null. |

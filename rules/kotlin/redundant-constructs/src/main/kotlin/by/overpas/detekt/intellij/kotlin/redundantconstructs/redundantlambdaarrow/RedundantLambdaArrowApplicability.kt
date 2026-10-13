@@ -20,26 +20,18 @@ import org.jetbrains.kotlin.psi.psiUtil.getStrictParentOfType
 
 private const val IT = "it"
 
-internal fun KtLambdaExpression.hasRemovableArrowParameters(): Boolean {
-    val parameters = functionLiteral.valueParameters
-    val singleParameter = parameters.singleOrNull()
-    val hasOnlyImplicitParameter = parameters.isEmpty() ||
-        (singleParameter?.typeReference == null && singleParameter?.name == IT)
-    return hasOnlyImplicitParameter &&
+internal fun KtLambdaExpression.hasRemovableArrowParameters(): Boolean =
+    functionLiteral.valueParameters.isEmpty() &&
         getStrictParentOfType<KtWhenEntry>()?.expression != this &&
         getStrictParentOfType<KtContainerNodeForControlStructureBody>()?.expression != this
-}
 
 @OptIn(KaExperimentalApi::class)
 internal fun KtLambdaExpression.hasOnlyOwnItReferences(): Boolean =
     analyze(this) {
-        val literal = functionLiteral
-        val literalSymbol = literal.symbol
-        val hasExpectedType = literal.valueParameters.isEmpty() || expectedType != null
-        hasExpectedType &&
-            !literal.anyDescendantOfType<KtNameReferenceExpression> {
-                it.text == IT && it.resolveSymbol()?.containingDeclaration != literalSymbol
-            }
+        val literalSymbol = functionLiteral.symbol
+        !functionLiteral.anyDescendantOfType<KtNameReferenceExpression> {
+            it.text == IT && it.resolveSymbol()?.containingDeclaration != literalSymbol
+        }
     }
 
 internal fun KtLambdaExpression.keepsResolvedCallsWithoutArrow(): Boolean {

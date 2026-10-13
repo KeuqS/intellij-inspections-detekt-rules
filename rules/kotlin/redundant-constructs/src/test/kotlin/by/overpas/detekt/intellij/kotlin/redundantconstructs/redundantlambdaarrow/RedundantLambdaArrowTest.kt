@@ -28,16 +28,9 @@ class RedundantLambdaArrowTest {
     }
 
     @Test
-    fun `an explicit it parameter is reported`() {
+    fun `an arrow without parameters of a receiver lambda is reported`() {
         val code = """
-            fun foo(f: (String) -> Unit) {}
-
-            fun bar() {
-                foo { it ->
-                    print(it)
-                    print(it)
-                }
-            }
+            fun test() = "a".run { -> length }
         """.trimIndent()
 
         val findings = sut.lintWithContext(environment, code)
@@ -46,22 +39,9 @@ class RedundantLambdaArrowTest {
     }
 
     @Test
-    fun `an explicit it parameter of a forEach lambda is reported`() {
+    fun `an arrow without parameters of a safe call lambda is reported`() {
         val code = """
-            fun test() {
-                listOf(1, 2, 3).forEach { it -> println(it) }
-            }
-        """.trimIndent()
-
-        val findings = sut.lintWithContext(environment, code)
-
-        assertEquals(1, findings.size)
-    }
-
-    @Test
-    fun `an explicit it parameter of a safe call lambda is reported`() {
-        val code = """
-            fun test(list: List<String>?) = list?.map { it -> it.length }
+            fun test(list: List<String>?) = list?.run { -> size }
         """.trimIndent()
 
         val findings = sut.lintWithContext(environment, code)
@@ -86,23 +66,53 @@ class RedundantLambdaArrowTest {
     }
 
     @Test
-    fun `an explicit it parameter in a vararg array is reported`() {
+    fun `an arrow without parameters in a vararg array is reported`() {
         val code = """
             fun main() {
                 registerHandler(handlers = arrayOf(
-                    { _ -> },
-                    { it -> },
+                    { -> },
+                    { -> },
                 ))
             }
 
-            fun registerHandler(vararg handlers: (String) -> Unit) {
-                handlers.forEach { it.invoke("hello") }
+            fun registerHandler(vararg handlers: () -> Unit) {
+                handlers.forEach { it.invoke() }
             }
         """.trimIndent()
 
         val findings = sut.lintWithContext(environment, code)
 
-        assertEquals(1, findings.size)
+        assertEquals(2, findings.size)
+    }
+
+    @Test
+    fun `an explicit it parameter passes because ExplicitItLambdaParameter reports it`() {
+        val code = """
+            fun foo(f: (String) -> Unit) {}
+
+            fun bar() {
+                foo { it ->
+                    print(it)
+                }
+            }
+        """.trimIndent()
+
+        val findings = sut.lintWithContext(environment, code)
+
+        assertEquals(0, findings.size)
+    }
+
+    @Test
+    fun `an explicit it parameter of a forEach lambda passes`() {
+        val code = """
+            fun test() {
+                listOf(1, 2, 3).forEach { it -> println(it) }
+            }
+        """.trimIndent()
+
+        val findings = sut.lintWithContext(environment, code)
+
+        assertEquals(0, findings.size)
     }
 
     @Test

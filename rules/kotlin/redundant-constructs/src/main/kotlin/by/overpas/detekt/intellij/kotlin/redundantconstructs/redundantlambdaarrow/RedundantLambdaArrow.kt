@@ -12,7 +12,7 @@ import org.jetbrains.kotlin.psi.KtLambdaExpression
 class RedundantLambdaArrow(config: Config) :
     Rule(
         config,
-        "A lambda arrow without parameters or with only the implicit `it` parameter is redundant. Remove it.",
+        "A lambda arrow without parameters is redundant. Remove it.",
     ),
     RequiresAnalysisApi {
 
