@@ -30,7 +30,9 @@ class UnusedFlow(config: Config) :
         if (!expression.isUnusedFlowCandidate()) return
         val isUnused = analyze(expression) {
             val call = expression.resolveToCall()?.successfulCallOrNull<KaCallableMemberCall<*, *>>()
-            (call?.run { symbol.returnType } as? KaClassType)?.classId == FLOW && !expression.isUsedAsExpression
+            (call?.run { symbol.returnType } as? KaClassType)?.classId == FLOW &&
+                !expression.isUsedAsExpression &&
+                !expression.isInMockkRecording()
         }
         if (isUnused) report(Finding(Entity.from(expression), "Flow is constructed but not used"))
     }
