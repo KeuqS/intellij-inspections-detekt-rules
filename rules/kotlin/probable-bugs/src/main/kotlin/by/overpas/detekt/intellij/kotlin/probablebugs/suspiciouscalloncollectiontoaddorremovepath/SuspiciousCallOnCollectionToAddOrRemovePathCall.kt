@@ -43,14 +43,18 @@ internal class SuspiciousCallOnCollectionToAddOrRemovePathCall(private val call:
             analyze(call) {
                 val argumentType = argument?.expressionType
                 val argumentClassId = argumentType?.suspiciousPathClassId
-                val elementClassId = argumentType?.suspiciousPathElementClassId()
+                val elementType = argumentType?.suspiciousPathElementType()
+                val elementClassId = elementType?.suspiciousPathClassId
+                val receiverType = receiver?.expressionType
+                val receiverElementClassId = receiverType?.suspiciousPathElementType()?.suspiciousPathClassId
+                val nestedElementClassId = elementType?.suspiciousPathElementType()?.suspiciousPathClassId
                 val callableId = call.resolveToCall()?.successfulFunctionCallOrNull()?.run { symbol.callableId }
                 argumentClassId != null &&
                     elementClassId != null &&
                     !argumentType.isSuspiciousPathContainer() &&
                     (
                         elementClassId == argumentClassId ||
-                            elementClassId == receiver?.expressionType?.suspiciousPathElementClassId()
+                            (elementClassId == receiverElementClassId && elementClassId == nestedElementClassId)
                         ) &&
                     callableId in suspiciousCallableIds
             }
