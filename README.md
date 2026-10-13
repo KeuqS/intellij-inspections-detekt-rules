@@ -423,7 +423,7 @@ the script, because detekt does not have the Gradle model.
 
 | Rule | Finds |
 |---|---|
-| `CanBeParameter` | A `val` or `var` constructor parameter that is only used during initialization. Only parameters that are not visible outside the file are checked. |
+| `CanBeParameter` | A `val` or `var` constructor parameter that is only used during initialization. Only parameters that are not visible outside the file are checked. A `private` parameter that is used only in property initializers is not reported, because detekt `UnusedPrivateProperty` reports it. |
 | `CanBePrimaryConstructorProperty` | A property that is initialized from the constructor parameter of the same name and type. |
 | `CanUnescapeDollarLiteral` | An escaped dollar in a string literal that can be a plain `$`. |
 | `ConstantConditionIf` | An `if` whose condition is the constant `true` or `false`. |

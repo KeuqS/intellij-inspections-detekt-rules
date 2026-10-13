@@ -13,11 +13,41 @@ class CanBeParameterTest {
     private val sut = CanBeParameter(Config.empty)
 
     @Test
-    fun `a private property used only in a property initializer is reported`() {
+    fun `a property of a private class used only in a property initializer is reported`() {
         val code = """
-            class PrivateUsedInProperty(private val x: Int) {
+            private class UsedInProperty(val x: Int) {
                 val y = x
             }
+        """.trimIndent()
+
+        val findings = sut.lintWithContext(environment, code)
+
+        assertEquals(1, findings.size)
+    }
+
+    @Test
+    fun `a private property used in a property initializer and in an init block is reported`() {
+        val code = """
+            class UsedInPropertyAndInitializer(private val x: Int) {
+                val y = x
+
+                init {
+                    println(x)
+                }
+            }
+        """.trimIndent()
+
+        val findings = sut.lintWithContext(environment, code)
+
+        assertEquals(1, findings.size)
+    }
+
+    @Test
+    fun `a private property used only in a super type call is reported`() {
+        val code = """
+            open class Base(s: String)
+
+            class UsedInSuper(private val x: String) : Base(x)
         """.trimIndent()
 
         val findings = sut.lintWithContext(environment, code)
@@ -56,9 +86,9 @@ class CanBeParameterTest {
     }
 
     @Test
-    fun `a private var property used only in a property initializer is reported`() {
+    fun `a var property of a private class used only in a property initializer is reported`() {
         val code = """
-            class UsedInProperty(private var x: Int) {
+            private class UsedInProperty(var x: Int) {
                 var y = x
             }
         """.trimIndent()
@@ -69,9 +99,9 @@ class CanBeParameterTest {
     }
 
     @Test
-    fun `a private vararg property used only in a property initializer is reported`() {
+    fun `a vararg property of a private class used only in a property initializer is reported`() {
         val code = """
-            class Wrapper(private vararg val x: Int) {
+            private class Wrapper(vararg val x: Int) {
                 val y = x
             }
         """.trimIndent()
@@ -96,6 +126,19 @@ class CanBeParameterTest {
         val findings = sut.lintWithContext(environment, code)
 
         assertEquals(1, findings.size)
+    }
+
+    @Test
+    fun `a private property used only in a property initializer passes`() {
+        val code = """
+            class UsedInProperty(private val x: Int) {
+                val y = x
+            }
+        """.trimIndent()
+
+        val findings = sut.lintWithContext(environment, code)
+
+        assertEquals(0, findings.size)
     }
 
     @Test

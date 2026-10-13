@@ -14,6 +14,7 @@ import org.jetbrains.kotlin.psi.KtSimpleNameExpression
 import org.jetbrains.kotlin.psi.KtSuperTypeCallEntry
 import org.jetbrains.kotlin.psi.psiUtil.containingClassOrObject
 import org.jetbrains.kotlin.psi.psiUtil.getStrictParentOfType
+import org.jetbrains.kotlin.psi.psiUtil.isAncestor
 import org.jetbrains.kotlin.psi.psiUtil.parents
 
 internal class CanBeParameterUsage(
@@ -27,6 +28,15 @@ internal class CanBeParameterUsage(
         val isAssigned = parent is KtBinaryExpression && parent.left == name && KtPsiUtil.isAssignment(parent)
         return isSelector || isAssigned || !isInInitialization()
     }
+
+    fun isInPropertyInitializer(): Boolean =
+        name.parents.filterIsInstance<KtProperty>().any { property ->
+            val initializer = property.initializer
+            !property.isLocal &&
+                property.containingClassOrObject === klass &&
+                initializer != null &&
+                initializer.isAncestor(name)
+        }
 
     private fun isInInitialization(): Boolean {
         val user = name.parents.firstOrNull { parent ->

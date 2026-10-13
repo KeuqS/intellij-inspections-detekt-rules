@@ -47,7 +47,11 @@ internal class CanBeParameterCandidate(private val parameter: KtParameter) {
                         usage.parent is KtCallableReferenceExpression ||
                             CanBeParameterUsage(usage, owner).isPropertyAccess()
                     } &&
-                    !hasShadowingReference(targets)
+                    !hasShadowingReference(targets) &&
+                    (
+                        !parameter.hasModifier(KtTokens.PRIVATE_KEYWORD) ||
+                            usages.any { !CanBeParameterUsage(it, owner).isInPropertyInitializer() }
+                        )
             }
     }
 
