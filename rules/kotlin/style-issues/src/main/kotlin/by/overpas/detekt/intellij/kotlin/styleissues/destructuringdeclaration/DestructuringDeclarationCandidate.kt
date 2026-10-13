@@ -38,7 +38,7 @@ internal class DestructuringDeclarationCandidate(private val declaration: KtDecl
     val isLoopVariable = declaration.parent is KtForExpression
 
     context(session: KaSession)
-    fun isDestructurable(): Boolean =
+    fun isDestructurable(maxEntries: Int): Boolean =
         with(session) {
             val symbol = declaration.symbol.let { symbol ->
                 if (symbol is KaFunctionSymbol) symbol.valueParameters.singleOrNull() else symbol as? KaCallableSymbol
@@ -54,6 +54,6 @@ internal class DestructuringDeclarationCandidate(private val declaration: KtDecl
             components != null &&
                 references != null &&
                 DestructuringDeclarationUsages(references.map { DestructuringDeclarationUsage(it, components) })
-                    .isDestructurable()
+                    .isDestructurable(maxEntries)
         }
 }

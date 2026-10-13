@@ -472,4 +472,56 @@ class DestructuringDeclarationTest {
 
         assertEquals(0, findings.size)
     }
+
+    @Test
+    fun `a loop variable with four destructuring entries passes`() {
+        val code = """
+            data class P(val a: Int, val b: Int, val c: Int, val d: Int)
+
+            fun f(list: List<P>) {
+                for (p in list) {
+                    println(p.a + p.b + p.c + p.d)
+                }
+            }
+        """.trimIndent()
+
+        val findings = sut.lintWithContext(environment, code)
+
+        assertEquals(0, findings.size)
+    }
+
+    @Test
+    fun `a loop variable with three destructuring entries is reported`() {
+        val code = """
+            data class P(val a: Int, val b: Int, val c: Int, val d: Int)
+
+            fun f(list: List<P>) {
+                for (p in list) {
+                    println(p.a + p.c)
+                }
+            }
+        """.trimIndent()
+
+        val findings = sut.lintWithContext(environment, code)
+
+        assertEquals(1, findings.size)
+    }
+
+    @Test
+    fun `a loop variable with four destructuring entries is reported with a higher limit`() {
+        val sut = DestructuringDeclaration(TestConfig("maxDestructuringEntries" to 4))
+        val code = """
+            data class P(val a: Int, val b: Int, val c: Int, val d: Int)
+
+            fun f(list: List<P>) {
+                for (p in list) {
+                    println(p.a + p.b + p.c + p.d)
+                }
+            }
+        """.trimIndent()
+
+        val findings = sut.lintWithContext(environment, code)
+
+        assertEquals(1, findings.size)
+    }
 }

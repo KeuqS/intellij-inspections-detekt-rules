@@ -13,13 +13,15 @@ internal class DestructuringDeclarationUsages(usages: List<DestructuringDeclarat
     private val dropped = usages.filter { it.dropsStatement() && !it.isDestructuring() }
         .flatMap { it.claimedIndices().orEmpty() }
 
-    fun isDestructurable(): Boolean {
+    fun isDestructurable(maxEntries: Int): Boolean {
         val used = claims.filterNotNull().flatten().toSet()
-        val unused = (0..(used.maxOrNull() ?: -1)).count { it !in used }
+        val entries = (used.maxOrNull() ?: -1) + 1
+        val unused = (0..<entries).count { it !in used }
         return claims.none { it == null } &&
             destructured.size == destructured.toSet().size &&
             destructured.none { it in dropped } &&
             used.size >= DESTRUCTURING_DECLARATION_MIN_USED_COMPONENTS &&
-            unused <= DESTRUCTURING_DECLARATION_MAX_UNUSED_COMPONENTS
+            unused <= DESTRUCTURING_DECLARATION_MAX_UNUSED_COMPONENTS &&
+            entries <= maxEntries
     }
 }

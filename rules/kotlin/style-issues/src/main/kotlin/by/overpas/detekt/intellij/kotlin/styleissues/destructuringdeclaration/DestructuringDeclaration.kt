@@ -26,6 +26,9 @@ class DestructuringDeclaration(config: Config) :
     @Configuration("Also report local variables and lambda parameters, not only loop variables.")
     private val areNonParameterCasesReported: Boolean by config(false)
 
+    @Configuration("The maximum number of entries in the suggested destructuring declaration.")
+    private val maxDestructuringEntries: Int by config(3)
+
     override fun visitParameter(parameter: KtParameter) {
         super.visitParameter(parameter)
         parameter.reportIfDestructurable()
@@ -44,7 +47,7 @@ class DestructuringDeclaration(config: Config) :
     private fun KtDeclaration.reportIfDestructurable() {
         val candidate = DestructuringDeclarationCandidate(this)
         val highlight = candidate.highlight?.takeIf { areNonParameterCasesReported || candidate.isLoopVariable }
-        if (highlight != null && analyze(this) { candidate.isDestructurable() }) {
+        if (highlight != null && analyze(this) { candidate.isDestructurable(maxDestructuringEntries) }) {
             report(Finding(Entity.from(highlight), "Use destructuring declaration"))
         }
     }
