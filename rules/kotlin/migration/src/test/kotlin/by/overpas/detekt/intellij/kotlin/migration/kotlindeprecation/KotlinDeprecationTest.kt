@@ -82,36 +82,36 @@ class KotlinDeprecationTest {
     }
 
     @Test
-    fun `an unnecessary safe call is reported`() {
+    fun `an unnecessary safe call passes`() {
         val code = """
             fun test(text: String) = text?.length
         """.trimIndent()
 
         val findings = sut.lintWithContext(environment, code)
 
-        assertEquals(1, findings.size)
+        assertEquals(0, findings.size)
     }
 
     @Test
-    fun `an unnecessary not-null assertion is reported`() {
+    fun `an unnecessary not-null assertion passes`() {
         val code = """
             fun test(text: String) = text!!.length
         """.trimIndent()
 
         val findings = sut.lintWithContext(environment, code)
 
-        assertEquals(1, findings.size)
+        assertEquals(0, findings.size)
     }
 
     @Test
-    fun `a useless elvis is reported`() {
+    fun `a useless elvis passes`() {
         val code = """
             fun test(text: String) = text ?: ""
         """.trimIndent()
 
         val findings = sut.lintWithContext(environment, code)
 
-        assertEquals(1, findings.size)
+        assertEquals(0, findings.size)
     }
 
     @Test

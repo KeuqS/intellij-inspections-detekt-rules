@@ -13,8 +13,8 @@ import org.jetbrains.kotlin.psi.KtFile
 class KotlinDeprecation(config: Config) :
     Rule(
         config,
-        "The code uses deprecated syntax, deprecated symbols that have a replacement, or redundant constructs " +
-            "that the compiler reports. Apply the replacement or remove the redundant construct.",
+        "The code uses deprecated syntax, deprecated symbols that have a replacement, or a useless cast " +
+            "that the compiler reports. Apply the replacement or remove the cast.",
     ),
     RequiresAnalysisApi {
 

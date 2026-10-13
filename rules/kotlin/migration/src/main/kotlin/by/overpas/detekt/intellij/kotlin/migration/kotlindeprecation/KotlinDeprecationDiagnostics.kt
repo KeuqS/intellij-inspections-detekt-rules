@@ -36,10 +36,7 @@ private fun KaDiagnosticWithPsi<*>.isCleanup(): Boolean =
         is KaFirDiagnostic.NonConstValUsedInConstantExpression,
         is KaFirDiagnostic.OperatorModifierRequired,
         is KaFirDiagnostic.PositionedValueArgumentForJavaAnnotation,
-        is KaFirDiagnostic.UnnecessaryNotNullAssertion,
-        is KaFirDiagnostic.UnnecessarySafeCall,
         is KaFirDiagnostic.UselessCast,
-        is KaFirDiagnostic.UselessElvis,
         -> true
 
         else -> false

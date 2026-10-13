@@ -342,7 +342,7 @@ the script, because detekt does not have the Gradle model.
 
 | Rule | Finds |
 |---|---|
-| `KotlinDeprecation` | A deprecated symbol with a replacement, an import of such a symbol, deprecated syntax, or a useless cast, elvis, safe call or `!!`. |
+| `KotlinDeprecation` | A deprecated symbol with a replacement, an import of such a symbol, deprecated syntax, or a useless cast. It does not report a useless elvis, safe call or `!!`, because the detekt rules `UnreachableCode`, `UnnecessarySafeCall` and `UnnecessaryNotNullOperator` report them. The deprecated symbol part overlaps the detekt rule `Deprecation`. |
 
 ### `intellij-kotlin-naming-conventions`
 
