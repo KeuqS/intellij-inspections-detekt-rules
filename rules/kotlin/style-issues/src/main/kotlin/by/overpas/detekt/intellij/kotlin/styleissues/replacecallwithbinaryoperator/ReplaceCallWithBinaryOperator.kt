@@ -11,14 +11,13 @@ import org.jetbrains.kotlin.psi.KtDotQualifiedExpression
 import org.jetbrains.kotlin.psi.KtSimpleNameExpression
 import org.jetbrains.kotlin.psi.KtSuperExpression
 
-private val replaceCallWithBinaryOperatorNames =
-    setOf("equals", "compareTo", "plus", "minus", "times", "div", "rem", "rangeTo", "rangeUntil")
+private val replaceCallWithBinaryOperatorNames = setOf("equals", "compareTo")
 
 @IntellijInspection("ReplaceCallWithBinaryOperator")
 class ReplaceCallWithBinaryOperator(config: Config) :
     Rule(
         config,
-        "An explicit call of an operator function such as `plus`, `equals` or `compareTo` is harder to read " +
+        "An explicit call of `equals` or `compareTo` is harder to read " +
             "than the operator. Use the binary operator instead.",
     ),
     RequiresAnalysisApi {
