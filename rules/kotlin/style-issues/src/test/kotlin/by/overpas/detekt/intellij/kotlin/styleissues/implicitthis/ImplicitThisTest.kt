@@ -234,4 +234,40 @@ class ImplicitThisTest {
 
         assertEquals(0, findings.size)
     }
+
+    @Test
+    fun `a companion member accessed from the outer class passes`() {
+        val code = """
+            class Foo {
+                private var state = NOTHING
+
+                companion object {
+                    private val NOTHING = Any()
+                }
+            }
+        """.trimIndent()
+
+        val findings = sut.lintWithContext(environment, code)
+
+        assertEquals(0, findings.size)
+    }
+
+    @Test
+    fun `a companion member accessed inside the companion is reported`() {
+        val code = """
+            class Foo {
+                companion object {
+                    private val nothing = Any()
+
+                    fun test() {
+                        nothing
+                    }
+                }
+            }
+        """.trimIndent()
+
+        val findings = sut.lintWithContext(environment, code)
+
+        assertEquals(1, findings.size)
+    }
 }
