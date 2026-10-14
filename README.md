@@ -479,7 +479,7 @@ the script, because detekt does not have the Gradle model.
 | `CopyWithoutNamedArguments` | A data class `copy` call that passes arguments without names. |
 | `DestructuringDeclaration` | A loop variable of a data class or `Map.Entry` type that is only used to read its components. Set `areNonParameterCasesReported` to also report local variables and lambda parameters. `maxDestructuringEntries` (default `3`, as in detekt's `DestructuringDeclarationWithTooManyEntries`) limits the entries of the suggested declaration. |
 | `FilterIsInstanceCallWithClassLiteralArgument` | A `filterIsInstance(X::class.java)` call that `filterIsInstance<X>()` can replace. |
-| `FoldInitializerAndIfToElvis` | An `if` null or type check that exits right after a variable declaration and can fold into the initializer with `?:`. |
+| `FoldInitializerAndIfToElvis` | An `if` null check that exits right after a variable declaration and can fold into the initializer with `?:`. |
 | `IfThenToElvis` | An `if` that checks a value for `null` or a type and that the elvis operator `?:` can replace. |
 | `IfThenToSafeAccess` | An `if` that checks a value for `null` or a type, returns `null` otherwise, and that `?.` or `as?` can replace. |
 | `ImplicitThis` | A member access or callable reference that uses an implicit `this` receiver. Opposite of `ExplicitThis`, which is active by default. Inactive by default. |
